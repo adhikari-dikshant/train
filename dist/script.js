@@ -1,42 +1,456 @@
-const $ = (s, root = document) => root.querySelector(s);
-const $$ = (s, root = document) => [...root.querySelectorAll(s)];
-const mountainArt = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="sky-h" x2="0" y2="1"><stop stop-color="#a4b9b6"/><stop offset="1" stop-color="#e9dcc2"/></linearGradient><filter id="grain-h"><feTurbulence baseFrequency=".65" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope=".08"/></feComponentTransfer><feBlend in="SourceGraphic" mode="multiply"/></filter></defs><g filter="url(#grain-h)"><path fill="url(#sky-h)" d="M0 0h900v600H0z"/><circle cx="680" cy="127" r="51" fill="#f7e9be"/><path fill="#899b9a" d="M-100 405L210 83l105 150 114-145 156 188L720 139l240 270v191H0z"/><path fill="#f3eee0" d="M210 83l-68 71 45-7 26 35 27-18 44 26zm219 5-72 91 44-14 23 21 29-20 41 14zm291 51-66 68 29-6 34 22 37-28 35 29z"/><path fill="#546d6d" d="M0 459l210-168 105 95 151-152 178 157 137-92 119 106v195H0z"/><path fill="#314e4b" d="M0 497l146-65 199 78 142-112 199 58 214-63v207H0z"/><g fill="#263f39"><path d="M80 500h22L91 411zM110 504h30l-15-115zM720 520h35l-17-133zM761 530h27l-13-105zM810 523h34l-17-142z"/></g><path d="M55 240q330 119 735-50" stroke="#455d53" stroke-width="3" fill="none"/><g><path d="m120 260 42 13-10 50-42-13z" fill="#bb624a"/><path d="m191 282 43 7-8 50-42-8z" fill="#d6bb6e"/><path d="m264 294 43 2-1 53-43-2z" fill="#6b8895"/><path d="m338 299 44-1 2 53-44 1z" fill="#e6e0c7"/><path d="m414 298 44-4 5 51-44 4z" fill="#a55843"/><path d="m491 289 43-9 11 50-43 9z" fill="#d6bb6e"/><path d="m566 275 42-12 13 50-42 11z" fill="#698c93"/><path d="m640 254 42-15 17 47-42 15z" fill="#e7dfc5"/><path d="m712 228 40-18 21 46-40 18z" fill="#b35b45"/></g></g></svg>`;
-const keralaArt = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="sky-k" x2="0" y2="1"><stop stop-color="#c6d1b2"/><stop offset="1" stop-color="#f5ddac"/></linearGradient><linearGradient id="water-k" x2="0" y2="1"><stop stop-color="#70958a"/><stop offset="1" stop-color="#b9b99a"/></linearGradient><filter id="grain-k"><feTurbulence baseFrequency=".6" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope=".07"/></feComponentTransfer><feBlend in="SourceGraphic" mode="multiply"/></filter><g id="palm-k"><path d="M0 310q-5-150 25-270" fill="none" stroke="#344d3a" stroke-width="14"/><g fill="#3e6246"><path d="M25 40q-85-40-132 46 65-45 132-46M25 40q-25-93-95-91 48 38 95 91M25 40q20-96 80-106-32 58-80 106M25 40q93-57 141 13-70-30-141-13M25 40q98-9 104 81-50-59-104-81M25 40q-55 25-57 96 33-56 57-96"/></g></g></defs><g filter="url(#grain-k)"><path fill="url(#sky-k)" d="M0 0h900v600H0z"/><circle cx="655" cy="151" r="57" fill="#f5e8bd"/><path fill="#93aa89" d="M0 345q120-110 230-42t250 2 420-45v130H0z"/><path fill="#456f56" d="M0 375q90-70 201-32t204 2 495-5v80H0z"/><path fill="url(#water-k)" d="M0 388h900v212H0z"/><g stroke="#dfd9b8" opacity=".35"><path d="M0 422h390m70 17h440M0 467h230m130 0h500M50 512h520m60 14h270M0 565h380m120 6h310"/></g><g transform="translate(60 95)"><use href="#palm-k"/></g><g transform="translate(818 93) scale(-1.15 1.15)"><use href="#palm-k"/></g><g transform="translate(730 182) scale(.6)"><use href="#palm-k"/></g><path fill="#344a36" d="M0 540q105-51 225 15l48 45H0zM900 510q-81-41-157 31l-48 59h205z"/><g transform="translate(355 380)"><path d="M-45 54q142 60 284-9l-20 31H-24z" fill="#473e2b"/><path d="M0 50v-29q5-61 88-61t89 61v24z" fill="#c6a566" stroke="#6b6240" stroke-width="3"/><path d="M28 17h34v30H28zm60 0h34v30H88zm60 0h21v27h-21z" fill="#424d38"/><path d="M-38 50h277" stroke="#e8c894" stroke-width="5"/></g></g></svg>`;
-const states = [
- {id:'rajasthan',name:'Rajasthan',hindi:'राजस्थान',region:'THE WEST',line:'Where colour has a language of its own.',title:'Colour, without\npermission.',lede:'A landscape of palaces, performance and colour. A place that asks you to look a little longer.',art:'<img src="assets/rajasthan-collage.jpg" alt="Rajasthan cultural collage with architecture, musicians, puppets, textiles and a peacock">',place:'A palace façade, a musician’s instrument, the movement of a puppet. In this first window, the Rajasthan collage brings many expressions of a place into one frame.',piece:'The desert study is an illustrative direction for the mockup: indigo denim, a generous silhouette and accents borrowed from the colours outside the window. The final Rajasthan garment will replace this study.',details:[['A canvas of indigo','Denim grounds the illustration, giving the surrounding colour a quieter canvas.'],['Colour in the seam','Warm accents echo the palette of the Rajasthan collage. This placement is a visual proposal.'],['Room for a story','The sweeping silhouette is a concept study. The campaign’s approved piece and its craft notes will define the final reveal.']],color:'#365269',accent:'#d5a560',kind:'dress'},
- {id:'himachal',name:'Himachal Pradesh',hindi:'हिमाचल प्रदेश',region:'THE NORTH',line:'A quieter rhythm. A different perspective.',title:'Threads from\nhigher ground.',lede:'Mountain silhouettes, prayer flags and a slower rhythm. Another India, just beyond the glass.',art:mountainArt,place:'The window becomes a mountain travel illustration. Muted greens, distant peaks and strands of colour set the mood for this stop in the journey.',piece:'The campaign discussion described a Himachal jacket incorporating flag and bell references. This drawing explores that direction; its shape, motifs and placement are illustrative.',details:[['A mountain jacket','A structured denim silhouette provides the starting point for this garment study.'],['Flags in the frame','Flag colours, mentioned in the brief, appear here as a proposed geometric detail.'],['A small punctuation','Bell references from the campaign conversation inspire the illustrated hem accents. Final craft notes and imagery are pending.']],color:'#364e62',accent:'#cf9d67',kind:'jacket'},
- {id:'kerala',name:'Kerala',hindi:'केरल',region:'THE SOUTH',line:'Quiet waters. An unexpected canvas.',title:'A different\nshade of denim.',lede:'A softer palette. A slower passage. Here, the familiar fabric asks to be seen anew.',art:keralaArt,place:'A backwater-inspired illustration carries this part of the journey. Water, palms and soft light give the window a distinct southern atmosphere.',piece:'White denim was specifically described in the campaign conversation for the Kerala piece. This illustrative study explores that surprising material choice, while the actual silhouette and embellishment await approved images.',details:[['The white canvas','The brief calls out white denim for Kerala — a deliberate departure from the blue we usually imagine.'],['A quiet accent','The warm edging shown here is a mockup styling choice, awaiting the final garment design.'],['The fabric, reconsidered','The white denim direction shows the central idea of the collection: familiar material, unexpected expression.']],color:'#eee6ce',accent:'#bc9851',kind:'drape'}
+const $ = (selector) => document.querySelector(selector);
+const $$ = (selector) => [...document.querySelectorAll(selector)];
+const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const gsap = window.gsap;
+const journey = $('#journey');
+const shutter = $('#shutter');
+const windowBox = $('#window-interior');
+const travel = { speed: 0, departure: 0, progress: 0, pointerX: 0, pointerY: 0 };
+let started = false;
+let starting = false;
+let startPromise;
+let station = 0;
+let arrivalTimer;
+let revealVisible = false;
+let toastTimer;
+let context;
+let soundEnabled = false;
+let soundTimer;
+let isHidden = document.hidden;
+
+const stations = [
+  {
+    name: 'Jaipur', state: 'RAJASTHAN', local: 'जयपुर', nickname: 'THE PINK CITY', coordinates: '26.92° N / 75.82° E',
+    heading: 'A little <em>Jaipur.</em><br>A lot to fall for.',
+    description: 'Pink facades, desert melodies, and colour that stays with you. Every detail is a thread in our next story.',
+    title: 'The Pink City Shirt.', shortTitle: 'The Pink City<br>Shirt.', price: '₹2,490', image: 'assets/jaipur-shirt.svg',
+    productDescription: 'Sun-washed terracotta. A rhythm of hand-block inspired florals. Jaipur, in a shirt.',
+    detail: 'A relaxed camp-collar shirt imagined in warm terracotta, with an all-over floral print inspired by the visual rhythms of Rajasthan. An everyday silhouette with a little wanderlust. This is an original garment illustration, ready to be replaced by your collection photography.',
+    crafts: [
+      ['A city in pink.', 'The warm facades of Jaipur become our colour palette: soft rose, terracotta, and the pale cream of sunlit stone. Look closely at the window; the architecture is the starting point for the Pink City edit.'],
+      ['A rhythm worth repeating.', 'The repeating floral motif on our concept shirt takes its cue from the hand-block printing traditions associated with Rajasthan. The collection is an imagined design study; these pieces are not represented as artisan-made products.']
+    ]
+  },
+  {
+    name: 'Ahmedabad', state: 'GUJARAT', local: 'અમદાવાદ', nickname: 'COLOUR IN MOTION', coordinates: '23.02° N / 72.57° E',
+    heading: 'Hello, <em>Gujarat.</em><br>Find your rhythm.',
+    description: 'Kites in the sky. Stories carved in stone. A thousand little mirrors catching the light. Welcome to Gujarat.',
+    title: 'The Indigo Trail Jacket.', shortTitle: 'The Indigo Trail<br>Jacket.', price: '₹3,890', image: 'assets/ahmedabad-jacket.svg',
+    productDescription: 'Deep indigo. Bandhani-inspired dots. A little mirrorwork magic, made for the everyday.',
+    detail: 'An easy, unisex overshirt imagined in deep indigo, with dotted motifs inspired by bandhani and a contrasting embroidered-style pocket. Inspired by Gujarat’s colour and movement, designed for your own adventures. This is an illustrative garment concept, rather than an available retail product.',
+    crafts: [
+      ['Stories carved in stone.', 'The geometry of Gujarat’s stepwells inspires the lines of this edit. The artwork brings together Ahmedabad’s old-city architecture, the depth of Adalaj stepwell, and the movement of a garba celebration.'],
+      ['A thousand little possibilities.', 'Dotted bandhani-inspired motifs, small mirror-like details, and flying kites are the visual threads of our Gujarat concept. The indigo jacket translates that feeling into an easy everyday layer.']
+    ]
+  }
 ];
-let active = 0, tab = 'place', detail = 0, busy = false;
-const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
-let motionOff = reducedMotion.matches;
-const mapDialog = $('#map-dialog'), storyDialog = $('#story-dialog');
-function garmentSVG(s){
- const dress = s.kind === 'dress'; const drape = s.kind === 'drape';
- const silhouette = dress ? 'M132 43 166 32l34 20 34-20 34 11 60 70-42 38-25-32-6 108 62 226q-117 41-234 0l62-226-6-108-25 32-42-38z' : drape ? 'M139 42 172 30l28 22 28-22 33 12 45 78-42 27-12-35 12 137 39 198q-103 31-206 0l39-198 12-137-12 35-42-27z' : 'M133 43 167 30l33 25 33-25 34 13 67 86-42 39-33-49 5 237q-64 21-128 0l5-237-33 49-42-39z';
- return `<svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Illustrative ${s.name} denim garment, not the final campaign piece"><defs><pattern id="weave" width="5" height="5" patternUnits="userSpaceOnUse"><path d="m0 5 5-5m-1 6 2-2" stroke="#ffffff" stroke-opacity=".12" stroke-width=".8"/></pattern><linearGradient id="denim" x2="1" y2=".2"><stop stop-color="${s.color}"/><stop offset=".5" stop-color="${drape?'#fff9e9':'#527087'}"/><stop offset="1" stop-color="${s.color}"/></linearGradient><clipPath id="garmentClip"><path d="${silhouette}"/></clipPath></defs><path d="M157 32q43-40 86 0" fill="none" stroke="#bfa674" stroke-width="4"/><path d="M200 13v-5q0-12 10-12" fill="none" stroke="#bfa674" stroke-width="4"/><path d="${silhouette}" fill="url(#denim)" stroke="${drape?'#c9bea2':'#243b4e'}" stroke-width="2"/><path d="${silhouette}" fill="url(#weave)"/><g clip-path="url(#garmentClip)"><path d="M200 53v430M142 113l14 115-44 216M258 113l-14 115 44 216" fill="none" stroke="${s.accent}" stroke-width="1.5" stroke-dasharray="3 3" opacity=".8"/>${dress?`<path d="M131 214q68 25 138 0M87 440q113 31 226 0" fill="none" stroke="${s.accent}" stroke-width="9"/><path d="m108 408 15-14 15 14 15-14 15 14 15-14 15 14 15-14 15 14 15-14 15 14 15-14 15 14" fill="none" stroke="${s.accent}" stroke-width="5"/>`:drape?`<path d="m258 58-118 294-22 94" fill="none" stroke="${s.accent}" stroke-width="20"/><path d="m258 58-118 294-22 94" fill="none" stroke="#eee2b7" stroke-width="10"/><path d="M97 437q103 27 206 0" fill="none" stroke="${s.accent}" stroke-width="15"/><path d="M133 133h137" stroke="${s.accent}" stroke-width="3"/>`:`<g fill="${s.accent}" stroke="#d4c3a1" stroke-width="1"><path d="m139 109 17-17 17 17-17 17zm35 0 17-17 17 17-17 17zm35 0 17-17 17 17-17 17zm35 0 17-17 17 17-17 17z"/></g><path d="M138 328h125" stroke="${s.accent}" stroke-width="9"/><path d="M144 215h35v46h-35zm78 0h35v46h-35z" fill="none" stroke="${s.accent}" stroke-width="1.5"/><g fill="${s.accent}"><path d="m150 346-4 12h13l-5-12zm28 3-4 12h13l-5-12zm28 1-4 12h13l-5-12zm28-2-4 12h13l-5-12zm24-3-4 12h13l-5-12z"/></g>`}</g><path d="m167 31 33 24-21 28-26-44m80-8-33 24 21 28 26-44" fill="${drape?'#e7ddc1':'#2e465b'}" stroke="${s.accent}" stroke-width="1.4"/>${drape?'':Array.from({length:dress?6:9},(_,i)=>`<circle cx="201" cy="${95+i*24}" r="2.4" fill="${s.accent}"/>`).join('')}</svg>`;
+
+function toast(message) {
+  $('#toast').textContent = message;
+  $('#toast').classList.add('visible');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => $('#toast').classList.remove('visible'), 2600);
 }
-function updateHero(){const s=states[active]; $('#landscape').innerHTML=s.art;$('#window-title').textContent=s.name;$('#window-subtitle').textContent=s.line;$('#station-hindi').textContent=s.hindi;$('#station-english').textContent=s.name.toUpperCase();$('#station-count').textContent=`0${active+1} / 03`;$('.window-kicker').textContent=`YOUR ${['FIRST','SECOND','THIRD'][active]} STOP`;$('.window-explore').setAttribute('aria-label',`Explore ${s.name} story`);$('#announcer').textContent=`Now at ${s.name}. ${s.line}`;}
-function journeyTo(index,openStory=false){if(busy)return;busy=true;const win=$('#train-window');if(!motionOff)win.classList.add('transitioning');setTimeout(()=>{active=(index+states.length)%states.length;updateHero();},motionOff?0:380);setTimeout(()=>{win.classList.remove('transitioning');busy=false;if(openStory)showStory();},motionOff?20:870);}
-function showMap(){if(storyDialog.open)storyDialog.close();mapDialog.showModal();}
-function showStory(push=true){if(mapDialog.open)mapDialog.close();const s=states[active];tab='place';detail=0;$('#story-index').textContent=`THE CULTURAL EXPRESS · STOP 0${active+1}`;$('#story-location').textContent=`${s.region} / ${s.name.toUpperCase()}`;$('#story-title').innerHTML=s.title.replace('\n','<br>');$('#story-lede').textContent=s.lede;$('#story-scenery').innerHTML=s.art;$('#garment').innerHTML=garmentSVG(s);$('#hotspots').innerHTML=s.details.map((d,i)=>`<button class="hotspot" style="left:${[49,60,46][i]}%;top:${[25,45,72][i]}%" aria-label="Detail ${i+1}: ${d[0]}" aria-pressed="false" data-detail="${i}">${i+1}</button>`).join('');$('#continue').innerHTML=`${active===2?'Return to Rajasthan':'Continue to '+states[active+1].name} <span>→</span>`;renderPanel();if(!storyDialog.open)storyDialog.showModal();storyDialog.scrollTop=0;if(push)history.pushState({station:s.id},'',`?station=${s.id}#piece`);$('#announcer').textContent=`Exploring ${s.name}. Illustrative garment study.`;}
-function renderPanel(){const s=states[active];$$('[data-tab]').forEach(b=>{const selected=b.dataset.tab===tab;b.setAttribute('aria-selected',selected);b.tabIndex=selected?0:-1;});$('#story-panel').setAttribute('aria-labelledby',`tab-${tab}`);$('#story-panel').innerHTML=tab==='detail'?`<h3>${s.details[detail][0]}</h3><p>${s.details[detail][1]}</p>`:`<p>${s[tab]}</p>`;$$('[data-detail]').forEach(b=>b.setAttribute('aria-pressed',tab==='detail'&&Number(b.dataset.detail)===detail));}
-function clearStoryURL(){if(new URLSearchParams(location.search).has('station'))history.replaceState(null,'',location.pathname+'#journey');}
-storyDialog.addEventListener('close',clearStoryURL);
-$$('[data-start]').forEach(b=>b.addEventListener('click',()=>journeyTo(active,true)));
-$$('[data-map]').forEach(b=>b.addEventListener('click',showMap));
-$('#prev').addEventListener('click',()=>journeyTo(active-1));$('#next').addEventListener('click',()=>journeyTo(active+1));
-$$('[data-close]').forEach(b=>b.addEventListener('click',()=>b.closest('dialog').close()));
-[mapDialog,storyDialog].forEach(d=>d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close();}}));
-function selectStation(id){const i=states.findIndex(s=>s.id===id);if(i<0)return;if(mapDialog.open)mapDialog.close();journeyTo(i,true);}
-$('#stop-grid').innerHTML=states.map((s,i)=>`<a class="stop-card" href="?station=${s.id}#piece" data-station="${s.id}"><div class="stop-image"><div class="art">${s.art}</div><span class="stop-number">0${i+1}</span><span class="stop-arrow">↗</span></div><div class="stop-meta"><h3>${s.name}</h3><span>${s.region}</span></div><p>${s.line}</p></a>`).join('');
-$('#map-stations').innerHTML=states.map((s,i)=>`<button class="map-option" data-station="${s.id}"><span>0${i+1}</span><div><strong>${s.name}</strong><small>${s.line}</small></div><span class="map-arrow">↗</span></button>`).join('');
-$$('[data-station]').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();selectStation(b.dataset.station);}));
-$$('[data-map-station]').forEach(b=>{b.addEventListener('click',()=>selectStation(b.dataset.mapStation));b.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selectStation(b.dataset.mapStation);}});});
-$$('[data-tab]').forEach(b=>{b.addEventListener('click',()=>{tab=b.dataset.tab;renderPanel();});b.addEventListener('keydown',e=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;e.preventDefault();const tabs=$$('[data-tab]');let i=tabs.indexOf(b);i=e.key==='Home'?0:e.key==='End'?2:(i+(e.key==='ArrowRight'?1:-1)+3)%3;tab=tabs[i].dataset.tab;renderPanel();tabs[i].focus();});});
-$('#hotspots').addEventListener('click',e=>{const b=e.target.closest('[data-detail]');if(!b)return;detail=Number(b.dataset.detail);tab='detail';renderPanel();if(innerWidth<=760)$('#story-panel').scrollIntoView({behavior:motionOff?'instant':'smooth',block:'center'});});
-$('#continue').addEventListener('click',()=>{if(busy)return;busy=true;const layout=$('.story-layout');if(!motionOff)layout.classList.add('transitioning');setTimeout(()=>{active=(active+1)%states.length;updateHero();showStory();},motionOff?0:380);setTimeout(()=>{layout.classList.remove('transitioning');busy=false;},motionOff?20:870);});$('#story-map').addEventListener('click',showMap);
-function applyMotion(){document.body.classList.toggle('no-motion',motionOff);$('#motion').innerHTML=`Motion ${motionOff?'off':'on'} <span>${motionOff?'○':'◉'}</span>`;$('#motion').setAttribute('aria-pressed',motionOff);}
-$('#motion').addEventListener('click',()=>{motionOff=!motionOff;applyMotion();});applyMotion();updateHero();
-function routeFromURL(){const id=new URLSearchParams(location.search).get('station');const i=states.findIndex(s=>s.id===id);if(i>=0){active=i;updateHero();showStory(false);}else if(storyDialog.open)storyDialog.close();}
-window.addEventListener('popstate',routeFromURL);routeFromURL();
+
+function animate(target, properties) {
+  if (gsap) return gsap.to(target, { duration: reducedMotion ? 0 : .65, overwrite: 'auto', ...properties });
+  const nodes = typeof target === 'string' ? $$(target) : Array.isArray(target) ? target : [target];
+  nodes.forEach(node => {
+    if (!node?.style) return;
+    if (properties.opacity !== undefined) node.style.opacity = properties.opacity;
+    if (properties.y !== undefined || properties.rotation !== undefined) node.style.transform = `translateY(${properties.y || 0}px) rotate(${properties.rotation || 0}deg)`;
+  });
+  properties.onComplete?.();
+}
+
+function setReveal(visible) {
+  if (visible === revealVisible) return;
+  revealVisible = visible;
+  $('#product-reveal').inert = !visible;
+  $('#station-caption').inert = !visible;
+  $('#product-reveal').style.pointerEvents = visible ? 'auto' : 'none';
+  animate('#product-reveal', { opacity: visible ? 1 : 0, y: visible ? 0 : 35, rotation: visible ? -2 : 3, duration: visible ? .8 : .28, ease: 'power3.out' });
+  animate('#station-caption', { opacity: visible ? 1 : 0, y: visible ? 0 : 18, duration: visible ? .75 : .25 });
+  animate('.station-stamp', { opacity: visible ? 1 : 0 });
+  $$('.craft-marker').forEach(button => { button.style.display = visible ? 'flex' : 'none'; });
+}
+
+function updateStation(index) {
+  station = index;
+  document.body.dataset.station = stations[index].name.toLowerCase();
+  const s = stations[index];
+  $('#station-index').textContent = `0${index + 1} / ${s.state}`;
+  $('#station-name').innerHTML = s.heading;
+  $('#station-description').textContent = s.description;
+  $('#station-continue').textContent = index === 0 ? 'KEEP SCROLLING. THE JOURNEY CONTINUES. ↓' : 'EVERY JOURNEY LEAVES A THREAD. KEEP SCROLLING. ↓';
+  $('#collection-tag').textContent = `THE ${s.name.toUpperCase()} EDIT`;
+  $('#product-eyebrow').textContent = `0${index + 1} / ${s.state}`;
+  $('#product-title').innerHTML = s.shortTitle;
+  $('#product-description').textContent = s.productDescription;
+  $('#product-price').textContent = s.price;
+  $('#product-image').src = s.image;
+  $('#product-image').alt = `${s.title} — illustrative clothing concept`;
+  $('#station-stamp').innerHTML = `<span>${s.coordinates}</span><strong>${s.local}</strong><small>${s.nickname}</small>`;
+  $$('.stop-button').forEach((button, i) => {
+    button.classList.toggle('active', index === i);
+    button.setAttribute('aria-current', index === i ? 'step' : 'false');
+  });
+}
+
+function announceArrival(index) {
+  clearTimeout(arrivalTimer);
+  const s = stations[index];
+  $('#arrival-label strong').textContent = `${s.name} Junction`;
+  animate('#arrival-label', { opacity: 1, duration: .35 });
+  arrivalTimer = setTimeout(() => {
+    animate('#arrival-label', { opacity: 0, duration: .6 });
+  }, reducedMotion ? 400 : 1250);
+}
+
+function journeyRange() { return Math.max(1, journey.offsetHeight - $('#carriage').offsetHeight); }
+function progressFromScroll() { return Math.max(0, Math.min(1, (scrollY - journey.offsetTop) / journeyRange())); }
+function smoothstep(a, b, x) { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); }
+
+function onProgress(p) {
+  travel.progress = p;
+  if (!started || starting) return;
+  const between = p > .34 && p < .65;
+  const nextStation = p < .5 ? 0 : 1;
+  if (station !== nextStation) updateStation(nextStation);
+  setReveal(!between);
+  const velocity = between ? Math.sin(((p - .34) / .31) * Math.PI) : 0;
+  travel.speed = between ? travel.speed + (velocity - travel.speed) * .28 : 0;
+  document.body.classList.toggle('is-travelling', between);
+  const status = between ? 'ON THE WAY · WATCH THE WORLD GO BY' : `NOW AT ${stations[station].name.toUpperCase()} JUNCTION`;
+  if ($('#status-text').textContent !== status) $('#status-text').textContent = status;
+  $('#travelling-overlay').style.opacity = reducedMotion ? 0 : velocity * .8;
+  const fill = smoothstep(.3, .7, p);
+  $('#track-fill').style.width = `${fill * 100}%`;
+  $('#track-train').style.left = `calc(${fill * 100}% - 2px)`;
+  $('.scene-jaipur').style.opacity = 1 - smoothstep(.43, .57, p);
+  $('.scene-ahmedabad').style.opacity = smoothstep(.43, .57, p);
+  if (!windowBox.classList.contains('webgl-ready')) {
+    $('.scene-jaipur').style.transform = `translateX(${-smoothstep(.34, .65, p) * 50}%)`;
+    $('.scene-ahmedabad').style.transform = `translateX(${(1 - smoothstep(.34, .65, p)) * 50}%)`;
+  }
+  const previous = onProgress.previous;
+  if (previous !== undefined && ((previous < .65 && p >= .65) || (previous > .34 && p <= .34))) announceArrival(station);
+  onProgress.previous = p;
+}
+
+async function startJourney(scrollToStop = true) {
+  if (started && !starting) return;
+  if (starting) return startPromise;
+  starting = true;
+  $('#start-journey').disabled = true;
+  document.body.dataset.journey = 'opening';
+  startPromise = new Promise(resolve => {
+    const complete = () => {
+      started = true;
+      starting = false;
+      document.body.dataset.journey = 'started';
+      window.ScrollTrigger?.refresh();
+      $('#intro-overlay').inert = true;
+      $('#intro-overlay').style.display = 'none';
+      if (scrollToStop) window.scrollTo({ top: journey.offsetTop + journeyRange() * .13, behavior: reducedMotion ? 'instant' : 'smooth' });
+      updateStation(progressFromScroll() < .5 ? 0 : 1);
+      announceArrival(station);
+      onProgress(progressFromScroll());
+      resolve();
+    };
+    if (gsap && !reducedMotion) {
+      const tl = gsap.timeline({ onComplete: complete });
+      tl.to('#intro-overlay', { opacity: 0, duration: .35 })
+        .to(shutter, { yPercent: 0, y: 0, duration: .5, ease: 'power2.in' }, '<')
+        .call(() => {
+          journey.classList.add('started');
+          updateStation(progressFromScroll() < .5 ? 0 : 1);
+          travel.speed = 1;
+          travel.departure = 1;
+          animate('#travelling-overlay', { opacity: .7, duration: .3 });
+        })
+        .to(shutter, { yPercent: -103, duration: 1.7, ease: 'power3.inOut' }, '+=.25')
+        .to(travel, { departure: 0, duration: 1.7, ease: 'power2.out' }, '-=1.4')
+        .to(travel, { speed: 0, duration: 1.2 }, '-=.7')
+        .to('#travelling-overlay', { opacity: 0, duration: .6 }, '-=.6');
+    } else {
+      journey.classList.add('started');
+      shutter.style.transform = 'translateY(-103%)';
+      complete();
+    }
+  });
+  return startPromise;
+}
+
+async function goToStation(index) {
+  $$('dialog[open]').forEach(dialog => dialog.close());
+  await startJourney(false);
+  const target = journey.offsetTop + journeyRange() * (index === 0 ? .15 : .82);
+  window.scrollTo({ top: target, behavior: reducedMotion ? 'instant' : 'smooth' });
+}
+
+$('#start-journey').addEventListener('click', () => startJourney());
+$$('[data-station]').forEach(button => button.addEventListener('click', () => goToStation(Number(button.dataset.station))));
+$$('[data-go]').forEach(button => button.addEventListener('click', () => goToStation(Number(button.dataset.go))));
+$$('[data-open]').forEach(button => button.addEventListener('click', () => {
+  const name = button.dataset.open;
+  if (name === 'bag') renderBag();
+  $(`#${name === 'collection' ? 'route' : name}-dialog`).showModal();
+}));
+$$('.dialog-close').forEach(button => button.addEventListener('click', () => button.closest('dialog').close()));
+$$('dialog').forEach(dialog => dialog.addEventListener('click', event => {
+  if (event.target !== dialog) return;
+  const rect = dialog.getBoundingClientRect();
+  if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) dialog.close();
+}));
+
+function openPiece() {
+  const s = stations[station];
+  $('#detail-image').src = s.image;
+  $('#detail-image').alt = `${s.title} — illustrative garment`;
+  $('#detail-edit').textContent = `THE ${s.name.toUpperCase()} EDIT`;
+  $('#detail-name').textContent = s.title;
+  $('#detail-description').textContent = s.detail;
+  $('#detail-price').textContent = s.price;
+  $('#piece-dialog').dataset.station = station;
+  $('#piece-dialog').showModal();
+}
+$('#view-piece').addEventListener('click', openPiece);
+$$('[data-craft]').forEach(button => button.addEventListener('click', () => {
+  const s = stations[station];
+  const craft = s.crafts[Number(button.dataset.craft)];
+  $('#craft-kicker').textContent = `A DETAIL FROM ${s.name.toUpperCase()}`;
+  $('#craft-title').textContent = craft[0];
+  $('#craft-description').textContent = craft[1];
+  $('#craft-dialog').showModal();
+}));
+$('#craft-product').addEventListener('click', () => { $('#craft-dialog').close(); openPiece(); });
+
+let saved = [];
+try {
+  const stored = JSON.parse(localStorage.getItem('sutra-saved') || '[]');
+  saved = Array.isArray(stored) ? stored.filter(item => [0, 1].includes(item.station) && ['S', 'M', 'L', 'XL'].includes(item.size)) : [];
+} catch { /* Private browsing can disable local storage. */ }
+function persistSaved() {
+  $('#bag-count').textContent = saved.length;
+  try { localStorage.setItem('sutra-saved', JSON.stringify(saved)); } catch { /* The bag remains usable for this visit. */ }
+}
+function renderBag() {
+  const container = $('#saved-items');
+  container.replaceChildren();
+  if (!saved.length) {
+    const p = document.createElement('p');
+    p.className = 'empty-bag';
+    p.textContent = 'Your bag is waiting for a story. Discover a piece at either station and save it here.';
+    container.append(p);
+    return;
+  }
+  saved.forEach((item, index) => {
+    const s = stations[item.station];
+    const article = document.createElement('article');
+    article.className = 'saved-item';
+    article.innerHTML = `<img src="${s.image}" alt="${s.title}"><div><h3>${s.title}</h3><p>Size ${item.size} · ${s.price}</p></div><button aria-label="Remove ${s.title}">Remove</button>`;
+    article.querySelector('button').addEventListener('click', () => { saved.splice(index, 1); persistSaved(); renderBag(); });
+    container.append(article);
+  });
+}
+$('#save-piece').addEventListener('click', () => {
+  const item = { station: Number($('#piece-dialog').dataset.station), size: $('#size-select').value };
+  const exists = saved.some(piece => piece.station === item.station && piece.size === item.size);
+  if (!exists) saved.push(item);
+  persistSaved();
+  $('#piece-dialog').close();
+  toast(exists ? 'This piece is already saved in your bag.' : 'A little piece of the journey, saved.');
+});
+$('#continue-journey').addEventListener('click', () => $('#bag-dialog').close());
+$('#back-top').addEventListener('click', () => window.scrollTo({ top: started ? journey.offsetTop + journeyRange() * .13 : 0, behavior: reducedMotion ? 'instant' : 'smooth' }));
+persistSaved();
+updateStation(0);
+
+// Sound is synthesized locally and begins only after an explicit sound-button click.
+async function toggleSound() {
+  try {
+    if (soundEnabled) {
+      soundEnabled = false;
+      clearInterval(soundTimer);
+      await context?.suspend();
+    } else {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) throw new Error('No audio context');
+      if (!context) context = new AudioContext();
+      await context.resume();
+      soundEnabled = true;
+      const clack = () => {
+        if (context.state !== 'running') return;
+        [0, .12].forEach(delay => {
+          const oscillator = context.createOscillator();
+          const gain = context.createGain();
+          oscillator.type = 'triangle';
+          oscillator.frequency.setValueAtTime(85, context.currentTime + delay);
+          oscillator.frequency.exponentialRampToValueAtTime(26, context.currentTime + delay + .11);
+          gain.gain.setValueAtTime(0, context.currentTime + delay);
+          gain.gain.linearRampToValueAtTime(.035 + travel.speed * .035, context.currentTime + delay + .005);
+          gain.gain.exponentialRampToValueAtTime(.0001, context.currentTime + delay + .12);
+          oscillator.connect(gain).connect(context.destination);
+          oscillator.start(context.currentTime + delay);
+          oscillator.stop(context.currentTime + delay + .13);
+        });
+      };
+      clack();
+      soundTimer = setInterval(clack, 630);
+    }
+    $('#sound-toggle').setAttribute('aria-pressed', String(soundEnabled));
+    $('#sound-toggle').setAttribute('aria-label', `Turn train ambience ${soundEnabled ? 'off' : 'on'}`);
+    $('#sound-toggle span').textContent = `SOUND ${soundEnabled ? 'ON' : 'OFF'}`;
+  } catch { toast('Train ambience is unavailable in this browser.'); }
+}
+$('#sound-toggle').addEventListener('click', toggleSound);
+document.addEventListener('visibilitychange', () => {
+  isHidden = document.hidden;
+  if (context && soundEnabled) {
+    if (isHidden) context.suspend().catch(() => {});
+    else context.resume().catch(() => {});
+  }
+});
+
+if (gsap && window.ScrollTrigger) {
+  gsap.registerPlugin(window.ScrollTrigger);
+  window.ScrollTrigger.create({ trigger: journey, start: 'top top', end: 'bottom bottom', onUpdate: self => onProgress(self.progress), onRefresh: self => onProgress(self.progress) });
+} else {
+  window.addEventListener('scroll', () => onProgress(progressFromScroll()), { passive: true });
+}
+window.addEventListener('resize', () => onProgress(progressFromScroll()), { passive: true });
+
+// A real Three.js scene. Six independently animated collage panels per station
+// form one continuous panorama at rest, then peel apart at different depths.
+async function initScene() {
+  let renderer;
+  try {
+    const THREE = await import('./vendor/three.module.js');
+    const canvas = $('#landscape');
+    renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: 'low-power' });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 1.7));
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    const scene = new THREE.Scene();
+    const camera = new THREE.OrthographicCamera(-2, 2, 1, -1, .1, 30);
+    camera.position.z = 10;
+    const loader = new THREE.TextureLoader();
+    const textures = await Promise.all(['assets/rajasthan-collage.jpg', 'assets/gujarat-collage.png'].map(path => loader.loadAsync(path)));
+    textures.forEach(texture => { texture.colorSpace = THREE.SRGBColorSpace; texture.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy()); });
+    const groups = [];
+    const backdrops = textures.map((texture, i) => {
+      const mesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: texture, transparent: true, depthWrite: false, color: '#f5eddd' }));
+      mesh.position.z = -1;
+      mesh.renderOrder = -5 + i;
+      mesh.userData.ratio = texture.image.width / texture.image.height;
+      scene.add(mesh);
+      return mesh;
+    });
+    let aspect = 2.5;
+    textures.forEach((texture, groupIndex) => {
+      const group = new THREE.Group();
+      group.userData.panels = [];
+      for (let i = 0; i < 6; i++) {
+        const geometry = new THREE.PlaneGeometry(1, 1);
+        const uv = geometry.attributes.uv;
+        for (let v = 0; v < uv.count; v++) uv.setX(v, (i + uv.getX(v)) / 6);
+        const material = new THREE.MeshBasicMaterial({ map: texture, transparent: true, depthWrite: false, color: '#f5eddd' });
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.userData.index = i;
+        mesh.userData.ratio = texture.image.width / texture.image.height;
+        mesh.renderOrder = groupIndex * 6 + i;
+        group.add(mesh);
+        group.userData.panels.push(mesh);
+      }
+      scene.add(group);
+      groups.push(group);
+    });
+    // Small paper kites are independent foreground objects, not baked into the collage.
+    const ornaments = new THREE.Group();
+    for (let i = 0; i < 7; i++) {
+      const shape = new THREE.Shape();
+      shape.moveTo(0, .09); shape.lineTo(.055, 0); shape.lineTo(0, -.075); shape.lineTo(-.055, 0); shape.closePath();
+      const material = new THREE.MeshBasicMaterial({ color: ['#b95839', '#e1b44e', '#f2e4b6', '#698979'][i % 4], transparent: true, opacity: .65, side: THREE.DoubleSide, depthWrite: false });
+      const kite = new THREE.Mesh(new THREE.ShapeGeometry(shape), material);
+      kite.position.set((i / 7 - .5) * 5, .65 + Math.sin(i) * .15, 2);
+      kite.rotation.z = i * .55;
+      kite.userData.origin = kite.position.clone();
+      ornaments.add(kite);
+    }
+    scene.add(ornaments);
+
+    function resize() {
+      const width = windowBox.clientWidth;
+      const height = windowBox.clientHeight;
+      aspect = width / height;
+      renderer.setSize(width, height, false);
+      camera.left = -aspect; camera.right = aspect; camera.updateProjectionMatrix();
+      backdrops.forEach(mesh => {
+        const width = Math.max(aspect * 2, mesh.userData.ratio * 2) * 1.09;
+        mesh.scale.set(width, width / mesh.userData.ratio, 1);
+      });
+      groups.forEach(group => group.userData.panels.forEach(mesh => {
+        const fullWidth = Math.max(aspect * 2, mesh.userData.ratio * 2) * 1.06;
+        const fullHeight = fullWidth / mesh.userData.ratio;
+        mesh.scale.set(fullWidth / 6 + .003, fullHeight, 1);
+        mesh.userData.baseX = (mesh.userData.index + .5 - 3) * fullWidth / 6;
+      }));
+    }
+    const observer = new ResizeObserver(resize);
+    observer.observe(windowBox);
+    resize();
+    windowBox.classList.add('webgl-ready');
+    canvas.classList.add('ready');
+    canvas.addEventListener('webglcontextlost', event => {
+      event.preventDefault();
+      windowBox.classList.remove('webgl-ready');
+      canvas.classList.remove('ready');
+    });
+    windowBox.addEventListener('pointermove', event => {
+      if (reducedMotion || event.pointerType === 'touch') return;
+      const rect = windowBox.getBoundingClientRect();
+      travel.pointerX = ((event.clientX - rect.left) / rect.width - .5) * .05;
+      travel.pointerY = ((event.clientY - rect.top) / rect.height - .5) * .035;
+    });
+    windowBox.addEventListener('pointerleave', () => { travel.pointerX = 0; travel.pointerY = 0; });
+    let lastTime = 0;
+    function render(time) {
+      requestAnimationFrame(render);
+      if (isHidden || scrollY > journey.offsetTop + journey.offsetHeight || time - lastTime < 28) return;
+      lastTime = time;
+      const t = time * .001;
+      const p = started ? travel.progress : 0;
+      const shift = smoothstep(.34, .65, p);
+      backdrops.forEach((mesh, i) => { mesh.material.opacity = i === 0 ? 1 - shift : shift; });
+      groups.forEach((group, groupIndex) => {
+        const phase = groupIndex === 0 ? -shift : 1 - shift;
+        group.visible = groupIndex === 0 ? shift < 1 : shift > 0;
+        group.userData.panels.forEach((mesh, i) => {
+          const stagger = 1 + (groupIndex === 0 ? i : 5 - i) * .065;
+          const movement = reducedMotion ? 0 : (phase + (groupIndex === 0 ? travel.departure : 0)) * (aspect * 2 + 1.5) * stagger;
+          mesh.position.x = mesh.userData.baseX + movement;
+          mesh.position.y = reducedMotion ? 0 : Math.sin(t * 14 + i * .3) * travel.speed * .007 + Math.sin(Math.abs(phase) * Math.PI) * ((i % 3) - 1) * .18;
+          mesh.position.z = -i * .005;
+          mesh.rotation.z = reducedMotion ? 0 : Math.sin(Math.abs(phase) * Math.PI) * ((i % 2) - .5) * .1;
+          mesh.material.opacity = reducedMotion ? (groupIndex === 0 ? 1 - shift : shift) : 1;
+        });
+        group.position.x += (travel.pointerX - group.position.x) * .035;
+        group.position.y += (-travel.pointerY - group.position.y) * .035;
+      });
+      ornaments.visible = !reducedMotion && started && shift > .6;
+      ornaments.children.forEach((kite, i) => {
+        kite.position.y = kite.userData.origin.y + Math.sin(t * .7 + i) * .03;
+        kite.position.x = kite.userData.origin.x + Math.sin(t * .5 + i * 1.5) * .06;
+        kite.rotation.y = Math.sin(t * .8 + i) * .25;
+      });
+      renderer.render(scene, camera);
+    }
+    requestAnimationFrame(render);
+  } catch (error) {
+    renderer?.dispose();
+    windowBox.classList.remove('webgl-ready');
+    $('#landscape').classList.remove('ready');
+    console.info('Using the accessible image-based scenery fallback.', error.message);
+  }
+}
+initScene();

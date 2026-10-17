@@ -1,49 +1,118 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#ebe6d9"><meta name="description" content="A journey through the cultures of India, reimagined in denim. All aboard The Cultural Express.">
-<title>This is Denim — The Cultural Express</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Crect width='80' height='80' rx='14' fill='%2323333b'/%3E%3Ctext x='40' y='56' text-anchor='middle' font-size='49' fill='%23efe8d8'%3Ed%3C/text%3E%3C/svg%3E">
-<link rel="stylesheet" href="style.css"><script src="script.js" defer></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#eee9dd">
+  <meta name="description" content="All aboard the Sutra Express. An interactive journey through India's landscapes, living crafts, and a collection of clothing inspired by every stop.">
+  <title>SUTRA — Wear the journey.</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Libre+Caslon+Display&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="vendor/gsap.min.js" defer></script>
+  <script src="vendor/ScrollTrigger.min.js" defer></script>
+  <script type="module" src="script.js"></script>
 </head>
 <body>
-<a class="skip" href="#journey">Skip to the journey</a>
-<header class="header">
-<a class="wordmark" href="./" aria-label="This is Denim home">this is <b>denim.</b><span>A CULTURAL EXPEDITION</span></a>
-<nav aria-label="Main navigation"><button data-map>The route <span>↗</span></button><a href="#manifesto">The idea <span>↗</span></a></nav>
-<button class="header-ticket" data-start>All aboard <span>↗</span></button>
-</header>
-<main>
-<section class="hero" id="journey" aria-labelledby="hero-title">
-<div class="hero-copy"><p class="eyebrow"><span class="live-dot"></span> THE CULTURAL EXPRESS · VOL. 01</p>
-<h1 id="hero-title">Every thread.<br>A different<br><em>India.</em></h1>
-<p class="intro">A window seat to a country of stories.<br>One journey. Many cultures. All denim.</p>
-<button class="primary" data-start>Start your journey <span>↗</span></button>
-<p class="boarding-note">NO LUGGAGE. JUST CURIOSITY.</p>
-<div class="ticket-stamp" aria-hidden="true"><span>INDIA, IN EVERY THREAD</span><svg viewBox="0 0 60 45"><path d="M17 4h26v27H17zM21 9h18v10H21zM21 36l-5 7m23-7 5 7M12 43h36M21 27h3m12 0h3"/></svg><small>ONE OF ONE</small></div>
-</div>
-<div class="carriage">
-<div class="carriage-top"><span>भारतीय संस्कृति की एक यात्रा</span><span>COACH 01 <i>·</i> WINDOW SEAT</span></div>
-<div class="window-shell"><div class="rivet r1"></div><div class="rivet r2"></div><div class="rivet r3"></div><div class="rivet r4"></div>
-<div class="train-window" id="train-window"><div class="landscape" id="landscape"></div><div class="window-shade"></div><div class="window-glare"></div>
-<div class="window-caption"><span class="window-kicker">YOUR FIRST STOP</span><h2 id="window-title">Rajasthan</h2><p id="window-subtitle">Where colour has a language of its own.</p></div>
-<button class="window-explore" data-start aria-label="Explore Rajasthan story">↗</button>
-<div class="shutter" aria-hidden="true"><span>THE CULTURAL EXPRESS</span></div>
-</div></div>
-<div class="window-sill"><span class="window-latch"></span><span class="tiny-label">LIFT THE WINDOW. FIND A WORLD.</span></div>
-<div class="carriage-bottom"><span class="station-sign"><span id="station-hindi">राजस्थान</span><b id="station-english">RAJASTHAN</b></span><div class="window-controls"><button id="prev" aria-label="Previous destination">←</button><span id="station-count">01 / 03</span><button id="next" aria-label="Next destination">→</button></div></div>
-</div>
-<div class="journey-ticket"><div class="ticket-label"><span class="train-icon">↠</span><div><b>THE CULTURAL EXPRESS</b><span>A passage through India, in denim.</span></div></div><div class="ticket-detail"><small>DEPARTURE</small><b>Your curiosity</b></div><div class="ticket-detail"><small>DESTINATION</small><b>Something unexpected</b></div><div class="ticket-detail ticket-seat"><small>SEAT</small><b>By the window</b></div><button class="ticket-route" data-map>Choose your stop <span>↗</span></button><div class="barcode" aria-hidden="true"></div></div>
-</section>
-<section class="manifesto" id="manifesto"><p class="eyebrow">01 / THE IDEA</p><div><h2>Culture travels.<br><em>We gave it a new thread.</em></h2><p>Beyond every window is a different India. Its colours, its people, its ways of making. This journey brings those stories into view — then invites you to look again at what denim can be.</p></div><span class="manifesto-note">THE PLACE FIRST.<br>THE PIECE FOLLOWS.</span></section>
-<section class="stops" aria-labelledby="stops-title"><div class="section-heading"><div><p class="eyebrow">02 / PLACES, NOT JUST PINS</p><h2 id="stops-title">Find your kind of <em>somewhere.</em></h2></div><button class="text-link" data-map>View the route ↗</button></div>
-<div class="stop-grid" id="stop-grid"></div>
-</section>
-<section class="closing"><p class="eyebrow">A FAMILIAR FABRIC. AN UNFAMILIAR POSSIBILITY.</p><h2>This, too,<br>is <em>denim.</em></h2><button class="primary light" data-start>Take a closer look <span>↗</span></button><span class="closing-line">ONE PLACE. ONE STORY. ONE OF ONE.</span></section>
-</main>
-<footer><a class="wordmark" href="./">this is <b>denim.</b></a><p>Concept preview · 3 sample stops<br>Illustrative garment studies; final campaign imagery pending.</p><button id="motion" aria-pressed="false">Motion on <span>◉</span></button></footer>
-<dialog id="map-dialog" class="map-dialog" aria-labelledby="map-title"><button class="close" data-close aria-label="Close route map">✕</button><p class="eyebrow">YOUR JOURNEY, YOUR WAY</p><h2 id="map-title">Where shall<br>we <em>begin?</em></h2><p class="map-intro">Pick a place. Take the window seat.<br>Let the story unfold.</p><div class="map-layout"><div class="route-map"><svg viewBox="0 0 400 440" role="img" aria-label="Schematic journey through Himachal Pradesh, Rajasthan and Kerala"><path class="india-shape" d="M130 25l30 9 13 23 36 9 12 35 24 17 20 2 20 32 29-6 18-20 29 10-4 28-39 25-42 5-24 28-24 18-19 40-17 38-22 40-16 47-17-14-11-44-18-36-8-35-16-23-32-13-19-29 12-21 27-4 10-32 25-10 7-27-15-25z"/><path class="rail-path" d="M176 94Q135 112 128 164T182 359"/><g class="map-pin" data-map-station="himachal" tabindex="0" role="button" aria-label="Begin in Himachal Pradesh"><circle cx="176" cy="94" r="8"/><text x="194" y="90">HIMACHAL PRADESH</text></g><g class="map-pin" data-map-station="rajasthan" tabindex="0" role="button" aria-label="Begin in Rajasthan"><circle cx="128" cy="164" r="8"/><text x="146" y="164">RAJASTHAN</text></g><g class="map-pin" data-map-station="kerala" tabindex="0" role="button" aria-label="Begin in Kerala"><circle cx="182" cy="359" r="8"/><text x="200" y="364">KERALA</text></g></svg><small>ILLUSTRATIVE ROUTE · NOT TO SCALE</small></div><div id="map-stations"></div></div><p class="map-footnote">Three windows into the concept. The full journey will grow with the collection.</p></dialog>
-<dialog id="story-dialog" class="story-dialog" aria-labelledby="story-title"><div class="story-top"><a class="wordmark" href="./">this is <b>denim.</b></a><span id="story-index"></span><button class="close" data-close aria-label="Return to the carriage">✕</button></div><div class="story-layout"><div class="story-curtain" aria-hidden="true"><span>THE CULTURAL EXPRESS</span></div><div class="piece-visual"><div id="story-scenery"></div><div class="piece-halo"></div><div id="garment"></div><div class="hotspots" id="hotspots"></div><span class="piece-caption">ILLUSTRATIVE GARMENT STUDY · NOT THE FINAL PIECE</span></div><div class="story-copy"><p class="eyebrow" id="story-location"></p><h2 id="story-title"></h2><p class="story-lede" id="story-lede"></p><div class="story-tabs" role="tablist" aria-label="Explore this stop"><button role="tab" aria-selected="true" id="tab-place" aria-controls="story-panel" data-tab="place">The place</button><button role="tab" aria-selected="false" id="tab-piece" aria-controls="story-panel" data-tab="piece" tabindex="-1">The piece</button><button role="tab" aria-selected="false" id="tab-detail" aria-controls="story-panel" data-tab="detail" tabindex="-1">The details</button></div><div id="story-panel" role="tabpanel" tabindex="0" aria-labelledby="tab-place"></div><p class="piece-edition"><span>EDITION</span><b>ONE OF ONE</b></p><button class="primary" id="continue">Continue the journey <span>→</span></button><button class="text-link" id="story-map">Choose another destination ↗</button></div></div></dialog>
-<div class="sr-only" id="announcer" aria-live="polite"></div>
-</body></html>
+  <svg class="svg-library" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+    <symbol id="arrow" viewBox="0 0 24 24"><path d="M4 12h15m-6-6 6 6-6 6"/></symbol>
+    <symbol id="train" viewBox="0 0 32 32"><path d="M9 25 6 30m17-5 3 5M9 28h14M7 21V8c0-4 18-4 18 0v13c0 6-18 6-18 0ZM7 14h18M16 6v8M11 21h.01M21 21h.01M12 2h8"/></symbol>
+    <symbol id="sound" viewBox="0 0 24 24"><path d="m11 5-5 4H3v6h3l5 4V5Zm4 3c3 2 3 6 0 8m3-11c5 4 5 10 0 14"/></symbol>
+    <symbol id="bag" viewBox="0 0 24 24"><path d="M5 7h14l1 14H4L5 7Zm3 0V5a4 4 0 0 1 8 0v2"/></symbol>
+    <symbol id="close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+    <symbol id="star" viewBox="0 0 24 24"><path d="M12 2v20M2 12h20M5 5l14 14M5 19 19 5"/></symbol>
+  </svg>
+  <header class="site-header">
+    <a class="wordmark" href="#" aria-label="Sutra home">sutra<span>®</span></a>
+    <span class="brand-note">ROOTED IN INDIA.<br>MADE TO GO PLACES.</span>
+    <nav aria-label="Main navigation">
+      <button class="nav-link" data-open="route">The route <span>↗</span></button>
+      <a class="nav-link story-link" href="#our-story">Our story <span>↗</span></a>
+      <button class="bag-button" data-open="bag" aria-label="Open saved pieces"><svg><use href="#bag"/></svg><span id="bag-count">0</span></button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="journey" id="journey" aria-label="The Sutra Express interactive train journey">
+      <div class="carriage" id="carriage">
+        <div class="hero-copy">
+          <div class="eyebrow"><span class="tiny-star">✳</span> THE SUTRA EXPRESS <span class="eyebrow-rule"></span> A JOURNEY THROUGH INDIA</div>
+          <h1>Wear the <em>journey.</em></h1>
+          <p>Extraordinary places. Everyday pieces. A little India in everything we make.</p>
+        </div>
+
+        <div class="compartment">
+          <div class="wall-label left-label">SUTRA RAILWAYS<br><b>WINDOW SEAT / 01</b></div>
+          <div class="wall-label right-label">मन की खिड़की खोलो<br><b>LET THE WORLD IN.</b></div>
+          <div class="luggage-rack"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+          <div class="window-assembly" id="window-assembly">
+            <span class="frame-screw screw-tl"></span><span class="frame-screw screw-tr"></span><span class="frame-screw screw-bl"></span><span class="frame-screw screw-br"></span>
+            <div class="window-interior" id="window-interior">
+              <div class="fallback-scene scene-jaipur"></div>
+              <div class="fallback-scene scene-ahmedabad"></div>
+              <canvas id="landscape" aria-label="Layered cultural collage outside the train window"></canvas>
+              <div class="paper-sun" aria-hidden="true"></div>
+              <div class="travelling-overlay" id="travelling-overlay"><span class="speed-line"></span><span class="speed-line"></span><span class="speed-line"></span><span class="speed-line"></span></div>
+              <div class="station-stamp" id="station-stamp"><span>26.92° N / 75.82° E</span><strong>जयपुर</strong><small>THE PINK CITY</small></div>
+              <div class="window-glass"></div>
+              <div class="shutter" id="shutter">
+                <div class="shutter-plate"><svg><use href="#train"/></svg><span>SUTRA EXPRESS</span><small>A GOOD JOURNEY CHANGES YOU.</small></div>
+                <div class="shutter-handle"></div>
+              </div>
+              <div class="intro-overlay" id="intro-overlay">
+                <span class="intro-kicker">YOUR WINDOW TO A DIFFERENT INDIA</span>
+                <h2>Some stories<br>are worth the ride.</h2>
+                <button class="primary-button" id="start-journey">Start your journey <svg><use href="#arrow"/></svg></button>
+                <span class="intro-note">TWO STOPS. COUNTLESS INSPIRATIONS.</span>
+              </div>
+              <div class="arrival-label" id="arrival-label" aria-hidden="true"><span>NOW ARRIVING AT</span><strong>Jaipur Junction</strong></div>
+              <button class="craft-marker marker-one" data-craft="0" aria-label="Explore the first local inspiration"><span>+</span><i>THE DETAILS</i></button>
+              <button class="craft-marker marker-two" data-craft="1" aria-label="Explore the second local inspiration"><span>+</span><i>THE STORIES</i></button>
+            </div>
+            <div class="window-sill"><div class="handle handle-left"></div><span>DO NOT LEAN OUT · खो जाना मना नहीं है</span><div class="handle handle-right"></div></div>
+          </div>
+          <div class="seat seat-left"><div class="seat-back"></div><div class="seat-cushion"></div><div class="seat-arm"></div></div>
+          <div class="seat seat-right"><div class="seat-back"></div><div class="seat-cushion"></div><div class="seat-arm"></div></div>
+          <div class="chai" aria-hidden="true"><span class="steam steam-one"></span><span class="steam steam-two"></span><div class="chai-cup"></div><div class="chai-saucer"></div></div>
+          <div class="journey-ticket" id="journey-ticket"><div class="ticket-top"><svg><use href="#train"/></svg><span>ONE WINDOW. MANY WORLDS.</span><span class="ticket-hole"></span></div><div class="ticket-route">Jaipur <span>⟶</span> Ahmedabad</div><div class="ticket-bottom"><span>CLASS: CURIOUS</span><span>SEAT: YOURS</span></div></div>
+        </div>
+
+        <div class="journey-controls">
+          <div class="live-status" role="status" aria-live="polite"><span class="status-dot"></span><span id="status-text">YOUR JOURNEY AWAITS</span></div>
+          <div class="route-progress" aria-label="Journey stops">
+            <button class="stop-button active" data-station="0"><span class="stop-number">01</span> Jaipur</button>
+            <span class="track"><span class="track-fill" id="track-fill"></span><svg id="track-train"><use href="#train"/></svg></span>
+            <button class="stop-button" data-station="1"><span class="stop-number">02</span> Ahmedabad</button>
+          </div>
+          <button class="sound-button" id="sound-toggle" aria-label="Turn train ambience on" aria-pressed="false"><svg><use href="#sound"/></svg><span>SOUND OFF</span></button>
+        </div>
+        <div class="scroll-cue" id="scroll-cue"><span>SCROLL TO EXPLORE</span><div>↓</div></div>
+
+        <aside class="product-reveal" id="product-reveal" aria-label="The destination collection" inert>
+          <div class="product-visual"><span class="collection-tag" id="collection-tag">THE JAIPUR EDIT</span><img id="product-image" src="assets/jaipur-shirt.svg" alt="Terracotta block print camp collar shirt, an illustrative clothing concept"><span class="visual-caption">INSPIRED BY THE PLACES WE GO.</span></div>
+          <div class="product-info"><span class="eyebrow" id="product-eyebrow">01 / RAJASTHAN</span><h2 id="product-title">The Pink City<br>Shirt.</h2><p id="product-description">Sun-washed terracotta. A rhythm of hand-block inspired florals. Jaipur, in a shirt.</p><div class="product-meta"><span id="product-price">₹2,490</span><span class="concept-label">CONCEPT PIECE</span></div><button class="text-button" id="view-piece">Discover the piece <svg><use href="#arrow"/></svg></button></div>
+        </aside>
+        <div class="station-caption" id="station-caption"><span id="station-index">01 / RAJASTHAN</span><h2 id="station-name">A little <em>Jaipur.</em><br>A lot to fall for.</h2><p id="station-description">Pink facades, desert melodies, and colour that stays with you. Every detail is a thread in our next story.</p><span class="station-continue" id="station-continue">KEEP SCROLLING. THE JOURNEY CONTINUES. ↓</span></div>
+      </div>
+    </section>
+
+    <section class="our-story" id="our-story">
+      <div class="story-top"><span class="eyebrow">MORE THAN A DESTINATION</span><svg><use href="#star"/></svg><span class="eyebrow">A DIFFERENT WAY TO GET DRESSED</span></div>
+      <h2>We don't just make clothes.<br>We bring a little <em>India</em> along.</h2>
+      <p>The places we pass. The colours we remember. The details we stop for.<br>Sutra is a clothing concept that turns a journey across India into pieces<br class="desktop-break"> for wherever life takes you next.</p>
+      <button class="primary-button dark-button" data-open="collection">Explore the two edits <svg><use href="#arrow"/></svg></button>
+      <div class="story-bottom"><span>COLLECT STORIES. WEAR THEM WELL.</span><span>जयपुर <i>⟶</i> અમદાવાદ</span></div>
+    </section>
+  </main>
+  <footer><a class="wordmark" href="#">sutra<span>®</span></a><span>AN INDEPENDENT CLOTHING CONCEPT. MADE OF INDIA.</span><button class="text-button" id="back-top">Back to the window ↑</button></footer>
+
+  <dialog id="route-dialog" class="route-dialog"><button class="dialog-close" aria-label="Close route"><svg><use href="#close"/></svg></button><span class="eyebrow">YOUR TICKET TO THE EXTRAORDINARY</span><h2>Take the <em>scenic route.</em></h2><p>Two places. Two perspectives. One thread that connects them.</p><div class="route-options"><button data-go="0"><span>01</span><div><h3>Jaipur, Rajasthan</h3><p>Pink City architecture · Block print · Desert rhythms</p></div><span>↗</span></button><button data-go="1"><span>02</span><div><h3>Ahmedabad, Gujarat</h3><p>Carved stepwells · Bandhani · The joy of garba</p></div><span>↗</span></button></div><div class="dialog-foot">SUTRA EXPRESS <span>ALL THE BEST STORIES HAVE A WINDOW SEAT.</span></div></dialog>
+  <dialog id="piece-dialog" class="piece-dialog"><button class="dialog-close" aria-label="Close product"><svg><use href="#close"/></svg></button><div class="piece-dialog-image"><img id="detail-image" src="assets/jaipur-shirt.svg" alt="Clothing concept"></div><div class="piece-dialog-info"><span class="eyebrow" id="detail-edit">THE JAIPUR EDIT</span><h2 id="detail-name">The Pink City Shirt.</h2><p id="detail-description"></p><strong id="detail-price">₹2,490</strong><label for="size-select">YOUR SIZE</label><select id="size-select"><option value="S">S</option><option value="M" selected>M</option><option value="L">L</option><option value="XL">XL</option></select><button class="primary-button dark-button" id="save-piece">Save this piece <svg><use href="#bag"/></svg></button><small>An illustrative collection concept. Saving keeps your selections on this device; checkout is not available.</small></div></dialog>
+  <dialog id="bag-dialog" class="bag-dialog"><button class="dialog-close" aria-label="Close saved pieces"><svg><use href="#close"/></svg></button><span class="eyebrow">SOUVENIRS FROM YOUR JOURNEY</span><h2>Your <em>saved pieces.</em></h2><div id="saved-items"></div><button class="text-button" id="continue-journey">Back to the journey <svg><use href="#arrow"/></svg></button></dialog>
+  <dialog id="craft-dialog" class="craft-dialog"><button class="dialog-close" aria-label="Close inspiration"><svg><use href="#close"/></svg></button><span class="eyebrow" id="craft-kicker">A DETAIL FROM JAIPUR</span><h2 id="craft-title">A city in pink.</h2><p id="craft-description"></p><button class="text-button" id="craft-product">See the inspired piece <svg><use href="#arrow"/></svg></button></dialog>
+  <div class="toast" id="toast" role="status"></div>
+  <noscript><div class="no-script">Enable JavaScript to open the shutter and explore the train journey. Our story and destination artwork are available below.</div></noscript>
+</body>
+</html>
