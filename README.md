@@ -2,7 +2,7 @@
 
 A working clothing-brand concept set inside an Indian train compartment. Built with locally bundled Three.js 0.180.0 and GSAP 3.13.0, plain HTML, CSS, and JavaScript. No installation or build step is required.
 
-The compartment fills the viewport from the first screen. A second Three.js scene renders the padded benches, armrests, luggage racks and cases, ceiling fan, folding shelf, wall panels, floor, and daylight shadows. `compartment.js` builds the room and `compartment.css` controls the full-screen composition. The collage outside the window remains a separate animated Three.js scene.
+The compartment fills the viewport from the first screen. A second Three.js scene uses a perspective camera to render long, facing blue benches, a central aisle, overhead luggage racks and stacked cases, a ceiling fan, blue wall panels, a folding shelf, and daylight shadows. The design follows the supplied blue Indian train-compartment references. Small original 3D details include hanging totes, a newspaper, a water bottle, a striped scarf, a stacked steel tiffin, and shoes under the seats. The main panorama and smaller side windows have horizontal safety bars. `compartment.js` builds the room and `compartment.css` controls the full-screen composition. The collage outside the main window remains a separate animated Three.js scene.
 
 ## Preview
 

@@ -74,3 +74,38 @@ body{background:#dedbc8}
 @media(max-height:760px) and (min-width:761px){.journey .station-caption{top:auto;bottom:11%;padding:10px 14px}.station-caption h2{font-size:30px}}
 @media(max-width:760px){.journey .station-caption{top:auto;bottom:12.5%;left:8%;width:40%;padding:10px 11px;background:#e7e8d4f2;border:1px solid #a9b59888;border-radius:3px;box-shadow:0 3px 10px #293e2820}.station-caption h2{font-size:22px;line-height:1.05;letter-spacing:-.4px;margin:7px 0}.station-caption>span:first-child{font-size:4px}.station-continue{font-size:4px;line-height:1.7;margin-top:8px}.finish-journey{font-size:6px;line-height:1.5;gap:4px;margin-top:7px}.finish-journey svg{width:11px;height:11px}}
 @media(max-width:760px) and (max-height:700px){.journey .station-caption{bottom:12%;padding:8px 10px}.station-caption h2{font-size:20px}}
+/* Blue sleeper-coach interior, based on the supplied compartment references. */
+body{background:#6d9bab}
+#carriage{background:linear-gradient(#9cbdc5,#5591a5 65%,#636779)}
+#carriage:before{background:radial-gradient(ellipse at 50% 40%,transparent 40%,#123c5529);box-shadow:inset 0 0 85px #14374920}
+.site-header{color:#173d51;background:linear-gradient(#a8c9d1bb,transparent)}
+.brand-note,.cabin-class{color:#2c5364}.cabin-class i{color:#537988}
+.ceiling-cove{border-color:#2e607a55;background:linear-gradient(#b4cdd344,#9dbfc522)}
+.journey .hero-copy h1,.journey.started .hero-copy h1{color:#f3efdf;text-shadow:0 1px 5px #17445b22}
+.journey .hero-copy h1 em{color:#edbd90}
+.journey .hero-copy .eyebrow{color:#e7efeb}.tiny-star{color:#ebbd91}
+.journey .hero-copy>p{color:#dfedeb}
+#window-assembly{left:20%;width:60%;top:27%;height:46%;border-radius:31px;background:linear-gradient(130deg,#b3c6c9,#7898a5 3%,#cbd9d5 5%,#668798 7%,#315a70 45%,#7e9eaa 93%,#bdced1 96%,#4c7185);box-shadow:0 0 0 2px #4b728578,0 3px 3px #cce2e57a,0 12px 23px #183a4e40,inset 0 2px 2px #e3f0f1a6,inset 0 -5px 8px #1c3d5075}
+#window-interior{border-radius:19px 19px 14px 14px;border-color:#24475b;box-shadow:0 0 0 2px #b1c2c7}
+.shutter{background:repeating-linear-gradient(to bottom,#9aabad 0,#aab8b9 7px,#6c8792 8px,#6b8290 10px,#bdc9c7 11px,#8fa6ae 13px);border-bottom-color:#486a7c}
+.shutter-handle{border-color:#476475;background:#94aab0}.shutter-plate{color:#eff0db;border-color:#dae2d1aa}
+.window-bars{position:absolute;inset:0;z-index:4;pointer-events:none;display:flex;flex-direction:column;justify-content:space-evenly}
+.window-bars>i{height:4px;width:100%;background:linear-gradient(#c0ced0aa,#405c6ab3 45%,#244355cc 70%,#8da6ae55);box-shadow:0 2px 2px #183c5022;opacity:.68}
+.window-sill>span{color:#d2e0debb}.handle{background:linear-gradient(#b9cacd,#6e8794);border-color:#5b7b89;box-shadow:0 1px 3px #15354d,inset 0 2px 1px #d4e2dc99}
+.berth-plaque{background:#e3ece7;border-color:#63899b;color:#1f4c65;box-shadow:0 2px 3px #17354d50,inset 0 0 0 1px #fff9}.berth-left{left:12%;top:31%}.berth-right{right:12%;top:31%}
+.wall-label{color:#b7d3d9}.left-label{left:12%}.right-label{right:11.5%}
+.side-window{position:absolute;z-index:2;top:34%;width:16%;height:23%;border:8px solid #7196a7;border-radius:24px;background:linear-gradient(#def7eb33,#2a516055),url('assets/rajasthan-collage.jpg') center/cover;box-shadow:0 0 0 3px #264b61,inset 0 0 0 3px #bfdbdb;display:flex;flex-direction:column;justify-content:space-evenly;overflow:hidden}
+.side-window-left{left:-6%;transform:skewY(5deg)}.side-window-right{right:-6%;transform:skewY(-5deg)}
+.side-window i{height:3px;background:linear-gradient(#b5cbd0,#355b70);width:100%}
+body[data-station=ahmedabad] .side-window{background-image:linear-gradient(#def7eb33,#2a516055),url('assets/gujarat-collage.png')}
+.cabin-post{position:absolute;top:23%;width:11px;height:59%;z-index:2;background:linear-gradient(90deg,#87aab6,#bfd4d5 40%,#6c91a3);box-shadow:2px 0 4px #20495c26}.cabin-post-left{left:15.4%}.cabin-post-right{right:15.4%}
+.power-sockets{position:absolute;top:23.5%;left:calc(50% - 27px);width:54px;display:flex;gap:9px;z-index:3;color:#2f6175}.power-sockets span{width:18px;height:23px;border:1px solid #a1c0c9;border-radius:2px;font-size:14px;text-align:center;background:#74a3b3;box-shadow:0 1px 2px #234d6566}.power-sockets small{font-size:4px;letter-spacing:.8px;position:absolute;top:27px;left:17px;color:#cce0de}
+.cabin-table{position:absolute;bottom:11%;left:43%;width:18%;height:12px;z-index:3;border-radius:4px 4px 1px 1px;background:linear-gradient(#b8ced1,#7a9eaf 50%,#416b82);border-bottom:2px solid #234d68;box-shadow:0 9px 11px #1d445c24}.cabin-table:after{content:"";position:absolute;top:12px;left:20%;width:60%;height:22px;border-left:3px solid #7394a2;border-right:3px solid #7394a2;transform:skewX(-12deg)}
+.journey .chai{left:46%;bottom:11.5%}.journey .journey-ticket{right:39%;bottom:11.4%;transform:rotate(6deg) scale(.68)}.journey.started .chai{left:54%;bottom:11.5%}.journey.started .journey-ticket{right:43%;bottom:11.5%}
+.journey .journey-controls,.journey.started .journey-controls{background:#e3ebe7ed;border-color:#88a8b8;color:#284b60;box-shadow:0 3px 15px #1a34482e,inset 0 1px 0 #f8ffff88}
+.journey .station-caption{background:#e7ece2f0;border-color:#b8c8c4;color:#254a5e}.finish-journey{background:transparent}.station-caption h2 em{color:#b66647}.scroll-cue{color:#d9e6df}.scroll-cue>div{color:#edbd90}
+@media(min-width:1600px){#window-assembly{left:21%;width:58%;top:26%;height:47%}}
+@media(max-width:1050px) and (min-width:761px){#window-assembly{left:17%;width:66%}.berth-left{left:8%}.berth-right{right:8%}.cabin-post-left{left:13%}.cabin-post-right{right:13%}}
+@media(max-width:760px){#window-assembly{left:6%;width:88%;top:30%;height:40%;border-radius:25px;padding:11px 11px 22px}#window-interior{border-radius:13px;border-width:4px}.window-bars>i{height:3px;opacity:.52}.side-window{display:none}.cabin-post{top:23%;height:62%;width:6px}.cabin-post-left{left:1.5%}.cabin-post-right{right:1.5%}.berth-left{left:3%;top:24%}.berth-right{right:3%;top:24%}.power-sockets{top:26.1%;transform:scale(.65);transform-origin:top center}.journey .chai{left:17%;bottom:13.8%;transform:scale(.55)}.journey .journey-ticket{right:12%;bottom:14%;transform:rotate(6deg) scale(.63)}.cabin-table{left:17%;width:66%;bottom:13.5%;height:8px}.cabin-table:after{height:18px}.journey.started .cabin-table{opacity:.45}.journey .station-caption{background:#e7ece2f5;border-color:#b8c8c4}.journey .hero-copy>p{color:#dfedeb}}
+@media(max-width:760px) and (max-height:700px){#window-assembly{top:31%;height:39%}.power-sockets{top:27%}.cabin-table{bottom:12.5%}.journey .chai{bottom:13%}}
+@media(min-width:761px){.journey .hero-copy>p{margin-top:5px}.journey.started .hero-copy>p{margin-top:5px}}
