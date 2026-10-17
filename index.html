@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#ebe6d9"><meta name="description" content="A journey through the cultures of India, reimagined in denim. All aboard The Cultural Express.">
+<title>This is Denim — The Cultural Express</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Crect width='80' height='80' rx='14' fill='%2323333b'/%3E%3Ctext x='40' y='56' text-anchor='middle' font-size='49' fill='%23efe8d8'%3Ed%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css"><script src="script.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#journey">Skip to the journey</a>
+<header class="header">
+<a class="wordmark" href="./" aria-label="This is Denim home">this is <b>denim.</b><span>A CULTURAL EXPEDITION</span></a>
+<nav aria-label="Main navigation"><button data-map>The route <span>↗</span></button><a href="#manifesto">The idea <span>↗</span></a></nav>
+<button class="header-ticket" data-start>All aboard <span>↗</span></button>
+</header>
+<main>
+<section class="hero" id="journey" aria-labelledby="hero-title">
+<div class="hero-copy"><p class="eyebrow"><span class="live-dot"></span> THE CULTURAL EXPRESS · VOL. 01</p>
+<h1 id="hero-title">Every thread.<br>A different<br><em>India.</em></h1>
+<p class="intro">A window seat to a country of stories.<br>One journey. Many cultures. All denim.</p>
+<button class="primary" data-start>Start your journey <span>↗</span></button>
+<p class="boarding-note">NO LUGGAGE. JUST CURIOSITY.</p>
+<div class="ticket-stamp" aria-hidden="true"><span>INDIA, IN EVERY THREAD</span><svg viewBox="0 0 60 45"><path d="M17 4h26v27H17zM21 9h18v10H21zM21 36l-5 7m23-7 5 7M12 43h36M21 27h3m12 0h3"/></svg><small>ONE OF ONE</small></div>
+</div>
+<div class="carriage">
+<div class="carriage-top"><span>भारतीय संस्कृति की एक यात्रा</span><span>COACH 01 <i>·</i> WINDOW SEAT</span></div>
+<div class="window-shell"><div class="rivet r1"></div><div class="rivet r2"></div><div class="rivet r3"></div><div class="rivet r4"></div>
+<div class="train-window" id="train-window"><div class="landscape" id="landscape"></div><div class="window-shade"></div><div class="window-glare"></div>
+<div class="window-caption"><span class="window-kicker">YOUR FIRST STOP</span><h2 id="window-title">Rajasthan</h2><p id="window-subtitle">Where colour has a language of its own.</p></div>
+<button class="window-explore" data-start aria-label="Explore Rajasthan story">↗</button>
+<div class="shutter" aria-hidden="true"><span>THE CULTURAL EXPRESS</span></div>
+</div></div>
+<div class="window-sill"><span class="window-latch"></span><span class="tiny-label">LIFT THE WINDOW. FIND A WORLD.</span></div>
+<div class="carriage-bottom"><span class="station-sign"><span id="station-hindi">राजस्थान</span><b id="station-english">RAJASTHAN</b></span><div class="window-controls"><button id="prev" aria-label="Previous destination">←</button><span id="station-count">01 / 03</span><button id="next" aria-label="Next destination">→</button></div></div>
+</div>
+<div class="journey-ticket"><div class="ticket-label"><span class="train-icon">↠</span><div><b>THE CULTURAL EXPRESS</b><span>A passage through India, in denim.</span></div></div><div class="ticket-detail"><small>DEPARTURE</small><b>Your curiosity</b></div><div class="ticket-detail"><small>DESTINATION</small><b>Something unexpected</b></div><div class="ticket-detail ticket-seat"><small>SEAT</small><b>By the window</b></div><button class="ticket-route" data-map>Choose your stop <span>↗</span></button><div class="barcode" aria-hidden="true"></div></div>
+</section>
+<section class="manifesto" id="manifesto"><p class="eyebrow">01 / THE IDEA</p><div><h2>Culture travels.<br><em>We gave it a new thread.</em></h2><p>Beyond every window is a different India. Its colours, its people, its ways of making. This journey brings those stories into view — then invites you to look again at what denim can be.</p></div><span class="manifesto-note">THE PLACE FIRST.<br>THE PIECE FOLLOWS.</span></section>
+<section class="stops" aria-labelledby="stops-title"><div class="section-heading"><div><p class="eyebrow">02 / PLACES, NOT JUST PINS</p><h2 id="stops-title">Find your kind of <em>somewhere.</em></h2></div><button class="text-link" data-map>View the route ↗</button></div>
+<div class="stop-grid" id="stop-grid"></div>
+</section>
+<section class="closing"><p class="eyebrow">A FAMILIAR FABRIC. AN UNFAMILIAR POSSIBILITY.</p><h2>This, too,<br>is <em>denim.</em></h2><button class="primary light" data-start>Take a closer look <span>↗</span></button><span class="closing-line">ONE PLACE. ONE STORY. ONE OF ONE.</span></section>
+</main>
+<footer><a class="wordmark" href="./">this is <b>denim.</b></a><p>Concept preview · 3 sample stops<br>Illustrative garment studies; final campaign imagery pending.</p><button id="motion" aria-pressed="false">Motion on <span>◉</span></button></footer>
+<dialog id="map-dialog" class="map-dialog" aria-labelledby="map-title"><button class="close" data-close aria-label="Close route map">✕</button><p class="eyebrow">YOUR JOURNEY, YOUR WAY</p><h2 id="map-title">Where shall<br>we <em>begin?</em></h2><p class="map-intro">Pick a place. Take the window seat.<br>Let the story unfold.</p><div class="map-layout"><div class="route-map"><svg viewBox="0 0 400 440" role="img" aria-label="Schematic journey through Himachal Pradesh, Rajasthan and Kerala"><path class="india-shape" d="M130 25l30 9 13 23 36 9 12 35 24 17 20 2 20 32 29-6 18-20 29 10-4 28-39 25-42 5-24 28-24 18-19 40-17 38-22 40-16 47-17-14-11-44-18-36-8-35-16-23-32-13-19-29 12-21 27-4 10-32 25-10 7-27-15-25z"/><path class="rail-path" d="M176 94Q135 112 128 164T182 359"/><g class="map-pin" data-map-station="himachal" tabindex="0" role="button" aria-label="Begin in Himachal Pradesh"><circle cx="176" cy="94" r="8"/><text x="194" y="90">HIMACHAL PRADESH</text></g><g class="map-pin" data-map-station="rajasthan" tabindex="0" role="button" aria-label="Begin in Rajasthan"><circle cx="128" cy="164" r="8"/><text x="146" y="164">RAJASTHAN</text></g><g class="map-pin" data-map-station="kerala" tabindex="0" role="button" aria-label="Begin in Kerala"><circle cx="182" cy="359" r="8"/><text x="200" y="364">KERALA</text></g></svg><small>ILLUSTRATIVE ROUTE · NOT TO SCALE</small></div><div id="map-stations"></div></div><p class="map-footnote">Three windows into the concept. The full journey will grow with the collection.</p></dialog>
+<dialog id="story-dialog" class="story-dialog" aria-labelledby="story-title"><div class="story-top"><a class="wordmark" href="./">this is <b>denim.</b></a><span id="story-index"></span><button class="close" data-close aria-label="Return to the carriage">✕</button></div><div class="story-layout"><div class="story-curtain" aria-hidden="true"><span>THE CULTURAL EXPRESS</span></div><div class="piece-visual"><div id="story-scenery"></div><div class="piece-halo"></div><div id="garment"></div><div class="hotspots" id="hotspots"></div><span class="piece-caption">ILLUSTRATIVE GARMENT STUDY · NOT THE FINAL PIECE</span></div><div class="story-copy"><p class="eyebrow" id="story-location"></p><h2 id="story-title"></h2><p class="story-lede" id="story-lede"></p><div class="story-tabs" role="tablist" aria-label="Explore this stop"><button role="tab" aria-selected="true" id="tab-place" aria-controls="story-panel" data-tab="place">The place</button><button role="tab" aria-selected="false" id="tab-piece" aria-controls="story-panel" data-tab="piece" tabindex="-1">The piece</button><button role="tab" aria-selected="false" id="tab-detail" aria-controls="story-panel" data-tab="detail" tabindex="-1">The details</button></div><div id="story-panel" role="tabpanel" tabindex="0" aria-labelledby="tab-place"></div><p class="piece-edition"><span>EDITION</span><b>ONE OF ONE</b></p><button class="primary" id="continue">Continue the journey <span>→</span></button><button class="text-link" id="story-map">Choose another destination ↗</button></div></div></dialog>
+<div class="sr-only" id="announcer" aria-live="polite"></div>
+</body></html>
