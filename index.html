@@ -11,6 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Libre+Caslon+Display&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="compartment.css">
   <script src="vendor/gsap.min.js" defer></script>
   <script src="vendor/ScrollTrigger.min.js" defer></script>
   <script type="module" src="script.js"></script>
@@ -29,7 +30,8 @@
     <span class="brand-note">ROOTED IN INDIA.<br>MADE TO GO PLACES.</span>
     <nav aria-label="Main navigation">
       <button class="nav-link" data-open="route">The route <span>↗</span></button>
-      <a class="nav-link story-link" href="#our-story">Our story <span>↗</span></a>
+      <span class="cabin-class">COACH S1 <i>·</i> WINDOW SEAT 01</span>
+      <a class="nav-link story-link" href="#our-story" hidden>Our story <span>↗</span></a>
       <button class="bag-button" data-open="bag" aria-label="Open saved pieces"><svg><use href="#bag"/></svg><span id="bag-count">0</span></button>
     </nav>
   </header>
@@ -37,6 +39,11 @@
   <main>
     <section class="journey" id="journey" aria-label="The Sutra Express interactive train journey">
       <div class="carriage" id="carriage">
+        <canvas id="compartment-scene" aria-hidden="true"></canvas>
+        <div class="ceiling-cove" aria-hidden="true"></div>
+        <div class="cabin-sunlight" aria-hidden="true"></div>
+        <div class="berth-plaque berth-left" aria-hidden="true"><span>01</span><small>LOWER BERTH</small></div>
+        <div class="berth-plaque berth-right" aria-hidden="true"><span>02</span><small>LOWER BERTH</small></div>
         <div class="hero-copy">
           <div class="eyebrow"><span class="tiny-star">✳</span> THE SUTRA EXPRESS <span class="eyebrow-rule"></span> A JOURNEY THROUGH INDIA</div>
           <h1>Wear the <em>journey.</em></h1>
@@ -94,11 +101,11 @@
           <div class="product-visual"><span class="collection-tag" id="collection-tag">THE JAIPUR EDIT</span><img id="product-image" src="assets/jaipur-shirt.svg" alt="Terracotta block print camp collar shirt, an illustrative clothing concept"><span class="visual-caption">INSPIRED BY THE PLACES WE GO.</span></div>
           <div class="product-info"><span class="eyebrow" id="product-eyebrow">01 / RAJASTHAN</span><h2 id="product-title">The Pink City<br>Shirt.</h2><p id="product-description">Sun-washed terracotta. A rhythm of hand-block inspired florals. Jaipur, in a shirt.</p><div class="product-meta"><span id="product-price">₹2,490</span><span class="concept-label">CONCEPT PIECE</span></div><button class="text-button" id="view-piece">Discover the piece <svg><use href="#arrow"/></svg></button></div>
         </aside>
-        <div class="station-caption" id="station-caption"><span id="station-index">01 / RAJASTHAN</span><h2 id="station-name">A little <em>Jaipur.</em><br>A lot to fall for.</h2><p id="station-description">Pink facades, desert melodies, and colour that stays with you. Every detail is a thread in our next story.</p><span class="station-continue" id="station-continue">KEEP SCROLLING. THE JOURNEY CONTINUES. ↓</span></div>
+        <div class="station-caption" id="station-caption" inert><span id="station-index">01 / RAJASTHAN</span><h2 id="station-name">A little <em>Jaipur.</em><br>A lot to fall for.</h2><p id="station-description">Pink facades, desert melodies, and colour that stays with you. Every detail is a thread in our next story.</p><span class="station-continue" id="station-continue">KEEP SCROLLING. THE JOURNEY CONTINUES. ↓</span><button class="text-button finish-journey" id="finish-journey" hidden>Step off. Discover our story. <svg><use href="#arrow"/></svg></button></div>
       </div>
     </section>
 
-    <section class="our-story" id="our-story">
+    <section class="our-story" id="our-story" hidden>
       <div class="story-top"><span class="eyebrow">MORE THAN A DESTINATION</span><svg><use href="#star"/></svg><span class="eyebrow">A DIFFERENT WAY TO GET DRESSED</span></div>
       <h2>We don't just make clothes.<br>We bring a little <em>India</em> along.</h2>
       <p>The places we pass. The colours we remember. The details we stop for.<br>Sutra is a clothing concept that turns a journey across India into pieces<br class="desktop-break"> for wherever life takes you next.</p>
@@ -106,7 +113,7 @@
       <div class="story-bottom"><span>COLLECT STORIES. WEAR THEM WELL.</span><span>जयपुर <i>⟶</i> અમદાવાદ</span></div>
     </section>
   </main>
-  <footer><a class="wordmark" href="#">sutra<span>®</span></a><span>AN INDEPENDENT CLOTHING CONCEPT. MADE OF INDIA.</span><button class="text-button" id="back-top">Back to the window ↑</button></footer>
+  <footer hidden><a class="wordmark" href="#">sutra<span>®</span></a><span>AN INDEPENDENT CLOTHING CONCEPT. MADE OF INDIA.</span><button class="text-button" id="back-top">Back to the window ↑</button></footer>
 
   <dialog id="route-dialog" class="route-dialog"><button class="dialog-close" aria-label="Close route"><svg><use href="#close"/></svg></button><span class="eyebrow">YOUR TICKET TO THE EXTRAORDINARY</span><h2>Take the <em>scenic route.</em></h2><p>Two places. Two perspectives. One thread that connects them.</p><div class="route-options"><button data-go="0"><span>01</span><div><h3>Jaipur, Rajasthan</h3><p>Pink City architecture · Block print · Desert rhythms</p></div><span>↗</span></button><button data-go="1"><span>02</span><div><h3>Ahmedabad, Gujarat</h3><p>Carved stepwells · Bandhani · The joy of garba</p></div><span>↗</span></button></div><div class="dialog-foot">SUTRA EXPRESS <span>ALL THE BEST STORIES HAVE A WINDOW SEAT.</span></div></dialog>
   <dialog id="piece-dialog" class="piece-dialog"><button class="dialog-close" aria-label="Close product"><svg><use href="#close"/></svg></button><div class="piece-dialog-image"><img id="detail-image" src="assets/jaipur-shirt.svg" alt="Clothing concept"></div><div class="piece-dialog-info"><span class="eyebrow" id="detail-edit">THE JAIPUR EDIT</span><h2 id="detail-name">The Pink City Shirt.</h2><p id="detail-description"></p><strong id="detail-price">₹2,490</strong><label for="size-select">YOUR SIZE</label><select id="size-select"><option value="S">S</option><option value="M" selected>M</option><option value="L">L</option><option value="XL">XL</option></select><button class="primary-button dark-button" id="save-piece">Save this piece <svg><use href="#bag"/></svg></button><small>An illustrative collection concept. Saving keeps your selections on this device; checkout is not available.</small></div></dialog>

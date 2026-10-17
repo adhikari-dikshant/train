@@ -17,6 +17,19 @@ let context;
 let soundEnabled = false;
 let soundTimer;
 let isHidden = document.hidden;
+let storyRevealed = false;
+
+function revealStory(scrollToStory = false) {
+  if (!storyRevealed) {
+    storyRevealed = true;
+    $('#our-story').hidden = false;
+    $('footer').hidden = false;
+    $('.story-link').hidden = false;
+    requestAnimationFrame(() => window.ScrollTrigger?.refresh());
+  }
+  if (scrollToStory) $('#our-story').scrollIntoView({ behavior: reducedMotion ? 'instant' : 'smooth', block: 'start' });
+}
+$('#finish-journey').addEventListener('click', () => revealStory(true));
 
 const stations = [
   {
@@ -117,6 +130,10 @@ function onProgress(p) {
   const between = p > .34 && p < .65;
   const nextStation = p < .5 ? 0 : 1;
   if (station !== nextStation) updateStation(nextStation);
+  const atFinalStop = p >= .72;
+  $('#finish-journey').hidden = !atFinalStop;
+  $('#station-continue').hidden = atFinalStop;
+  if (p >= .96) revealStory();
   setReveal(!between);
   const velocity = between ? Math.sin(((p - .34) / .31) * Math.PI) : 0;
   travel.speed = between ? travel.speed + (velocity - travel.speed) * .28 : 0;
@@ -454,3 +471,15 @@ async function initScene() {
   }
 }
 initScene();
+
+// The compartment is a separate lit 3D room, so the scenery can keep its own
+// art direction while benches, luggage, metalwork and the fan have real depth.
+import('./compartment.js').then(({ createCompartmentScene }) => {
+  createCompartmentScene({
+    canvas: $('#compartment-scene'),
+    container: $('#carriage'),
+    reducedMotion,
+    getMovement: () => travel.speed,
+    isPaused: () => isHidden || scrollY > journey.offsetHeight
+  });
+}).catch(error => console.info('Using the illustrated compartment fallback.', error.message));

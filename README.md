@@ -2,6 +2,8 @@
 
 A working clothing-brand concept set inside an Indian train compartment. Built with locally bundled Three.js 0.180.0 and GSAP 3.13.0, plain HTML, CSS, and JavaScript. No installation or build step is required.
 
+The compartment fills the viewport from the first screen. A second Three.js scene renders the padded benches, armrests, luggage racks and cases, ceiling fan, folding shelf, wall panels, floor, and daylight shadows. `compartment.js` builds the room and `compartment.css` controls the full-screen composition. The collage outside the window remains a separate animated Three.js scene.
+
 ## Preview
 
 Run `python3 -m http.server 4173 --bind 127.0.0.1` from this directory and open http://127.0.0.1:4173. Use a server instead of opening the HTML as a file, because the Three.js scene uses JavaScript modules and local textures.
@@ -14,6 +16,7 @@ Run `python3 -m http.server 4173 --bind 127.0.0.1` from this directory and open 
 - The two plus markers in the window explain local visual inspirations.
 - Sound is off by default. The sound button enables a quiet, locally synthesized railway rhythm. It pauses when the browser tab is hidden.
 - Phone layouts, keyboard controls, native accessible dialogs, reduced motion, and an image-based fallback for unavailable WebGL are included.
+- The story section and footer are hidden initially. They become available after the final stop, through the “Step off” button or by continuing to the end of the journey. Scrolling before starting no longer reveals the story directly below the train.
 
 ## Replace with your brand
 
