@@ -34,26 +34,26 @@ $('#finish-journey').addEventListener('click', () => revealStory(true));
 const stations = [
   {
     name: 'Jaipur', state: 'RAJASTHAN', local: 'जयपुर', nickname: 'THE PINK CITY', coordinates: '26.92° N / 75.82° E',
-    heading: 'A little <em>Jaipur.</em><br>A lot to fall for.',
-    description: 'Pink facades, desert melodies, and colour that stays with you. Every detail is a thread in our next story.',
+    heading: '<em>Jaipur.</em><br>Take your time.',
+    description: 'Pink plaster, faded red, tiny floral repeats. That’s the starting point for this shirt.',
     title: 'The Pink City Shirt.', shortTitle: 'The Pink City<br>Shirt.', price: '₹2,490', image: 'assets/jaipur-shirt.svg',
-    productDescription: 'Sun-washed terracotta. A rhythm of hand-block inspired florals. Jaipur, in a shirt.',
-    detail: 'A relaxed camp-collar shirt imagined in warm terracotta, with an all-over floral print inspired by the visual rhythms of Rajasthan. An everyday silhouette with a little wanderlust. This is an original garment illustration, ready to be replaced by your collection photography.',
+    productDescription: 'Terracotta, small florals, an open collar. A shirt for warm afternoons.',
+    detail: 'A relaxed camp-collar shirt with a repeating floral print in terracotta and cream. A design study from the Jaipur stop; final fabric and production details are still to come.',
     crafts: [
-      ['A city in pink.', 'The warm facades of Jaipur become our colour palette: soft rose, terracotta, and the pale cream of sunlit stone. Look closely at the window; the architecture is the starting point for the Pink City edit.'],
-      ['A rhythm worth repeating.', 'The repeating floral motif on our concept shirt takes its cue from the hand-block printing traditions associated with Rajasthan. The collection is an imagined design study; these pieces are not represented as artisan-made products.']
+      ['Start with the wall colour.', 'The pink and terracotta buildings in the collage gave this shirt its palette. The cream in the print leaves a little space between the florals.'],
+      ['The little floral repeats.', 'Rajasthan’s block-printing traditions are the reference for this motif. This is a concept illustration; it isn’t a claim that the shirt has been hand-block printed.']
     ]
   },
   {
     name: 'Ahmedabad', state: 'GUJARAT', local: 'અમદાવાદ', nickname: 'COLOUR IN MOTION', coordinates: '23.02° N / 72.57° E',
-    heading: 'Hello, <em>Gujarat.</em><br>Find your rhythm.',
-    description: 'Kites in the sky. Stories carved in stone. A thousand little mirrors catching the light. Welcome to Gujarat.',
+    heading: 'Next stop,<br><em>Ahmedabad.</em>',
+    description: 'Carved stone, dotted cloth, deep blue. The second stop becomes an easy layer.',
     title: 'The Indigo Trail Jacket.', shortTitle: 'The Indigo Trail<br>Jacket.', price: '₹3,890', image: 'assets/ahmedabad-jacket.svg',
-    productDescription: 'Deep indigo. Bandhani-inspired dots. A little mirrorwork magic, made for the everyday.',
-    detail: 'An easy, unisex overshirt imagined in deep indigo, with dotted motifs inspired by bandhani and a contrasting embroidered-style pocket. Inspired by Gujarat’s colour and movement, designed for your own adventures. This is an illustrative garment concept, rather than an available retail product.',
+    productDescription: 'An indigo layer with dotted motifs and one pocket that does things differently.',
+    detail: 'A loose indigo overshirt with bandhani-inspired dots and a contrasting pocket. An imagined piece from the Ahmedabad stop, shown as a design study rather than a finished product.',
     crafts: [
-      ['Stories carved in stone.', 'The geometry of Gujarat’s stepwells inspires the lines of this edit. The artwork brings together Ahmedabad’s old-city architecture, the depth of Adalaj stepwell, and the movement of a garba celebration.'],
-      ['A thousand little possibilities.', 'Dotted bandhani-inspired motifs, small mirror-like details, and flying kites are the visual threads of our Gujarat concept. The indigo jacket translates that feeling into an easy everyday layer.']
+      ['Look at those steps.', 'The stepwell’s repeating lines sit beside the tiny dots in the cloth. Both found their way into the design notes for this jacket.'],
+      ['Keep one detail a little different.', 'The indigo is quiet. The pocket isn’t. Bandhani-inspired dots and a small patterned panel are the two details carried into this concept.']
     ]
   }
 ];
@@ -92,10 +92,10 @@ function updateStation(index) {
   station = index;
   document.body.dataset.station = stations[index].name.toLowerCase();
   const s = stations[index];
-  $('#station-index').textContent = `0${index + 1} / ${s.state}`;
+  $('#station-index').textContent = `DESIGN NOTE 0${index + 1} / ${s.state}`;
   $('#station-name').innerHTML = s.heading;
   $('#station-description').textContent = s.description;
-  $('#station-continue').textContent = index === 0 ? 'KEEP SCROLLING. THE JOURNEY CONTINUES. ↓' : 'EVERY JOURNEY LEAVES A THREAD. KEEP SCROLLING. ↓';
+  $('#station-continue').textContent = index === 0 ? 'Ahmedabad’s next. Scroll when you’re ready. ↓' : 'That’s our two stops. Stay a little, if you like.';
   $('#collection-tag').textContent = `THE ${s.name.toUpperCase()} EDIT`;
   $('#product-eyebrow').textContent = `0${index + 1} / ${s.state}`;
   $('#product-title').innerHTML = s.shortTitle;
@@ -103,7 +103,7 @@ function updateStation(index) {
   $('#product-price').textContent = s.price;
   $('#product-image').src = s.image;
   $('#product-image').alt = `${s.title} — illustrative clothing concept`;
-  $('#station-stamp').innerHTML = `<span>${s.coordinates}</span><strong>${s.local}</strong><small>${s.nickname}</small>`;
+  $('#station-stamp').innerHTML = `<span>STOP 0${index + 1}</span><strong>${s.local}</strong><small>${s.name.toUpperCase()}</small>`;
   $$('.stop-button').forEach((button, i) => {
     button.classList.toggle('active', index === i);
     button.setAttribute('aria-current', index === i ? 'step' : 'false');
@@ -258,7 +258,7 @@ function renderBag() {
   if (!saved.length) {
     const p = document.createElement('p');
     p.className = 'empty-bag';
-    p.textContent = 'Your bag is waiting for a story. Discover a piece at either station and save it here.';
+    p.textContent = 'Nothing saved yet. Take a look at either stop and keep a piece here for later.';
     container.append(p);
     return;
   }
@@ -277,7 +277,7 @@ $('#save-piece').addEventListener('click', () => {
   if (!exists) saved.push(item);
   persistSaved();
   $('#piece-dialog').close();
-  toast(exists ? 'This piece is already saved in your bag.' : 'A little piece of the journey, saved.');
+  toast(exists ? 'This piece is already saved in your bag.' : 'Saved. It’ll be here when you’re back.');
 });
 $('#continue-journey').addEventListener('click', () => $('#bag-dialog').close());
 $('#back-top').addEventListener('click', () => window.scrollTo({ top: started ? journey.offsetTop + journeyRange() * .13 : 0, behavior: reducedMotion ? 'instant' : 'smooth' }));

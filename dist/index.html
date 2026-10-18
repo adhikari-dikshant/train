@@ -9,7 +9,7 @@
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Libre+Caslon+Display&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Libre+Caslon+Display&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="compartment.css">
   <script src="vendor/gsap.min.js" defer></script>
@@ -26,8 +26,8 @@
     <symbol id="star" viewBox="0 0 24 24"><path d="M12 2v20M2 12h20M5 5l14 14M5 19 19 5"/></symbol>
   </svg>
   <header class="site-header">
-    <a class="wordmark" href="#" aria-label="Sutra home">sutra<span>®</span></a>
-    <span class="brand-note">ROOTED IN INDIA.<br>MADE TO GO PLACES.</span>
+    <a class="wordmark" href="#" aria-label="Sutra home">sutra</a>
+    <span class="brand-note">Clothes. Places.<br>Things we keep.</span>
     <nav aria-label="Main navigation">
       <button class="nav-link" data-open="route">The route <span>↗</span></button>
       <span class="cabin-class">COACH S1 <i>·</i> WINDOW SEAT 01</span>
@@ -45,9 +45,9 @@
         <div class="berth-plaque berth-left" aria-hidden="true"><span>01</span><small>LOWER BERTH</small></div>
         <div class="berth-plaque berth-right" aria-hidden="true"><span>02</span><small>LOWER BERTH</small></div>
         <div class="hero-copy">
-          <div class="eyebrow"><span class="tiny-star">✳</span> THE SUTRA EXPRESS <span class="eyebrow-rule"></span> A JOURNEY THROUGH INDIA</div>
-          <h1>Wear the <em>journey.</em></h1>
-          <p>Extraordinary places. Everyday pieces. A little India in everything we make.</p>
+          <div class="eyebrow">sutra / journey notes, no. 01</div>
+          <h1>Take the <em>window seat.</em></h1>
+          <p>A clothing label, taking the slow route through India.</p>
         </div>
 
         <div class="compartment">
@@ -56,8 +56,9 @@
           <div class="cabin-post cabin-post-left" aria-hidden="true"></div><div class="cabin-post cabin-post-right" aria-hidden="true"></div>
           <div class="power-sockets" aria-hidden="true"><span>∴</span><span>∴</span><small>110V</small></div>
           <div class="cabin-table" aria-hidden="true"></div>
+          <div class="pencil-note" aria-hidden="true">window seat.<br>obviously. <span>↙</span></div>
           <div class="wall-label left-label">SUTRA RAILWAYS<br><b>WINDOW SEAT / 01</b></div>
-          <div class="wall-label right-label">मन की खिड़की खोलो<br><b>LET THE WORLD IN.</b></div>
+          <div class="wall-label right-label">कृपया सामान का ध्यान रखें<br><b>PLEASE LOOK AFTER YOUR LUGGAGE.</b></div>
           <div class="luggage-rack"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
           <div class="window-assembly" id="window-assembly">
             <span class="frame-screw screw-tl"></span><span class="frame-screw screw-tr"></span><span class="frame-screw screw-bl"></span><span class="frame-screw screw-br"></span>
@@ -71,14 +72,14 @@
               <div class="station-stamp" id="station-stamp"><span>26.92° N / 75.82° E</span><strong>जयपुर</strong><small>THE PINK CITY</small></div>
               <div class="window-glass"></div>
               <div class="shutter" id="shutter">
-                <div class="shutter-plate"><svg><use href="#train"/></svg><span>SUTRA EXPRESS</span><small>A GOOD JOURNEY CHANGES YOU.</small></div>
+                <div class="shutter-plate"><svg><use href="#train"/></svg><span>SUTRA EXPRESS</span><small>PLEASE LIFT GENTLY.</small></div>
                 <div class="shutter-handle"></div>
               </div>
               <div class="intro-overlay" id="intro-overlay">
-                <span class="intro-kicker">YOUR WINDOW TO A DIFFERENT INDIA</span>
-                <h2>Some stories<br>are worth the ride.</h2>
+                <span class="intro-kicker">YOUR SEAT'S BEEN SAVED.</span>
+                <h2>Chai first.<br>Then we go.</h2>
                 <button class="primary-button" id="start-journey">Start your journey <svg><use href="#arrow"/></svg></button>
-                <span class="intro-note">TWO STOPS. COUNTLESS INSPIRATIONS.</span>
+                <span class="intro-note">Jaipur → Ahmedabad. No hurry.</span>
               </div>
               <div class="arrival-label" id="arrival-label" aria-hidden="true"><span>NOW ARRIVING AT</span><strong>Jaipur Junction</strong></div>
               <button class="craft-marker marker-one" data-craft="0" aria-label="Explore the first local inspiration"><span>+</span><i>THE DETAILS</i></button>
@@ -89,7 +90,7 @@
           <div class="seat seat-left"><div class="seat-back"></div><div class="seat-cushion"></div><div class="seat-arm"></div></div>
           <div class="seat seat-right"><div class="seat-back"></div><div class="seat-cushion"></div><div class="seat-arm"></div></div>
           <div class="chai" aria-hidden="true"><span class="steam steam-one"></span><span class="steam steam-two"></span><div class="chai-cup"></div><div class="chai-saucer"></div></div>
-          <div class="journey-ticket" id="journey-ticket"><div class="ticket-top"><svg><use href="#train"/></svg><span>ONE WINDOW. MANY WORLDS.</span><span class="ticket-hole"></span></div><div class="ticket-route">Jaipur <span>⟶</span> Ahmedabad</div><div class="ticket-bottom"><span>CLASS: CURIOUS</span><span>SEAT: YOURS</span></div></div>
+          <div class="journey-ticket" id="journey-ticket"><div class="ticket-top"><svg><use href="#train"/></svg><span>SUTRA EXPRESS / SINGLE JOURNEY</span><span class="ticket-hole"></span></div><div class="ticket-route">Jaipur <span>⟶</span> Ahmedabad</div><div class="ticket-bottom"><span>COACH S1</span><span>SEAT 01 · WINDOW</span></div></div>
         </div>
 
         <div class="journey-controls">
@@ -104,27 +105,27 @@
         <div class="scroll-cue" id="scroll-cue"><span>SCROLL TO EXPLORE</span><div>↓</div></div>
 
         <aside class="product-reveal" id="product-reveal" aria-label="The destination collection" inert>
-          <div class="product-visual"><span class="collection-tag" id="collection-tag">THE JAIPUR EDIT</span><img id="product-image" src="assets/jaipur-shirt.svg" alt="Terracotta block print camp collar shirt, an illustrative clothing concept"><span class="visual-caption">INSPIRED BY THE PLACES WE GO.</span></div>
-          <div class="product-info"><span class="eyebrow" id="product-eyebrow">01 / RAJASTHAN</span><h2 id="product-title">The Pink City<br>Shirt.</h2><p id="product-description">Sun-washed terracotta. A rhythm of hand-block inspired florals. Jaipur, in a shirt.</p><div class="product-meta"><span id="product-price">₹2,490</span><span class="concept-label">CONCEPT PIECE</span></div><button class="text-button" id="view-piece">Discover the piece <svg><use href="#arrow"/></svg></button></div>
+          <div class="product-visual"><span class="collection-tag" id="collection-tag">THE JAIPUR EDIT</span><img id="product-image" src="assets/jaipur-shirt.svg" alt="Terracotta block print camp collar shirt, an illustrative clothing concept"><span class="visual-caption">a colour worth bringing home.</span></div>
+          <div class="product-info"><span class="eyebrow" id="product-eyebrow">01 / RAJASTHAN</span><h2 id="product-title">The Pink City<br>Shirt.</h2><p id="product-description">Terracotta, small florals, an open collar. A shirt for warm afternoons.</p><div class="product-meta"><span id="product-price">₹2,490</span><span class="concept-label">CONCEPT PIECE</span></div><button class="text-button" id="view-piece">Look at the piece <svg><use href="#arrow"/></svg></button></div>
         </aside>
-        <div class="station-caption" id="station-caption" inert><span id="station-index">01 / RAJASTHAN</span><h2 id="station-name">A little <em>Jaipur.</em><br>A lot to fall for.</h2><p id="station-description">Pink facades, desert melodies, and colour that stays with you. Every detail is a thread in our next story.</p><span class="station-continue" id="station-continue">KEEP SCROLLING. THE JOURNEY CONTINUES. ↓</span><button class="text-button finish-journey" id="finish-journey" hidden>Step off. Discover our story. <svg><use href="#arrow"/></svg></button></div>
+        <div class="station-caption" id="station-caption" inert><span id="station-index">01 / RAJASTHAN</span><h2 id="station-name"><em>Jaipur.</em><br>Take your time.</h2><p id="station-description">Pink plaster, faded red, tiny floral repeats. That’s the starting point for this shirt.</p><span class="station-continue" id="station-continue">Ahmedabad’s next. Scroll when you’re ready. ↓</span><button class="text-button finish-journey" id="finish-journey" hidden>A little about these clothes <svg><use href="#arrow"/></svg></button></div>
       </div>
     </section>
 
     <section class="our-story" id="our-story" hidden>
-      <div class="story-top"><span class="eyebrow">MORE THAN A DESTINATION</span><svg><use href="#star"/></svg><span class="eyebrow">A DIFFERENT WAY TO GET DRESSED</span></div>
-      <h2>We don't just make clothes.<br>We bring a little <em>India</em> along.</h2>
-      <p>The places we pass. The colours we remember. The details we stop for.<br>Sutra is a clothing concept that turns a journey across India into pieces<br class="desktop-break"> for wherever life takes you next.</p>
-      <button class="primary-button dark-button" data-open="collection">Explore the two edits <svg><use href="#arrow"/></svg></button>
-      <div class="story-bottom"><span>COLLECT STORIES. WEAR THEM WELL.</span><span>जयपुर <i>⟶</i> અમદાવાદ</span></div>
+      <div class="story-top"><span class="eyebrow">NOTES AT THE END OF THE LINE</span><svg><use href="#star"/></svg><span class="eyebrow">COLLECTION STUDY 01</span></div>
+      <h2>A shirt from Jaipur.<br>A jacket from <em>Ahmedabad.</em></h2>
+      <p>Two places, two pieces. We started with the colours and patterns outside the window,<br>then worked them into everyday shapes. This is the first Sutra collection concept.<br class="desktop-break"> There’s room in the notebook for the next stop.</p>
+      <button class="primary-button dark-button" data-open="collection">See both pieces <svg><use href="#arrow"/></svg></button>
+      <div class="story-bottom"><span>KEEP THE TICKET. YOU MIGHT WANT TO COME BACK.</span><span>जयपुर <i>⟶</i> અમદાવાદ</span></div>
     </section>
   </main>
-  <footer hidden><a class="wordmark" href="#">sutra<span>®</span></a><span>AN INDEPENDENT CLOTHING CONCEPT. MADE OF INDIA.</span><button class="text-button" id="back-top">Back to the window ↑</button></footer>
+  <footer hidden><a class="wordmark" href="#">sutra</a><span>SUTRA / COLLECTION STUDY 01</span><button class="text-button" id="back-top">Back to the window ↑</button></footer>
 
-  <dialog id="route-dialog" class="route-dialog"><button class="dialog-close" aria-label="Close route"><svg><use href="#close"/></svg></button><span class="eyebrow">YOUR TICKET TO THE EXTRAORDINARY</span><h2>Take the <em>scenic route.</em></h2><p>Two places. Two perspectives. One thread that connects them.</p><div class="route-options"><button data-go="0"><span>01</span><div><h3>Jaipur, Rajasthan</h3><p>Pink City architecture · Block print · Desert rhythms</p></div><span>↗</span></button><button data-go="1"><span>02</span><div><h3>Ahmedabad, Gujarat</h3><p>Carved stepwells · Bandhani · The joy of garba</p></div><span>↗</span></button></div><div class="dialog-foot">SUTRA EXPRESS <span>ALL THE BEST STORIES HAVE A WINDOW SEAT.</span></div></dialog>
-  <dialog id="piece-dialog" class="piece-dialog"><button class="dialog-close" aria-label="Close product"><svg><use href="#close"/></svg></button><div class="piece-dialog-image"><img id="detail-image" src="assets/jaipur-shirt.svg" alt="Clothing concept"></div><div class="piece-dialog-info"><span class="eyebrow" id="detail-edit">THE JAIPUR EDIT</span><h2 id="detail-name">The Pink City Shirt.</h2><p id="detail-description"></p><strong id="detail-price">₹2,490</strong><label for="size-select">YOUR SIZE</label><select id="size-select"><option value="S">S</option><option value="M" selected>M</option><option value="L">L</option><option value="XL">XL</option></select><button class="primary-button dark-button" id="save-piece">Save this piece <svg><use href="#bag"/></svg></button><small>An illustrative collection concept. Saving keeps your selections on this device; checkout is not available.</small></div></dialog>
-  <dialog id="bag-dialog" class="bag-dialog"><button class="dialog-close" aria-label="Close saved pieces"><svg><use href="#close"/></svg></button><span class="eyebrow">SOUVENIRS FROM YOUR JOURNEY</span><h2>Your <em>saved pieces.</em></h2><div id="saved-items"></div><button class="text-button" id="continue-journey">Back to the journey <svg><use href="#arrow"/></svg></button></dialog>
-  <dialog id="craft-dialog" class="craft-dialog"><button class="dialog-close" aria-label="Close inspiration"><svg><use href="#close"/></svg></button><span class="eyebrow" id="craft-kicker">A DETAIL FROM JAIPUR</span><h2 id="craft-title">A city in pink.</h2><p id="craft-description"></p><button class="text-button" id="craft-product">See the inspired piece <svg><use href="#arrow"/></svg></button></dialog>
+  <dialog id="route-dialog" class="route-dialog"><button class="dialog-close" aria-label="Close route"><svg><use href="#close"/></svg></button><span class="eyebrow">THE TWO STOPS</span><h2>Where are we <em>going?</em></h2><p>Jaipur first, then Ahmedabad. Choose a stop to jump ahead.</p><div class="route-options"><button data-go="0"><span>01</span><div><h3>Jaipur, Rajasthan</h3><p>Pink City architecture · Block print · Desert rhythms</p></div><span>↗</span></button><button data-go="1"><span>02</span><div><h3>Ahmedabad, Gujarat</h3><p>Carved stepwells · Bandhani · The joy of garba</p></div><span>↗</span></button></div><div class="dialog-foot">SUTRA EXPRESS <span>YOUR BAG GOES ABOVE. YOU GET THE WINDOW.</span></div></dialog>
+  <dialog id="piece-dialog" class="piece-dialog"><button class="dialog-close" aria-label="Close product"><svg><use href="#close"/></svg></button><div class="piece-dialog-image"><img id="detail-image" src="assets/jaipur-shirt.svg" alt="Clothing concept"></div><div class="piece-dialog-info"><span class="eyebrow" id="detail-edit">THE JAIPUR EDIT</span><h2 id="detail-name">The Pink City Shirt.</h2><p id="detail-description"></p><strong id="detail-price">₹2,490</strong><label for="size-select">YOUR SIZE</label><select id="size-select"><option value="S">S</option><option value="M" selected>M</option><option value="L">L</option><option value="XL">XL</option></select><button class="primary-button dark-button" id="save-piece">Save this piece <svg><use href="#bag"/></svg></button><small>A collection concept, still on paper. Save a piece on this device for later; checkout isn’t available.</small></div></dialog>
+  <dialog id="bag-dialog" class="bag-dialog"><button class="dialog-close" aria-label="Close saved pieces"><svg><use href="#close"/></svg></button><span class="eyebrow">KEPT FOR LATER</span><h2>Your <em>saved pieces.</em></h2><div id="saved-items"></div><button class="text-button" id="continue-journey">Back to my seat <svg><use href="#arrow"/></svg></button></dialog>
+  <dialog id="craft-dialog" class="craft-dialog"><button class="dialog-close" aria-label="Close inspiration"><svg><use href="#close"/></svg></button><span class="eyebrow" id="craft-kicker">FROM THE DESIGN NOTES</span><h2 id="craft-title">A city in pink.</h2><p id="craft-description"></p><button class="text-button" id="craft-product">See the inspired piece <svg><use href="#arrow"/></svg></button></dialog>
   <div class="toast" id="toast" role="status"></div>
   <noscript><div class="no-script">Enable JavaScript to open the shutter and explore the train journey. Our story and destination artwork are available below.</div></noscript>
 </body>

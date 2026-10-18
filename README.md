@@ -13,10 +13,10 @@ Run `python3 -m http.server 4173 --bind 127.0.0.1` from this directory and open 
 - Start your journey closes the preview shutter, opens it, and brings independently animated collage panels into view as the train arrives in Jaipur.
 - Scroll through the first stop, the moving scenery, and the arrival in Ahmedabad. The compartment stays fixed during the journey. The two station buttons and The route dialog also navigate between stops.
 - Each station reveals a garment concept. Discover the piece opens its details and size selector. Save this piece adds it to a browser-local bag; remove it from the bag at any time. This is a wishlist demo, with no payment or checkout.
-- The two plus markers in the window explain local visual inspirations.
+- The two plus markers in the window open short design notes about the local visual references.
 - Sound is off by default. The sound button enables a quiet, locally synthesized railway rhythm. It pauses when the browser tab is hidden.
 - Phone layouts, keyboard controls, native accessible dialogs, reduced motion, and an image-based fallback for unavailable WebGL are included.
-- The story section and footer are hidden initially. They become available after the final stop, through the “Step off” button or by continuing to the end of the journey. Scrolling before starting no longer reveals the story directly below the train.
+- The story section and footer are hidden initially. They become available after the final stop, through the “A little about these clothes” button or by continuing to the end of the journey. Scrolling before starting no longer reveals the story directly below the train.
 
 ## Replace with your brand
 
@@ -33,3 +33,7 @@ Google Fonts enhances the typography; local serif and sans-serif fallbacks are p
 ## Publishing
 
 `dist/` contains a mirror of the static website. The hosting manifest retains this repository’s existing private Site identity. Source and deployed files should be updated together.
+
+## Personal visual direction
+
+The latest pass uses conversational copy, handwritten design notes, railway-style station boards, paper collection cards, and less symmetrical belongings. The compartment materials are matte and subtly worn, with procedural fabric and paint textures. The newspaper graphic is original fictional travel copy, and the scarf is a draped mesh. These changes use code-native artwork; no new generated images were added. The existing cultural collages and garment concept illustrations remain the sources listed above.
