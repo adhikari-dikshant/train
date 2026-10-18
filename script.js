@@ -5,7 +5,7 @@ const gsap = window.gsap;
 const journey = $('#journey');
 const shutter = $('#shutter');
 const windowBox = $('#window-interior');
-const travel = { speed: 0, departure: 0, progress: 0, pointerX: 0, pointerY: 0 };
+const travel = { speed: 0, shutter: .37, departure: 0, progress: 0, pointerX: 0, pointerY: 0 };
 let started = false;
 let starting = false;
 let startPromise;
@@ -179,6 +179,7 @@ async function startJourney(scrollToStop = true) {
       const tl = gsap.timeline({ onComplete: complete });
       tl.to('#intro-overlay', { opacity: 0, duration: .35 })
         .to(shutter, { yPercent: 0, y: 0, duration: .5, ease: 'power2.in' }, '<')
+        .to(travel, { shutter: 1, duration: .5, ease: 'power2.in' }, '<')
         .call(() => {
           journey.classList.add('started');
           updateStation(progressFromScroll() < .5 ? 0 : 1);
@@ -187,12 +188,14 @@ async function startJourney(scrollToStop = true) {
           animate('#travelling-overlay', { opacity: .7, duration: .3 });
         })
         .to(shutter, { yPercent: -103, duration: 1.7, ease: 'power3.inOut' }, '+=.25')
+        .to(travel, { shutter: 0, duration: 1.7, ease: 'power3.inOut' }, '<')
         .to(travel, { departure: 0, duration: 1.7, ease: 'power2.out' }, '-=1.4')
         .to(travel, { speed: 0, duration: 1.2 }, '-=.7')
         .to('#travelling-overlay', { opacity: 0, duration: .6 }, '-=.6');
     } else {
       journey.classList.add('started');
       shutter.style.transform = 'translateY(-103%)';
+      travel.shutter = 0;
       complete();
     }
   });
@@ -470,16 +473,21 @@ async function initScene() {
     console.info('Using the accessible image-based scenery fallback.', error.message);
   }
 }
-initScene();
-
-// The compartment is a separate lit 3D room, so the scenery can keep its own
-// art direction while benches, luggage, metalwork and the fan have real depth.
-import('./compartment.js').then(({ createCompartmentScene }) => {
-  createCompartmentScene({
+// Load the supplied compartment first. Keep the prior lightweight room and
+// image scenery as a recovery path when GLB loading or WebGL is unavailable.
+import('./model-compartment.js').then(({ createModelCompartmentScene }) => {
+  return createModelCompartmentScene({
     canvas: $('#compartment-scene'),
     container: $('#carriage'),
     reducedMotion,
-    getMovement: () => travel.speed,
+    getJourneyState: () => ({ ...travel, started: started || starting }),
     isPaused: () => isHidden || scrollY > journey.offsetHeight
   });
-}).catch(error => console.info('Using the illustrated compartment fallback.', error.message));
+}).catch(async error => {
+  console.info('Using the lightweight compartment fallback.', error.message);
+  initScene();
+  try {
+    const { createCompartmentScene } = await import('./compartment.js');
+    createCompartmentScene({ canvas: $('#compartment-scene'), container: $('#carriage'), reducedMotion, getMovement: () => travel.speed, isPaused: () => isHidden || scrollY > journey.offsetHeight });
+  } catch (fallbackError) { console.info('Using the image-based compartment.', fallbackError.message); }
+});

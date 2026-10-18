@@ -2,7 +2,17 @@
 
 A working clothing-brand concept set inside an Indian train compartment. Built with locally bundled Three.js 0.180.0 and GSAP 3.13.0, plain HTML, CSS, and JavaScript. No installation or build step is required.
 
-The compartment fills the viewport from the first screen. A second Three.js scene uses a perspective camera to render long, facing blue benches, a central aisle, overhead luggage racks and stacked cases, a ceiling fan, blue wall panels, a folding shelf, and daylight shadows. The design follows the supplied blue Indian train-compartment references. Small original 3D details include hanging totes, a newspaper, a water bottle, a striped scarf, a stacked steel tiffin, and shoes under the seats. The main panorama and smaller side windows have horizontal safety bars. `compartment.js` builds the room and `compartment.css` controls the full-screen composition. The collage outside the main window remains a separate animated Three.js scene.
+The full-screen compartment now uses the supplied **Indian Train – Interior & Exterior** GLB, with its worn blue berths, weathered wall panels, outlets, metal fittings and barred windows. `model-compartment.js` loads the model, adds daylight and interior lighting, and places the cultural collages beyond the actual window openings. Two physical rolling shutters animate with the Start button. Desktop shows both windows; phones use a closer camera focused on one window. A small shelf holds a clay chai cup and a paper ticket. `compartment.js` remains the procedural room fallback when the model cannot load.
+
+## Supplied 3D model
+
+- Original: `indian_train__interior__exterior.glb`, supplied by the user, 20,130,496 bytes. The original remains untouched and is excluded from source publication.
+- Website asset: `assets/train-compartment.glb`, 15,170,704 bytes. `scripts/prepare-model.mjs` removes unused coach sections and repacks the remaining geometry and embedded images losslessly. It retains the original asset metadata. Regenerate with `node scripts/prepare-model.mjs` while the original is in this directory.
+- Embedded author credit: **nayan pachori**, https://sketchfab.com/nayanpachori19.
+- Embedded source: https://sketchfab.com/3d-models/indian-train-interior-exterior-851bcf9b30bc4727acb888ba37fef8fb.
+- Embedded license label: **SKETCHFAB Standard**, https://sketchfab.com/licenses. This documents the supplied file's metadata; it does not independently verify purchase or licensing rights.
+
+Rendering uses one Three.js canvas, a frame-rate cap, limited pixel density, and pauses while the page is hidden or the journey is off-screen. The 15 MB model still needs an initial download; loading progress and the lightweight room remain available while it loads. Desktop and phone browser layouts were checked; performance on physical phones has not been measured.
 
 ## Preview
 
@@ -36,4 +46,4 @@ Google Fonts enhances the typography; local serif and sans-serif fallbacks are p
 
 ## Personal visual direction
 
-The latest pass uses conversational copy, handwritten design notes, railway-style station boards, paper collection cards, and less symmetrical belongings. The compartment materials are matte and subtly worn, with procedural fabric and paint textures. The newspaper graphic is original fictional travel copy, and the scarf is a draped mesh. These changes use code-native artwork; no new generated images were added. The existing cultural collages and garment concept illustrations remain the sources listed above.
+The latest pass uses conversational copy, handwritten design notes, railway-style station boards, paper collection cards, and less symmetrical belongings. The supplied model retains its worn texture artwork, with material adjustments for matte fabric, painted walls, and metal. The procedural fallback retains its original fictional newspaper and draped scarf. These changes use code-native artwork; no new generated images were added. The existing cultural collages and garment concept illustrations remain the sources listed above.
