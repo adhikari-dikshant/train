@@ -2,7 +2,9 @@
 
 A working clothing-brand concept set inside an Indian train compartment. Built with locally bundled Three.js 0.180.0 and GSAP 3.13.0, plain HTML, CSS, and JavaScript. No installation or build step is required.
 
-The full-screen compartment now uses the supplied **Indian Train – Interior & Exterior** GLB, with its worn blue berths, weathered wall panels, outlets, metal fittings and barred windows. `model-compartment.js` loads the model, adds daylight and interior lighting, and places the cultural collages beyond the actual window openings. Two physical rolling shutters animate with the Start button. Desktop shows both windows; phones use a closer camera focused on one window. A small shelf holds a clay chai cup and a paper ticket. `compartment.js` remains the procedural room fallback when the model cannot load.
+The current art direction follows the user's warm painted travel references: one central brass-framed window, tobacco-brown walls, olive upholstery, travel belongings, and a large olive opening ticket. `journey-design.css` controls this composition. `assets/heritage-compartment.jpg` is original generated compartment artwork; the ticket, interface, shutter, product cards and cultural hotspots are live HTML/CSS. A Three.js scene animates the collage outside the window, with CSS image fallbacks. GSAP closes and lifts the shutter, reveals the first collection, and animates the scroll-driven transitions. The illustrated countryside before departure is `assets/countryside.svg`.
+
+The prior supplied GLB and `model-compartment.js` are retained in the source for future use, but are no longer loaded in the current illustrated presentation. This also removes the 15 MB model download from the visitor's initial load.
 
 ## Supplied 3D model
 
@@ -12,7 +14,7 @@ The full-screen compartment now uses the supplied **Indian Train – Interior & 
 - Embedded source: https://sketchfab.com/3d-models/indian-train-interior-exterior-851bcf9b30bc4727acb888ba37fef8fb.
 - Embedded license label: **SKETCHFAB Standard**, https://sketchfab.com/licenses. This documents the supplied file's metadata; it does not independently verify purchase or licensing rights.
 
-Rendering uses one Three.js canvas, a frame-rate cap, limited pixel density, and pauses while the page is hidden or the journey is off-screen. The 15 MB model still needs an initial download; loading progress and the lightweight room remain available while it loads. Desktop and phone browser layouts were checked; performance on physical phones has not been measured.
+The supplied model integration remains available in `model-compartment.js`; the active illustrated version uses only the window canvas. Desktop and phone layouts, the Start sequence, scroll travel, collection dialogs and the final story gate were checked in a browser. Physical-device performance was not measured.
 
 ## Preview
 
@@ -30,9 +32,12 @@ Run `python3 -m http.server 4173 --bind 127.0.0.1` from this directory and open 
 
 ## Replace with your brand
 
-SUTRA, both garment designs, and the displayed prices are illustrative placeholders. Replace the product data in `script.js`, the garment illustrations in `assets/`, and the branding in `index.html`. The garment designs are not represented as existing products or artisan-made goods. The cultural imagery is a collage, rather than documentary footage. The initial shutter deliberately gives a partial preview of the landscape before the visitor begins.
+SUTRA, both garment designs, and the displayed prices are illustrative placeholders. Replace the product data in `script.js`, the garment illustrations in `assets/`, and the branding in `index.html`. The garment designs are not represented as existing products or artisan-made goods. The cultural imagery is a collage, rather than documentary footage. The opening ticket covers the central window; a painted countryside moves gently behind it before departure.
 
 ## Artwork
+
+- `assets/heritage-compartment.jpg`: original painted compartment artwork created with the built-in image-generation tool. The complete final prompt and reference role are documented in `docs/compartment-artwork.md`.
+- `assets/countryside.svg`: original code-native illustrated fields, hills and trees for the opening window.
 
 - `assets/rajasthan-collage.jpg`: the Rajasthan reference collage recovered from the existing repository history.
 - `assets/gujarat-collage.png`: original artwork generated using the built-in image-generation tool. Final prompt: “Use case: illustration-story. Asset type: wide panoramic artwork for the window of an Indian train on an editorial fashion website. Primary request: an exquisite layered mixed-media paper-cut travel collage of Ahmedabad and Gujarat, inspired by vintage Indian railway travel posters, hand-tinted architectural photography and screen printed textile patterns. Landscape composition around 3:2. At center and left a monumental intricately carved Adalaj stepwell and Ahmedabad old city carved wooden pol houses. On the right a woman in a traditional flowing rust red and indigo chaniya choli performing garba, tasteful and realistic. Overlapping foreground cutouts of bandhani fabric, mirrorwork embroidery, a small blue-green peacock, marigolds, and orange white green paper kites flying. Soft textured pale warm mint / cream sky with warm sun, terracotta sand and sage greenery at the bottom. Layered cutout edges with subtle paper shadows; rich warm brick red, coral, muted ochre, indigo and teal. Composition dense and art directed but with graceful breathing room in the upper middle. No letters, no text, no border, no train, no UI, no watermarks. Sophisticated handmade luxury fashion editorial, beautifully detailed.”

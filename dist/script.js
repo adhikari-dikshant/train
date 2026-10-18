@@ -30,6 +30,9 @@ function revealStory(scrollToStory = false) {
   if (scrollToStory) $('#our-story').scrollIntoView({ behavior: reducedMotion ? 'instant' : 'smooth', block: 'start' });
 }
 $('#finish-journey').addEventListener('click', () => revealStory(true));
+new IntersectionObserver(([entry]) => {
+  document.body.classList.toggle('at-story', entry.isIntersecting);
+}, { threshold: .08 }).observe($('#our-story'));
 
 const stations = [
   {
@@ -169,6 +172,7 @@ async function startJourney(scrollToStop = true) {
       window.ScrollTrigger?.refresh();
       $('#intro-overlay').inert = true;
       $('#intro-overlay').style.display = 'none';
+      $('#prelude-scenery').style.display = 'none';
       if (scrollToStop) window.scrollTo({ top: journey.offsetTop + journeyRange() * .13, behavior: reducedMotion ? 'instant' : 'smooth' });
       updateStation(progressFromScroll() < .5 ? 0 : 1);
       announceArrival(station);
@@ -177,7 +181,7 @@ async function startJourney(scrollToStop = true) {
     };
     if (gsap && !reducedMotion) {
       const tl = gsap.timeline({ onComplete: complete });
-      tl.to('#intro-overlay', { opacity: 0, duration: .35 })
+      tl.to('#intro-overlay', { opacity: 0, y: -12, duration: .45 })
         .to(shutter, { yPercent: 0, y: 0, duration: .5, ease: 'power2.in' }, '<')
         .to(travel, { shutter: 1, duration: .5, ease: 'power2.in' }, '<')
         .call(() => {
@@ -189,6 +193,7 @@ async function startJourney(scrollToStop = true) {
         })
         .to(shutter, { yPercent: -103, duration: 1.7, ease: 'power3.inOut' }, '+=.25')
         .to(travel, { shutter: 0, duration: 1.7, ease: 'power3.inOut' }, '<')
+        .to('#prelude-scenery', { opacity: 0, duration: .8 }, '<')
         .to(travel, { departure: 0, duration: 1.7, ease: 'power2.out' }, '-=1.4')
         .to(travel, { speed: 0, duration: 1.2 }, '-=.7')
         .to('#travelling-overlay', { opacity: 0, duration: .6 }, '-=.6');
@@ -196,6 +201,7 @@ async function startJourney(scrollToStop = true) {
       journey.classList.add('started');
       shutter.style.transform = 'translateY(-103%)';
       travel.shutter = 0;
+      $('#prelude-scenery').style.display = 'none';
       complete();
     }
   });
@@ -473,21 +479,6 @@ async function initScene() {
     console.info('Using the accessible image-based scenery fallback.', error.message);
   }
 }
-// Load the supplied compartment first. Keep the prior lightweight room and
-// image scenery as a recovery path when GLB loading or WebGL is unavailable.
-import('./model-compartment.js').then(({ createModelCompartmentScene }) => {
-  return createModelCompartmentScene({
-    canvas: $('#compartment-scene'),
-    container: $('#carriage'),
-    reducedMotion,
-    getJourneyState: () => ({ ...travel, started: started || starting }),
-    isPaused: () => isHidden || scrollY > journey.offsetHeight
-  });
-}).catch(async error => {
-  console.info('Using the lightweight compartment fallback.', error.message);
-  initScene();
-  try {
-    const { createCompartmentScene } = await import('./compartment.js');
-    createCompartmentScene({ canvas: $('#compartment-scene'), container: $('#carriage'), reducedMotion, getMovement: () => travel.speed, isPaused: () => isHidden || scrollY > journey.offsetHeight });
-  } catch (fallbackError) { console.info('Using the image-based compartment.', fallbackError.message); }
-});
+// The illustrated compartment follows the supplied warm travel references.
+// Three.js keeps the cultural scenery animated within its single window.
+initScene();
