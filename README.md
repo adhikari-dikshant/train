@@ -4,18 +4,6 @@ A working clothing-brand concept set inside an Indian train compartment. Built w
 
 The current art direction follows the user's warm painted travel references: one central brass-framed window, tobacco-brown walls, olive upholstery, travel belongings, and a large olive opening ticket. `journey-design.css` controls this composition. `assets/heritage-compartment.jpg` is original generated compartment artwork; the ticket, interface, shutter, product cards and cultural hotspots are live HTML/CSS. A Three.js scene animates the collage outside the window, with CSS image fallbacks. GSAP closes and lifts the shutter, reveals the first collection, and animates the scroll-driven transitions. The illustrated countryside before departure is `assets/countryside.svg`.
 
-The prior supplied GLB and `model-compartment.js` are retained in the source for future use, but are no longer loaded in the current illustrated presentation. This also removes the 15 MB model download from the visitor's initial load.
-
-## Supplied 3D model
-
-- Original: `indian_train__interior__exterior.glb`, supplied by the user, 20,130,496 bytes. The original remains untouched and is excluded from source publication.
-- Website asset: `assets/train-compartment.glb`, 15,170,704 bytes. `scripts/prepare-model.mjs` removes unused coach sections and repacks the remaining geometry and embedded images losslessly. It retains the original asset metadata. Regenerate with `node scripts/prepare-model.mjs` while the original is in this directory.
-- Embedded author credit: **nayan pachori**, https://sketchfab.com/nayanpachori19.
-- Embedded source: https://sketchfab.com/3d-models/indian-train-interior-exterior-851bcf9b30bc4727acb888ba37fef8fb.
-- Embedded license label: **SKETCHFAB Standard**, https://sketchfab.com/licenses. This documents the supplied file's metadata; it does not independently verify purchase or licensing rights.
-
-The supplied model integration remains available in `model-compartment.js`; the active illustrated version uses only the window canvas. Desktop and phone layouts, the Start sequence, scroll travel, collection dialogs and the final story gate were checked in a browser. Physical-device performance was not measured.
-
 ## Preview
 
 Run `python3 -m http.server 4173 --bind 127.0.0.1` from this directory and open http://127.0.0.1:4173. Use a server instead of opening the HTML as a file, because the Three.js scene uses JavaScript modules and local textures.
@@ -23,8 +11,8 @@ Run `python3 -m http.server 4173 --bind 127.0.0.1` from this directory and open 
 ## The experience
 
 - Start your journey closes the preview shutter, opens it, and brings independently animated collage panels into view as the train arrives in Jaipur.
-- Scroll through the first stop, the moving scenery, and the arrival in Ahmedabad. The compartment stays fixed during the journey. The two station buttons and The route dialog also navigate between stops.
-- Each station reveals a garment concept. Discover the piece opens its details and size selector. Save this piece adds it to a browser-local bag; remove it from the bag at any time. This is a wishlist demo, with no payment or checkout.
+- Scroll through the first stop, the moving scenery, and the arrival in Ahmedabad. The compartment stays fixed during the journey. The two station buttons and The itinerary dialog also navigate between stops.
+- Each station reveals a garment concept. Look at the piece opens its details and size selector. Save this piece adds it to a browser-local bag; remove it from the bag at any time. This is a wishlist demo, with no payment or checkout.
 - The two plus markers in the window open short design notes about the local visual references.
 - Sound is off by default. The sound button enables a quiet, locally synthesized railway rhythm. It pauses when the browser tab is hidden.
 - Phone layouts, keyboard controls, native accessible dialogs, reduced motion, and an image-based fallback for unavailable WebGL are included.
@@ -49,6 +37,14 @@ Google Fonts enhances the typography; local serif and sans-serif fallbacks are p
 
 `dist/` contains a mirror of the static website. The hosting manifest retains this repository’s existing private Site identity. Source and deployed files should be updated together.
 
-## Personal visual direction
+## Project files
 
-The latest pass uses conversational copy, handwritten design notes, railway-style station boards, paper collection cards, and less symmetrical belongings. The supplied model retains its worn texture artwork, with material adjustments for matte fabric, painted walls, and metal. The procedural fallback retains its original fictional newspaper and draped scarf. These changes use code-native artwork; no new generated images were added. The existing cultural collages and garment concept illustrations remain the sources listed above.
+- `index.html`, `script.js`: the current page and interactions.
+- `style.css`, `compartment.css`, `journey-design.css`: shared styles, full-screen layout, and the active painted design. All three are used.
+- `assets/`: only the images and illustrations referenced by the current site.
+- `vendor/`: GSAP, ScrollTrigger, and the two Three.js modules required by the window scene.
+- `docs/`: artwork provenance and the final generation prompt.
+- `dist/`: the matching static publishing files.
+- `.openai/hosting.json`: existing Site identity and publishing configuration.
+
+Obsolete 3D room implementations, the unused optimized GLB, model-only helpers, and generated preview files have been removed. Git history retains the previously tracked versions.

@@ -2,7 +2,7 @@
 
 Created with the built-in image-generation tool using the user's second screenshot as a reference for composition and atmosphere. The reference's branding and UI were not included in the generated asset.
 
-Final website asset: `assets/heritage-compartment.jpg` (421 KB). The original generated PNG is retained in the ignored `output/heritage-compartment-source.png` folder. JPEG conversion preserves the original composition. All website text, controls, ticket, animated scenery and product interactions are implemented separately in code.
+Final website asset: `assets/heritage-compartment.jpg` (421 KB). The JPEG was converted from the generated PNG while preserving its composition; the unused PNG and preview outputs have been removed. All website text, controls, ticket, animated scenery and product interactions are implemented separately in code.
 
 ## Final prompt
 
