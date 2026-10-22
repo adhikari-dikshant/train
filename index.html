@@ -11,8 +11,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Libre+Caslon+Display&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="vendor/lenis.css">
   <script src="vendor/gsap.min.js" defer></script>
   <script src="vendor/ScrollTrigger.min.js" defer></script>
+  <script src="vendor/lenis.min.js" defer></script>
   <script type="module" src="script.js"></script>
 </head>
 <body class="boarding">
@@ -59,7 +61,7 @@
       <div class="intro-ticket" aria-hidden="true"><span>HASSTRA EXPRESS</span><strong>INDIA</strong><i>One window. Many worlds.</i><div>ADMIT ONE <span>SEAT 01 / WINDOW</span></div></div>
       <span class="intro-index">COLLECTION JOURNAL / 01</span>
     </section>
-    <section id="map-screen" class="map-screen" aria-labelledby="map-title" hidden>
+    <section id="map-screen" class="map-screen" aria-labelledby="map-title" data-lenis-prevent hidden>
       <button id="close-map" class="close-button" aria-label="Close itinerary">×</button>
       <div class="map-copy"><span class="eyebrow">THE ITINERARY / TWO STORIES TO BEGIN</span><h2 id="map-title" tabindex="-1">Where shall<br>we <em>begin?</em></h2><p>Pick your first window into India.<br>We’ll take it from there.</p><div class="map-options"><button data-start="0"><span>01</span><div><strong>Jaipur</strong><small>RAJASTHAN / COLOUR & MOTIF</small></div><span>↗</span></button><button data-start="1"><span>02</span><div><strong>Ahmedabad</strong><small>GUJARAT / PATTERN & MOVEMENT</small></div><span>↗</span></button></div><p class="map-note">Choose your starting point. The journey then follows a fixed route.</p></div>
       <div class="map-art"><span class="map-compass" aria-hidden="true">N<br>↑</span><img src="assets/india-map.svg" alt="Map of India with Rajasthan and Gujarat highlighted"><svg class="map-route" viewBox="0 0 570 650" aria-hidden="true"><path d="M158.8 199.4 Q115 221 100.3 269.6"/></svg><button class="map-pin jaipur-pin" data-start="0" aria-label="Start in Jaipur"><i></i><span>JAIPUR</span></button><button class="map-pin ahmedabad-pin" data-start="1" aria-label="Start in Ahmedabad"><i></i><span>AHMEDABAD</span></button><span class="map-ocean" aria-hidden="true">ARABIAN<br>SEA</span></div>
@@ -71,7 +73,7 @@
       <button id="story-continue" class="primary-button">Back to the window <span>→</span></button><footer>HASSTRA <span>EVERY THREAD CARRIES A PLACE.</span></footer>
     </section>
   </main>
-  <dialog id="detail-panel" class="detail-panel" aria-labelledby="panel-title"><button id="close-panel" class="close-button" aria-label="Close detail">×</button><span id="panel-kicker" class="eyebrow"></span><h2 id="panel-title"></h2><p id="panel-description"></p><img id="panel-image" alt=""><a id="panel-story" class="text-button" href="#piece/jaipur">Explore the piece’s story ↗</a></dialog>
+  <dialog id="detail-panel" class="detail-panel" aria-labelledby="panel-title" data-lenis-prevent><button id="close-panel" class="close-button" aria-label="Close detail">×</button><span id="panel-kicker" class="eyebrow"></span><h2 id="panel-title"></h2><p id="panel-description"></p><img id="panel-image" alt=""><a id="panel-story" class="text-button" href="#piece/jaipur">Explore the piece’s story ↗</a></dialog>
   <noscript><div class="noscript-message">This journey uses JavaScript for the map and scroll animation. Please enable it to explore the collection.</div></noscript>
 </body>
 </html>

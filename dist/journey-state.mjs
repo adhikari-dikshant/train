@@ -15,5 +15,6 @@ export function journeyFrame(progress, route) {
   const zoom = smoothstep(.12, .25, local) * (final ? 1 : 1 - smoothstep(.88, .98, local));
   const chapter = local < .25 ? 'travel' : local < .47 ? 'place' : local < .64 ? 'detail' : local < .88 || final ? 'piece' : 'travel';
   const mix = leg === 0 ? route[leg] : route[leg - 1] + (route[leg] - route[leg - 1]) * smoothstep(0, .12, local);
-  return { leg, local, station: route[leg], zoom, chapter, mix, final, complete: p >= .999 };
+  const pieceShade = smoothstep(.61, .68, local) * (final ? 1 : 1 - smoothstep(.86, .9, local));
+  return { leg, local, station: route[leg], zoom, chapter, mix, pieceShade, final, complete: p >= .999 };
 }

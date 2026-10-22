@@ -1,6 +1,6 @@
 # HASSTRA — A journey, woven
 
-An interactive clothing collection journal built with plain HTML, CSS, locally bundled Three.js 0.180.0 and GSAP 3.13.0. No package installation is required.
+An interactive clothing collection journal built with plain HTML, CSS, locally bundled Three.js 0.180.0, GSAP 3.13.0 and Lenis 1.3.27. No package installation is required.
 
 ## Preview and publish files
 
@@ -16,6 +16,8 @@ Run `node --test tests/journey-state.test.mjs` for the route/scroll checks. Run 
 - Detail notes open as nonmodal side panels without a blurred or dimmed backdrop. On phones they become compact panels above the bottom route navigation.
 - Every garment has a deep-linkable page (`#piece/jaipur`, `#piece/ahmedabad`), with supplied artwork and design notes. Returning preserves the journey position. There are no purchase buttons, prices, size selection or checkout.
 - The next-chapter control also advances the scroll narrative by click/keyboard. Reduced motion removes timed animations, ambience is opt-in, and image fallbacks work without WebGL.
+- Lenis smooths mouse-wheel scrolling and chapter navigation, synchronized with GSAP and the Three.js render loop. Touch keeps native scrolling. Smoothing pauses for the itinerary and detail panel; their own content remains scrollable. Story entry and return reset scroll momentum and preserve the journey position. Reduced motion uses native scrolling.
+- The graphics buffer stays at the viewport size during zooming, avoiding repeated GPU buffer allocations. Chapter text and notebook fragments fade between states, and garment background shading follows scroll progress continuously.
 - The existing `sutra-saved` browser data is left untouched. The old shopping-style interface has been removed from this story-only version.
 
 ## Assets and scope
@@ -27,6 +29,8 @@ The brand logo is the supplied HASSTRA PNG. Garment images are compressed copies
 The painted compartment and the existing regional collage imagery are retained. They are illustrations, not documentary footage or a 3D compartment model. The Three.js scene renders six separate collage panels per destination for lateral travel, small foreground kites and subtle pointer parallax. `docs/compartment-artwork.md` records the compartment art provenance.
 
 Google Fonts enhances typography, with local serif/sans-serif fallbacks. The animation libraries and all artwork are served with the site. No runtime Drive connection, API keys or server data are required.
+
+Lenis is vendored from its official npm release; `vendor/lenis-LICENSE.txt` retains its MIT license. Integration follows the [official GSAP setup](https://github.com/darkroomengineering/lenis#gsap-scrolltrigger).
 
 ## Source
 

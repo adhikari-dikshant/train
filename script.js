@@ -4,6 +4,8 @@ const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const gsap = window.gsap;
+const lenis = !reducedMotion && window.Lenis ? new window.Lenis({ lerp: .085, autoRaf: !gsap }) : null;
+lenis?.stop();
 const journey = $('#journey');
 const windowBox = $('#window-interior');
 const travel = { speed: 0, departure: 0, progress: 0, mix: 0, pointerX: 0, pointerY: 0 };
@@ -67,9 +69,15 @@ function animate(target, properties) {
 }
 function range() { return Math.max(1, journey.offsetHeight - $('#carriage').offsetHeight); }
 function progressFromScroll() { return clamp((scrollY - journey.offsetTop) / range()); }
+function scrollToPosition(top, immediate = false) {
+  if (lenis) {
+    lenis.resize();
+    lenis.scrollTo(top, { immediate, force: immediate, lerp: 0, duration: 1.65, easing: t => t < .5 ? 4 * t ** 3 : 1 - (-2 * t + 2) ** 3 / 2 });
+  } else window.scrollTo({ top, behavior: immediate || reducedMotion ? 'instant' : 'smooth' });
+}
 function scrollToProgress(p) {
   closePanel();
-  window.scrollTo({ top: journey.offsetTop + range() * clamp(p), behavior: reducedMotion ? 'instant' : 'smooth' });
+  scrollToPosition(journey.offsetTop + range() * clamp(p));
 }
 function setImage(id, path, alt) { $(id).src = path; $(id).alt = alt; }
 function updateStation(index) {
@@ -104,6 +112,7 @@ function onProgress(p) {
   travel.mix = frame.mix;
   travel.speed = frame.chapter === 'travel' ? (frame.local < .12 ? Math.sin(frame.local / .12 * Math.PI) : 1 - frame.zoom) : 0;
   $('#carriage').style.setProperty('--zoom', frame.zoom.toFixed(4));
+  $('#carriage').style.setProperty('--piece-shade', frame.pieceShade.toFixed(4));
   $('#carriage').dataset.chapter = frame.chapter;
   $('#travel-caption').setAttribute('aria-hidden', String(frame.zoom > .99));
   document.body.classList.toggle('is-travelling', travel.speed > .1 && !reducedMotion);
@@ -118,15 +127,22 @@ function onProgress(p) {
   if (key !== lastChapter) {
     closePanel();
     const culture = ['place', 'detail'].includes(frame.chapter);
-    reveal('#culture-copy', culture);
     reveal('#product-reveal', frame.chapter === 'piece');
-    $('#detail-fragment').hidden = frame.chapter !== 'detail';
+    $('#detail-fragment').hidden = false;
+    reveal('#detail-fragment', frame.chapter === 'detail');
     const s = stations[station];
     const chapterIndex = frame.chapter === 'detail' ? 1 : 0;
-    $('#chapter-kicker').textContent = `${s.state.toUpperCase()} / ${chapterIndex === 0 ? '01 — THE PLACE' : '02 — THE DETAILS'}`;
-    $('#chapter-local').textContent = s.local;
-    $('#chapter-title').textContent = s.chapters[chapterIndex][0];
-    $('#chapter-description').textContent = s.chapters[chapterIndex][1];
+    const updateCopy = () => {
+      $('#chapter-kicker').textContent = `${s.state.toUpperCase()} / ${chapterIndex === 0 ? '01 — THE PLACE' : '02 — THE DETAILS'}`;
+      $('#chapter-local').textContent = s.local;
+      $('#chapter-title').textContent = s.chapters[chapterIndex][0];
+      $('#chapter-description').textContent = s.chapters[chapterIndex][1];
+      reveal('#culture-copy', culture);
+    };
+    gsap?.killTweensOf('#culture-copy');
+    if (culture && [`${station}/place`, `${station}/detail`].includes(lastChapter) && !reducedMotion) {
+      animate('#culture-copy', { opacity: 0, y: -12, duration: .18, onComplete: updateCopy });
+    } else updateCopy();
     $('#status-text').textContent = frame.chapter === 'travel' ? `EN ROUTE / ${destination.name.toUpperCase()}` : `STOP 0${frame.leg + 1} / ${s.state.toUpperCase()}`;
     lastChapter = key;
   }
@@ -151,8 +167,10 @@ function openMap(event) {
   if (starting) return;
   if (reading) closeStory();
   closePanel();
+  lenis?.stop();
   mapTrigger = event?.currentTarget || $('#map-toggle');
   $('#map-screen').hidden = false;
+  if (gsap && !reducedMotion) gsap.fromTo('#map-screen', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: .5, overwrite: true, ease: 'power2.out' });
   document.body.classList.add('map-open');
   journey.inert = true;
   $('#intro-overlay').inert = true;
@@ -161,6 +179,7 @@ function openMap(event) {
 function closeMap() {
   $('#map-screen').hidden = true;
   document.body.classList.remove('map-open');
+  if (started && !starting) lenis?.start();
   journey.inert = !started;
   $('#intro-overlay').inert = started;
   mapTrigger?.focus({ preventScroll: true });
@@ -174,6 +193,8 @@ async function begin(index) {
   travel.mix = index;
   renderRoute();
   updateStation(index);
+  $('#intro-overlay').hidden = true;
+  if (gsap && !reducedMotion) await new Promise(resolve => gsap.to('#map-screen', { opacity: 0, duration: .35, overwrite: true, onComplete: resolve }));
   closeMap();
   $('#intro-overlay').hidden = true;
   $('#intro-overlay').inert = true;
@@ -181,7 +202,7 @@ async function begin(index) {
   journey.classList.add('started');
   document.body.classList.remove('boarding');
   $('#journey-bottom').hidden = false;
-  window.scrollTo({ top: 0, behavior: 'instant' });
+  scrollToPosition(0, true);
   window.ScrollTrigger?.refresh();
   travel.departure = 1;
   travel.speed = 1;
@@ -196,6 +217,7 @@ async function begin(index) {
   }
   started = true;
   starting = false;
+  lenis?.start();
   onProgress(progressFromScroll());
   $('#next-chapter').focus({ preventScroll: true });
 }
@@ -218,11 +240,13 @@ $('#next-stop').addEventListener('click', () => frame.final ? openMap() : scroll
 function closePanel() {
   if (!$('#detail-panel').open) return;
   $('#detail-panel').close();
+  if (started && !starting && !reading && $('#map-screen').hidden) lenis?.start();
   panelTrigger?.focus({ preventScroll: true });
 }
 function openPanel(event, garment = false) {
   const s = stations[station];
   panelTrigger = event.currentTarget;
+  lenis?.stop();
   $('#panel-kicker').textContent = `${s.state.toUpperCase()} / A CLOSER LOOK`;
   $('#panel-title').textContent = garment ? s.noteTitle : frame.chapter === 'place' ? s.placeTitle : s.detailTitle;
   $('#panel-description').textContent = garment ? s.note : frame.chapter === 'place' ? s.place : s.detail;
@@ -243,6 +267,7 @@ function showStory() {
   const s = stations.find(item => item.slug === slug);
   if (!reading) savedJourneyScroll = scrollY;
   reading = true;
+  lenis?.stop();
   closePanel();
   $('#map-screen').hidden = true;
   document.body.classList.remove('map-open', 'boarding');
@@ -259,19 +284,22 @@ function showStory() {
   setImage('#story-image', s.image, s.caption);
   setImage('#story-notes-image', s.notes, `${s.state} original garment design sheet`);
   document.title = `${s.title} — HASSTRA`;
-  window.scrollTo({ top: 0, behavior: 'instant' });
+  scrollToPosition(0, true);
+  lenis?.start();
   $('#piece-name').focus({ preventScroll: true });
 }
 function leaveStory() {
+  lenis?.stop();
   reading = false;
   $('#piece-page').hidden = true;
   document.body.classList.remove('reading');
   document.body.classList.toggle('boarding', !started);
   document.title = 'HASSTRA — A journey, woven.';
   window.ScrollTrigger?.refresh();
-  window.scrollTo({ top: savedJourneyScroll, behavior: 'instant' });
+  scrollToPosition(savedJourneyScroll, true);
+  if (started) lenis?.start();
   onProgress(progressFromScroll());
-  (started ? $('#view-piece') : $('#start-journey')).focus({ preventScroll: true });
+  (started ? $(frame.chapter === 'piece' ? '#view-piece' : '#next-chapter') : $('#start-journey')).focus({ preventScroll: true });
 }
 function closeStory() {
   history.replaceState(null, '', location.pathname + location.search);
@@ -336,8 +364,16 @@ document.addEventListener('visibilitychange', () => {
   isHidden = document.hidden;
   if (context && soundEnabled) (isHidden ? context.suspend() : context.resume()).catch(() => {});
 });
+if (lenis && gsap) {
+  gsap.ticker.add(time => lenis.raf(time * 1000));
+  gsap.ticker.lagSmoothing(0);
+}
 if (gsap && window.ScrollTrigger) {
   gsap.registerPlugin(window.ScrollTrigger);
+  if (lenis) {
+    lenis.on('scroll', window.ScrollTrigger.update);
+    window.ScrollTrigger.addEventListener('refresh', () => lenis.resize());
+  }
   window.ScrollTrigger.create({ trigger: journey, start: 'top top', end: 'bottom bottom', onUpdate: self => onProgress(self.progress), onRefresh: self => onProgress(self.progress) });
 } else window.addEventListener('scroll', () => onProgress(progressFromScroll()), { passive: true });
 window.addEventListener('resize', () => onProgress(progressFromScroll()), { passive: true });
@@ -401,11 +437,18 @@ async function initScene() {
     }
     scene.add(ornaments);
 
+    let bufferWidth = 0, bufferHeight = 0;
     function resize() {
       const width = Math.max(1, windowBox.clientWidth);
       const height = Math.max(1, windowBox.clientHeight);
       aspect = width / height;
-      renderer.setSize(width, height, false);
+      const stage = $('#carriage');
+      // Keep the GPU buffer stable while the window zooms; only its projection changes.
+      if (stage.clientWidth !== bufferWidth || stage.clientHeight !== bufferHeight) {
+        bufferWidth = Math.max(1, stage.clientWidth);
+        bufferHeight = Math.max(1, stage.clientHeight);
+        renderer.setSize(bufferWidth, bufferHeight, false);
+      }
       camera.left = -aspect; camera.right = aspect; camera.updateProjectionMatrix();
       backdrops.forEach(mesh => {
         const width = Math.max(aspect * 2, mesh.userData.ratio * 2) * 1.09;
@@ -435,11 +478,8 @@ async function initScene() {
       travel.pointerY = ((event.clientY - rect.top) / rect.height - .5) * .035;
     });
     windowBox.addEventListener('pointerleave', () => { travel.pointerX = 0; travel.pointerY = 0; });
-    let lastTime = 0;
     function render(time) {
-      requestAnimationFrame(render);
-      if (reading || isHidden || scrollY > journey.offsetTop + journey.offsetHeight || time - lastTime < 28) return;
-      lastTime = time;
+      if (reading || isHidden || scrollY > journey.offsetTop + journey.offsetHeight) return;
       const t = time * .001;
       const shift = travel.mix;
       backdrops.forEach((mesh, i) => { mesh.material.opacity = i === 0 ? 1 - shift : shift; });
@@ -466,7 +506,11 @@ async function initScene() {
       });
       renderer.render(scene, camera);
     }
-    requestAnimationFrame(render);
+    if (gsap) gsap.ticker.add(time => render(time * 1000));
+    else {
+      const tick = time => { render(time); requestAnimationFrame(tick); };
+      requestAnimationFrame(tick);
+    }
   } catch (error) {
     renderer?.dispose();
     windowBox.classList.remove('webgl-ready');

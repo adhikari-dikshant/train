@@ -35,3 +35,18 @@ test('scroll beyond either end stays within the journey', () => {
     assert.deepEqual(journeyFrame(3, route), journeyFrame(1, route));
   }
 });
+
+test('zoom, scenery and garment shade stay continuous across every chapter boundary', () => {
+  for (const route of [routeFrom(0), routeFrom(1)]) {
+    for (const progress of [.06, .125, .235, .305, .32, .34, .43, .44, .45, .49, .5, .56, .625, .735, .805, .82, .84]) {
+      const before = journeyFrame(progress - .000001, route);
+      const after = journeyFrame(progress + .000001, route);
+      for (const property of ['zoom', 'mix', 'pieceShade']) {
+        assert.ok(Math.abs(before[property] - after[property]) < .001, `${property} jumps at ${progress}`);
+      }
+    }
+    assert.equal(journeyFrame(.37, route).pieceShade, 1);
+    assert.equal(journeyFrame(.5, route).pieceShade, 0);
+    assert.equal(journeyFrame(1, route).pieceShade, 1);
+  }
+});
