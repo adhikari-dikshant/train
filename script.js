@@ -9,11 +9,9 @@ const lenis = !reducedMotion && window.Lenis ? new window.Lenis({ lerp: .085, au
 lenis?.stop();
 const journey = $('#journey');
 const windowBox = $('#window-interior');
-const travel = { speed: 0, departure: 0, progress: 0, mix: 0, pointerX: 0, pointerY: 0 };
+const travel = { speed: 0, progress: 0, mix: 0, pointerX: 0, pointerY: 0 };
 let started = false;
 let starting = false;
-let inTransit = false;
-let transitPromise;
 let station = 0;
 let route = routeFrom(0);
 let frame = journeyFrame(0, route);
@@ -115,96 +113,39 @@ function reveal(selector, visible) {
   node.style.pointerEvents = visible ? 'auto' : 'none';
   animate(node, { opacity: visible ? 1 : 0, y: visible ? 0 : 18, duration: .4 });
 }
-function travelToStation(index, firstTrip = false) {
-  if (inTransit) return transitPromise;
+function travelToStation(index) {
   if (!route.includes(index)) return;
   clothTransition();
-  inTransit = true;
   closePanel();
-  lenis?.stop();
-  const origin = stations[station].name;
-  const destination = stations[index].name;
-  gsap?.killTweensOf('#culture-copy');
-  ['#culture-copy', '#product-reveal', '#detail-fragment'].forEach(selector => reveal(selector, false));
-  document.body.classList.add('in-transit', 'is-travelling');
-  $('#route-progress').inert = true;
-  $('#next-chapter').disabled = true;
-  $('#map-toggle').disabled = true;
-  $('#travel-caption').setAttribute('aria-hidden', 'false');
-  $('#travel-kicker').textContent = firstTrip ? `FIRST STOP / ${destination.toUpperCase()}` : `${origin.toUpperCase()} → ${destination.toUpperCase()}`;
-  $('#travel-name').textContent = firstTrip ? 'And we’re off.' : `Leaving ${origin} behind.`;
-  $('#travel-description').textContent = 'Open fields. Little towns. A little time between places.';
-  $('#status-text').textContent = `EN ROUTE / ${destination.toUpperCase()}`;
-  transitPromise = new Promise(resolve => {
-    const arrive = () => {
-      clothTransition();
-      frame = journeyFrame(arrivalProgress(index, route), route);
-      travel.mix = index;
-      updateStation(index);
-      $('#travel-name').textContent = `Now arriving, ${destination}.`;
-      $('#travel-description').textContent = 'The train is slowing. A new story is just outside.';
-      $('#status-text').textContent = `NOW ARRIVING / ${destination.toUpperCase()}`;
-      animate('#travel-landscape', { opacity: 0, duration: .8, onComplete: () => {
-        travel.speed = 0;
-        document.body.classList.remove('in-transit', 'is-travelling');
-        lenis?.start();
-        scrollToProgress(arrivalProgress(index, route), true);
-        inTransit = false;
-        lastChapter = '';
-        $('#route-progress').inert = false;
-        $('#next-chapter').disabled = false;
-        $('#map-toggle').disabled = false;
-        onProgress(progressFromScroll());
-        $('#next-chapter').focus({ preventScroll: true });
-        resolve();
-      } });
-    };
-    if (gsap && !reducedMotion) {
-      gsap.timeline()
-        .to('#carriage', { '--zoom': 0, '--piece-shade': 0, duration: .8, ease: 'power2.inOut' }, 0)
-        .to('#travel-landscape', { opacity: 1, duration: .5 }, 0)
-        .to(travel, { speed: 1, duration: 1.1, ease: 'power2.in' }, .2)
-        .call(() => { $('#travel-name').textContent = 'Watching India go by.'; }, [], 1.1)
-        .call(() => {
-          $('#travel-name').textContent = `Coming into ${destination}.`;
-          $('#status-text').textContent = `APPROACHING / ${destination.toUpperCase()}`;
-        }, [], 3.4)
-        .to(travel, { speed: 0, duration: 1, ease: 'power2.out' }, 3.4)
-        .call(arrive, [], 4.4);
-    } else {
-      $('#carriage').style.setProperty('--zoom', 0);
-      $('#carriage').style.setProperty('--piece-shade', 0);
-      $('#travel-landscape').style.opacity = 1;
-      travel.speed = reducedMotion ? 0 : 1;
-      setTimeout(arrive, reducedMotion ? 650 : 4400);
-    }
-  });
-  return transitPromise;
+  scrollToProgress(route.indexOf(index) / route.length, true);
+  onProgress(progressFromScroll());
+  $('#next-chapter').focus({ preventScroll: true });
 }
 function onProgress(p) {
-  if (!started || starting || reading || inTransit) return;
+  if (!started || starting || reading) return;
   const nextFrame = journeyFrame(p, route);
-  const requestedStation = nextFrame.station === station ? nextFrame.destination : nextFrame.station;
-  // Route buttons and fast scrolling must both pass through the travel interlude.
-  if (requestedStation !== station) { travelToStation(requestedStation); return; }
+  if (frame.inTransit && !nextFrame.inTransit) clothTransition();
   frame = nextFrame;
   travel.progress = p;
   travel.mix = frame.mix;
-  travel.speed = frame.chapter === 'travel' ? (frame.local < .12 ? Math.sin(frame.local / .12 * Math.PI) : 1 - frame.zoom) : 0;
+  $('#travel-landscape').style.opacity = frame.landscapeOpacity;
+  const sceneryProgress = reducedMotion ? 0 : smoothstep(0, 1, frame.transitProgress);
+  $('.travel-horizon').style.transform = `translate3d(${-sceneryProgress * 120}px,0,0)`;
+  $('.travel-fields').style.transform = `translate3d(${-sceneryProgress * 600}px,0,0)`;
+  $('.travel-foreground').style.transform = `translate3d(${-sceneryProgress * 1300}px,0,0)`;
   $('#carriage').style.setProperty('--zoom', frame.zoom.toFixed(4));
   $('#carriage').style.setProperty('--piece-shade', frame.pieceShade.toFixed(4));
   $('#carriage').dataset.chapter = frame.chapter;
   $('#travel-caption').setAttribute('aria-hidden', String(frame.zoom > .99));
-  document.body.classList.toggle('is-travelling', travel.speed > .1 && !reducedMotion);
-  $('#travelling-overlay').style.opacity = reducedMotion ? 0 : travel.speed * .3;
+  document.body.classList.toggle('is-travelling', frame.inTransit);
   $('.scene-jaipur').style.opacity = 1 - travel.mix;
   $('.scene-ahmedabad').style.opacity = travel.mix;
   if (station !== frame.station) updateStation(frame.station);
   const destination = stations[frame.destination];
-  $('#travel-kicker').textContent = 'YOUR WINDOW SEAT';
-  $('#travel-name').textContent = `Now at ${destination.name}.`;
-  $('#travel-description').textContent = 'Stay a while. Scroll to step into the story.';
-  if (frame.chapter === 'travel') $('#status-text').textContent = `NOW AT / ${destination.name.toUpperCase()}`;
+  $('#travel-kicker').textContent = frame.inTransit ? 'SCROLL TO TRAVEL' : 'NOW ARRIVING';
+  $('#travel-name').textContent = frame.inTransit ? (frame.transitProgress > .72 ? `${destination.name}, just ahead.` : `On the way to ${destination.name}.`) : `Now at ${destination.name}.`;
+  $('#travel-description').textContent = frame.inTransit ? 'A little scroll. A little countryside. Your next story, just ahead.' : 'We’ve arrived. Scroll to step into the story.';
+  if (frame.chapter === 'travel') $('#status-text').textContent = `${frame.inTransit ? 'EN ROUTE' : 'NOW AT'} / ${destination.name.toUpperCase()}`;
   const key = `${station}/${frame.chapter}`;
   if (key !== lastChapter) {
     if (lastChapter) clothTransition();
@@ -226,10 +167,11 @@ function onProgress(p) {
     if (culture && [`${station}/place`, `${station}/detail`].includes(lastChapter) && !reducedMotion) {
       animate('#culture-copy', { opacity: 0, y: -12, duration: .18, onComplete: updateCopy });
     } else updateCopy();
-    $('#status-text').textContent = frame.chapter === 'travel' ? `NOW AT / ${destination.name.toUpperCase()}` : `STOP 0${frame.leg + 1} / ${s.state.toUpperCase()}`;
+    if (frame.chapter !== 'travel') $('#status-text').textContent = `STOP 0${frame.leg + 1} / ${s.state.toUpperCase()}`;
     lastChapter = key;
   }
-  $('#next-chapter').setAttribute('aria-label', frame.complete ? 'Explore the itinerary' : 'Next chapter');
+  $('#next-chapter').childNodes[0].nodeValue = frame.inTransit ? 'SCROLL TO TRAVEL ' : 'SCROLL TO EXPLORE ';
+  $('#next-chapter').setAttribute('aria-label', frame.complete ? 'Explore the itinerary' : frame.inTransit ? 'Continue travelling' : 'Next chapter');
 }
 function renderRoute() {
   $('#route-progress').replaceChildren();
@@ -242,7 +184,7 @@ function renderRoute() {
   });
 }
 function goToStation(index) {
-  if (!started || starting || inTransit) return;
+  if (!started || starting) return;
   closeMap();
   if (index === station) scrollToProgress((route.indexOf(index) + .3) / route.length);
   else travelToStation(index);
@@ -326,7 +268,7 @@ mapViewport.addEventListener('keydown', event => {
   else if (shifts[event.key]) moveMap({ ...mapTarget, x: mapTarget.x + shifts[event.key][0], y: mapTarget.y + shifts[event.key][1] }, .25);
 });
 async function chooseStart(index) {
-  if (mapChoosing || starting || inTransit) return;
+  if (mapChoosing || starting) return;
   mapChoosing = true;
   const selection = ++mapSelection;
   const pin = $(`.map-pin[data-start="${index}"]`);
@@ -338,7 +280,7 @@ async function chooseStart(index) {
 }
 paintMap();
 function openMap(event) {
-  if (starting || inTransit || mapChoosing) return;
+  if (starting || mapChoosing) return;
   clothTransition();
   if (reading) closeStory();
   closePanel();
@@ -360,7 +302,7 @@ function closeMap() {
   paintMap();
   $('#map-screen').hidden = true;
   document.body.classList.remove('map-open');
-  if (started && !starting && !inTransit) lenis?.start();
+  if (started && !starting) lenis?.start();
   journey.inert = !started;
   $('#intro-overlay').inert = started;
   mapTrigger?.focus({ preventScroll: true });
@@ -387,20 +329,18 @@ async function begin(index) {
   $('#journey-bottom').hidden = false;
   scrollToPosition(0, true);
   window.ScrollTrigger?.refresh();
-  travel.departure = 1;
-  travel.speed = 1;
+  travel.speed = 0;
   if (gsap && !reducedMotion) {
     await new Promise(resolve => gsap.timeline({ onComplete: resolve })
-      .to('#shutter', { yPercent: -103, duration: 1.5, ease: 'power3.inOut' })
-      .to(travel, { departure: 0, speed: 0, duration: 1.6, ease: 'power2.out' }, '<'));
+      .to('#shutter', { yPercent: -103, duration: 1.2, ease: 'power3.inOut' }));
   } else {
     $('#shutter').style.transform = 'translateY(-103%)';
-    travel.departure = 0;
     travel.speed = 0;
   }
   started = true;
   starting = false;
-  await travelToStation(index, true);
+  lenis?.start();
+  onProgress(0);
   $('#next-chapter').focus({ preventScroll: true });
 }
 $('#start-journey').addEventListener('click', openMap);
@@ -413,7 +353,7 @@ $('#home-button').addEventListener('click', () => {
   else { closeMap(); $('#start-journey').focus(); }
 });
 $('#next-chapter').addEventListener('click', () => {
-  if (inTransit) return;
+  if (frame.inTransit) return scrollToProgress(Math.min(arrivalProgress(frame.destination, route), progressFromScroll() + .04));
   if (frame.complete) return openMap();
   const next = [.30, .52, .72, .94, 1].find(point => point > frame.local + .01);
   scrollToProgress((frame.leg + next) / route.length);
@@ -423,7 +363,7 @@ $('#next-stop').addEventListener('click', () => frame.final ? openMap() : travel
 function closePanel() {
   if (!$('#detail-panel').open) return;
   $('#detail-panel').close();
-  if (started && !starting && !inTransit && !reading && $('#map-screen').hidden) lenis?.start();
+  if (started && !starting && !reading && $('#map-screen').hidden) lenis?.start();
   panelTrigger?.focus({ preventScroll: true });
 }
 function openPanel(event, garment = false) {
@@ -553,6 +493,12 @@ if (lenis && gsap) {
   gsap.ticker.add(time => lenis.raf(time * 1000));
   gsap.ticker.lagSmoothing(0);
 }
+let previousMotionScroll = scrollY;
+function updateTravelSpeed() {
+  travel.speed = !reducedMotion && started && frame.inTransit && !reading ? Math.min(1, Math.abs(scrollY - previousMotionScroll) / 12) : 0;
+  previousMotionScroll = scrollY;
+}
+if (gsap) gsap.ticker.add(updateTravelSpeed);
 if (gsap && window.ScrollTrigger) {
   gsap.registerPlugin(window.ScrollTrigger);
   if (lenis) {
@@ -673,9 +619,9 @@ async function initScene() {
         group.visible = groupIndex === 0 ? shift < 1 : shift > 0;
         group.userData.panels.forEach((mesh, i) => {
           const stagger = 1 + (groupIndex === 0 ? i : 5 - i) * .065;
-          const movement = reducedMotion ? 0 : (phase + (groupIndex === station ? travel.departure : 0)) * (aspect * 2 + 1.5) * stagger;
+          const movement = reducedMotion ? 0 : phase * (aspect * 2 + 1.5) * stagger;
           mesh.position.x = mesh.userData.baseX + movement;
-          mesh.position.y = reducedMotion ? 0 : Math.sin(t * 14 + i * .3) * travel.speed * .007 + Math.sin(Math.abs(phase) * Math.PI) * ((i % 3) - 1) * .18;
+          mesh.position.y = reducedMotion ? 0 : Math.sin(travel.progress * 800 + i * .3) * travel.speed * .007 + Math.sin(Math.abs(phase) * Math.PI) * ((i % 3) - 1) * .18;
           mesh.position.z = -i * .005;
           mesh.rotation.z = reducedMotion ? 0 : Math.sin(Math.abs(phase) * Math.PI) * ((i % 2) - .5) * .1;
           mesh.material.opacity = reducedMotion ? (groupIndex === 0 ? 1 - shift : shift) : 1;
@@ -693,7 +639,7 @@ async function initScene() {
     }
     if (gsap) gsap.ticker.add(time => render(time * 1000));
     else {
-      const tick = time => { render(time); requestAnimationFrame(tick); };
+      const tick = time => { updateTravelSpeed(); render(time); requestAnimationFrame(tick); };
       requestAnimationFrame(tick);
     }
   } catch (error) {

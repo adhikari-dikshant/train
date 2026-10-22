@@ -29,7 +29,7 @@ test('either origin follows the fixed route exactly once', () => {
   }
 });
 
-test('departure and skipped scroll positions request travel before a new city', () => {
+test('the fixed route identifies the next stop during departure and arrival', () => {
   for (const route of [routeFrom(0), routeFrom(1)]) {
     assert.equal(journeyFrame(.43, route).destination, route[0]);
     assert.equal(journeyFrame(.441, route).destination, route[1]);
@@ -46,6 +46,35 @@ test('departure and skipped scroll positions request travel before a new city', 
   }
 });
 
+test('first departure and intercity travel advance only with scroll position', () => {
+  for (const route of [routeFrom(0), routeFrom(1)]) {
+    const first = journeyFrame(0, route);
+    assert.equal(first.inTransit, true);
+    assert.equal(first.transitProgress, 0);
+    assert.equal(first.landscapeOpacity, 1);
+    assert.equal(journeyFrame(.03, route).transitProgress, .5);
+    assert.equal(journeyFrame(.06, route).inTransit, false);
+    assert.equal(journeyFrame(.06, route).landscapeOpacity, 0);
+    assert.equal(journeyFrame(.1, route).chapter, 'place');
+    assert.equal(journeyFrame(.1, route).zoom, 1);
+    for (const [progress, expected] of [[.44, 0], [.47, .25], [.5, .5], [.53, .75], [.56, 1]]) {
+      const current = journeyFrame(progress, route);
+      assert.ok(Math.abs(current.transitProgress - expected) < 1e-10);
+      assert.deepEqual(current, journeyFrame(progress, route));
+      assert.equal(current.destination, route[1]);
+    }
+    assert.equal(journeyFrame(.5, route).landscapeOpacity, 1);
+    assert.equal(journeyFrame(.56, route).inTransit, false);
+    assert.equal(journeyFrame(.56, route).landscapeOpacity, 0);
+    assert.equal(journeyFrame(.6, route).chapter, 'place');
+    assert.equal(journeyFrame(.6, route).zoom, 1);
+    assert.equal(journeyFrame(.63, route).chapter, 'place');
+    for (const property of ['transitProgress', 'landscapeOpacity']) {
+      assert.ok(Math.abs(journeyFrame(.5 - 1e-7, route)[property] - journeyFrame(.5 + 1e-7, route)[property]) < .0001);
+    }
+  }
+});
+
 test('scroll beyond either end stays within the journey', () => {
   for (const route of [routeFrom(0), routeFrom(1)]) {
     assert.deepEqual(journeyFrame(-2, route), journeyFrame(0, route));
@@ -55,7 +84,7 @@ test('scroll beyond either end stays within the journey', () => {
 
 test('zoom, scenery and garment shade stay continuous across every chapter boundary', () => {
   for (const route of [routeFrom(0), routeFrom(1)]) {
-    for (const progress of [.06, .125, .235, .305, .32, .34, .43, .44, .45, .49, .5, .56, .625, .735, .805, .82, .84]) {
+    for (const progress of [.06, .095, .235, .305, .32, .34, .43, .44, .45, .49, .5, .56, .595, .735, .805, .82, .84]) {
       const before = journeyFrame(progress - .000001, route);
       const after = journeyFrame(progress + .000001, route);
       for (const property of ['zoom', 'mix', 'pieceShade']) {

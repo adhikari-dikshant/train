@@ -17,10 +17,13 @@ export function journeyFrame(progress, route) {
   const leg = Math.min(route.length - 1, Math.floor(p * route.length));
   const local = p * route.length - leg;
   const final = leg === route.length - 1;
-  const zoom = smoothstep(.12, .25, local) * (final ? 1 : 1 - smoothstep(.88, .98, local));
-  const chapter = local < .25 ? 'travel' : local < .47 ? 'place' : local < .64 ? 'detail' : local < .88 || final ? 'piece' : 'travel';
+  const zoom = smoothstep(.12, .19, local) * (final ? 1 : 1 - smoothstep(.88, .98, local));
+  const chapter = local < .19 ? 'travel' : local < .47 ? 'place' : local < .64 ? 'detail' : local < .88 || final ? 'piece' : 'travel';
   const mix = leg === 0 ? route[leg] : route[leg - 1] + (route[leg] - route[leg - 1]) * smoothstep(0, .12, local);
   const pieceShade = smoothstep(.61, .68, local) * (final ? 1 : 1 - smoothstep(.86, .9, local));
   const destination = !final && local >= .88 ? route[leg + 1] : route[leg];
-  return { leg, local, station: route[leg], destination, zoom, chapter, mix, pieceShade, final, complete: p >= .999 };
+  const inTransit = local < .12 || (!final && local >= .88);
+  const transitProgress = local >= .88 && !final ? (local - .88) / .24 : leg === 0 ? clamp(local / .12) : clamp((local + .12) / .24);
+  const landscapeOpacity = inTransit ? (leg === 0 && local < .12 ? 1 : smoothstep(0, .12, transitProgress)) * (1 - smoothstep(.72, 1, transitProgress)) : 0;
+  return { leg, local, station: route[leg], destination, zoom, chapter, mix, pieceShade, inTransit, transitProgress, landscapeOpacity, final, complete: p >= .999 };
 }
