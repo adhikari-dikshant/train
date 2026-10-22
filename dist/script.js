@@ -1,4 +1,5 @@
 import { clamp, smoothstep, routeFrom, journeyFrame, arrivalProgress } from './journey-state.mjs';
+import { constrainMapView, zoomMapView } from './map-view.mjs';
 
 const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];
@@ -236,13 +237,104 @@ function goToStation(index) {
   if (index === station) scrollToProgress((route.indexOf(index) + .3) / route.length);
   else travelToStation(index);
 }
+const mapViewport = $('#map-viewport');
+const mapContent = $('#map-content');
+const mapView = { scale: 1, x: 0, y: 0 };
+let mapTarget = { ...mapView };
+let mapDrag;
+let mapChoosing = false;
+let mapSelection = 0;
+function paintMap() {
+  $('#map-zoom-level').textContent = `${Math.round(mapView.scale * 100)}%`;
+  mapContent.style.transform = `translate(${mapView.x * 100}%,${mapView.y * 100}%) scale(${mapView.scale})`;
+  mapContent.style.setProperty('--map-scale', mapView.scale);
+  mapViewport.classList.toggle('is-zoomed', mapView.scale > 1.01);
+  $('#map-zoom-in').disabled = mapChoosing || mapTarget.scale >= 3;
+  $('#map-zoom-out').disabled = mapChoosing || mapTarget.scale <= 1;
+  $('#map-reset').disabled = mapChoosing || mapTarget.scale <= 1;
+}
+function moveMap(target, duration = .55) {
+  mapTarget = constrainMapView(target);
+  paintMap();
+  if (!gsap || reducedMotion) {
+    Object.assign(mapView, mapTarget);
+    paintMap();
+    return Promise.resolve();
+  }
+  return new Promise(resolve => gsap.to(mapView, { ...mapTarget, duration, ease: 'power3.out', overwrite: true, onUpdate: paintMap, onComplete: resolve, onInterrupt: resolve }));
+}
+function zoomMap(scale, anchor) {
+  if (!mapChoosing) moveMap(zoomMapView(mapTarget, scale, anchor));
+}
+function focusMapPin(pin, scale, duration = .55) {
+  return moveMap({ scale, x: .5 - pin.offsetLeft / mapContent.clientWidth * scale, y: .45 - pin.offsetTop / mapContent.clientHeight * scale }, duration);
+}
+mapViewport.addEventListener('focusin', event => {
+  const pin = event.target.closest('.map-pin');
+  if (pin?.matches(':focus-visible') && !mapChoosing) focusMapPin(pin, mapTarget.scale);
+});
+$('#map-zoom-in').addEventListener('click', () => zoomMap(mapTarget.scale + .5));
+$('#map-zoom-out').addEventListener('click', () => zoomMap(mapTarget.scale - .5));
+$('#map-reset').addEventListener('click', () => moveMap({ scale: 1, x: 0, y: 0 }));
+mapViewport.addEventListener('wheel', event => {
+  event.preventDefault();
+  const rect = mapViewport.getBoundingClientRect();
+  const delta = event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? rect.height : 1);
+  zoomMap(mapTarget.scale * Math.exp(-delta * .002), { x: clamp((event.clientX - rect.left) / rect.width), y: clamp((event.clientY - rect.top) / rect.height) });
+}, { passive: false });
+mapViewport.addEventListener('dblclick', event => {
+  if (event.target.closest('button')) return;
+  const rect = mapViewport.getBoundingClientRect();
+  zoomMap(mapTarget.scale > 1 ? 1 : 2, { x: (event.clientX - rect.left) / rect.width, y: (event.clientY - rect.top) / rect.height });
+});
+mapViewport.addEventListener('pointerdown', event => {
+  if (mapChoosing || mapDrag || mapView.scale <= 1.01 || event.button !== 0 || event.target.closest('button')) return;
+  event.preventDefault();
+  gsap?.killTweensOf(mapView);
+  mapTarget = { ...mapView };
+  mapDrag = { id: event.pointerId, clientX: event.clientX, clientY: event.clientY, view: { ...mapView }, rect: mapViewport.getBoundingClientRect() };
+  mapViewport.setPointerCapture(event.pointerId);
+  mapViewport.classList.add('is-dragging');
+});
+mapViewport.addEventListener('pointermove', event => {
+  if (event.pointerId !== mapDrag?.id) return;
+  Object.assign(mapView, constrainMapView({ scale: mapDrag.view.scale, x: mapDrag.view.x + (event.clientX - mapDrag.clientX) / mapDrag.rect.width, y: mapDrag.view.y + (event.clientY - mapDrag.clientY) / mapDrag.rect.height }));
+  mapTarget = { ...mapView };
+  paintMap();
+});
+mapViewport.addEventListener('lostpointercapture', () => {
+  mapDrag = undefined;
+  mapViewport.classList.remove('is-dragging');
+});
+mapViewport.addEventListener('keydown', event => {
+  if (mapChoosing) return;
+  const shifts = { ArrowLeft: [.12, 0], ArrowRight: [-.12, 0], ArrowUp: [0, .12], ArrowDown: [0, -.12] };
+  if (['+', '=', '-', '0', 'Home', ...Object.keys(shifts)].includes(event.key)) event.preventDefault();
+  if (['+', '='].includes(event.key)) zoomMap(mapTarget.scale + .5);
+  else if (event.key === '-') zoomMap(mapTarget.scale - .5);
+  else if (['0', 'Home'].includes(event.key)) moveMap({ scale: 1, x: 0, y: 0 });
+  else if (shifts[event.key]) moveMap({ ...mapTarget, x: mapTarget.x + shifts[event.key][0], y: mapTarget.y + shifts[event.key][1] }, .25);
+});
+async function chooseStart(index) {
+  if (mapChoosing || starting || inTransit) return;
+  mapChoosing = true;
+  const selection = ++mapSelection;
+  const pin = $(`.map-pin[data-start="${index}"]`);
+  mapViewport.scrollIntoView({ block: 'nearest', behavior: reducedMotion ? 'instant' : 'smooth' });
+  await focusMapPin(pin, 2.35, .85);
+  if (selection !== mapSelection) return;
+  mapChoosing = false;
+  begin(index);
+}
+paintMap();
 function openMap(event) {
-  if (starting || inTransit) return;
+  if (starting || inTransit || mapChoosing) return;
   if (reading) closeStory();
   closePanel();
   lenis?.stop();
   mapTrigger = event?.currentTarget || $('#map-toggle');
   $('#map-screen').hidden = false;
+  moveMap({ scale: 1, x: 0, y: 0 }, 0);
   if (gsap && !reducedMotion) gsap.fromTo('#map-screen', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: .5, overwrite: true, ease: 'power2.out' });
   document.body.classList.add('map-open');
   journey.inert = true;
@@ -250,6 +342,10 @@ function openMap(event) {
   $('#map-title').focus({ preventScroll: true });
 }
 function closeMap() {
+  mapSelection++;
+  mapChoosing = false;
+  gsap?.killTweensOf(mapView);
+  paintMap();
   $('#map-screen').hidden = true;
   document.body.classList.remove('map-open');
   if (started && !starting && !inTransit) lenis?.start();
@@ -297,7 +393,7 @@ async function begin(index) {
 $('#start-journey').addEventListener('click', openMap);
 $('#map-toggle').addEventListener('click', openMap);
 $('#close-map').addEventListener('click', closeMap);
-$$('[data-start]').forEach(button => button.addEventListener('click', () => begin(Number(button.dataset.start))));
+$$('[data-start]').forEach(button => button.addEventListener('click', () => chooseStart(Number(button.dataset.start))));
 $('#home-button').addEventListener('click', () => {
   if (reading) closeStory();
   if (started) openMap();

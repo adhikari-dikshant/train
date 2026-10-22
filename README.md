@@ -6,12 +6,13 @@ An interactive clothing collection journal built with plain HTML, CSS, locally b
 
 Run `python3 -m http.server 4173 --bind 127.0.0.1`, then open http://127.0.0.1:4173/. JavaScript modules require an HTTP server.
 
-Run `node --test tests/journey-state.test.mjs` for the route/scroll checks. Run `node scripts/build.mjs` to validate local asset references and regenerate `dist/`. The existing private Site identity is retained in `.openai/hosting.json`.
+Run `node --test tests/*.test.mjs` for the route, scroll and map-zoom checks. Run `node scripts/build.mjs` to validate local asset references and regenerate `dist/`. The existing private Site identity is retained in `.openai/hosting.json`.
 
 ## Experience
 
 - The opening railway ticket uses indigo twill, ecru lettering, tobacco stitching and coloured denim swatches. `assets/denim-weave.svg` is an original lightweight texture shared by the ticket and swatches.
 - The itinerary continues the compartment setting with a stitched indigo card and a folded paper map. The map keeps its original geography and pin coordinates; `assets/paper-grain.svg` adds an original paper texture.
+- The map zooms from 100% to 300% using the buttons, mouse wheel or keyboard (+, −, 0/Home, arrow keys). Drag to pan while enlarged. Pins keep readable labels; selecting a destination gently focuses the map before departure. Closing cancels that focus, and reopening resets the view. Reduced motion makes zoom immediate.
 - Start your journey opens an India map. Select Jaipur or Ahmedabad as the starting point. The two-stop route then follows that order, visiting the other destination second. The bottom navigation jumps to either stop without changing that route.
 - The shutter opens onto moving countryside before the first arrival. Between destinations, a five-second travel interlude restores the compartment, runs a layered countryside animation, slows the train, and reveals the next city. Station buttons and fast scrolling use this same interlude. Arrival leaves visitors at the window; scrolling then expands the destination into the entire screen.
 - The compartment disappears completely during the two cultural chapters and garment reveal. Intercity motion uses original SVG hills, villages, fields and railway poles, animated at different speeds. It works independently of WebGL and needs no video download or autoplay permission. Reduced motion substitutes a brief static journey notice.
@@ -38,7 +39,7 @@ Lenis is vendored from its official npm release; `vendor/lenis-LICENSE.txt` reta
 ## Source
 
 - `index.html`, `style.css`, `script.js`: interface and visual narrative.
-- `journey-state.mjs`: fixed route and scroll chapter calculation.
+- `journey-state.mjs`, `map-view.mjs`: fixed route, scroll chapters and bounded map zoom/pan calculations.
 - `assets/`, `vendor/`: used artwork and locally bundled libraries.
 - `tests/`, `scripts/build.mjs`: route checks and static output generation.
 - `dist/`: generated publishing files.
