@@ -11,7 +11,6 @@ Run `node --test tests/*.test.mjs` for the route, scroll and map-zoom checks. Ru
 ## Experience
 
 - The opening railway ticket uses indigo twill, ecru lettering, tobacco stitching and coloured denim swatches. `assets/denim-weave.svg` is an original lightweight texture shared by the ticket and swatches.
-- Scene changes carry a brief stitched-denim fold across the screen. It runs alongside navigation and travel, accepts no pointer input, skips overlapping sweeps and is disabled for reduced motion. Zooming, panning and detail-panel interactions do not trigger it.
 - The itinerary continues the compartment setting with a stitched indigo card and a folded paper map. The map keeps its original geography and pin coordinates; `assets/paper-grain.svg` adds an original paper texture.
 - The map zooms from 100% to 300% using the buttons, mouse wheel or keyboard (+, −, 0/Home, arrow keys). Drag to pan while enlarged. Pins keep readable labels; selecting a destination gently focuses the map before departure. Closing cancels that focus, and reopening resets the view. Reduced motion makes zoom immediate.
 - Start your journey opens an India map. Select Jaipur or Ahmedabad as the starting point. The two-stop route then follows that order, visiting the other destination second. The bottom navigation jumps to either stop without changing that route.

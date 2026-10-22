@@ -68,13 +68,6 @@ function animate(target, properties) {
   if (properties.y !== undefined) node.style.transform = `translateY(${properties.y}px)`;
   properties.onComplete?.();
 }
-function clothTransition() {
-  if (reducedMotion || !gsap || gsap.isTweening('#cloth-fold')) return;
-  const fold = $('#cloth-fold');
-  gsap.fromTo(fold,
-    { x: -fold.offsetWidth - innerHeight * .3, skewX: -7, scaleX: .85 },
-    { x: innerWidth + innerHeight * .3, skewX: 6, scaleX: 1.05, duration: 1.2, ease: 'power2.inOut' });
-}
 function range() { return Math.max(1, journey.offsetHeight - $('#carriage').offsetHeight); }
 function progressFromScroll() { return clamp((scrollY - journey.offsetTop) / range()); }
 function scrollToPosition(top, immediate = false) {
@@ -115,7 +108,6 @@ function reveal(selector, visible) {
 }
 function travelToStation(index) {
   if (!route.includes(index)) return;
-  clothTransition();
   closePanel();
   scrollToProgress(route.indexOf(index) / route.length, true);
   onProgress(progressFromScroll());
@@ -124,7 +116,6 @@ function travelToStation(index) {
 function onProgress(p) {
   if (!started || starting || reading) return;
   const nextFrame = journeyFrame(p, route);
-  if (frame.inTransit && !nextFrame.inTransit) clothTransition();
   frame = nextFrame;
   travel.progress = p;
   travel.mix = frame.mix;
@@ -148,7 +139,6 @@ function onProgress(p) {
   if (frame.chapter === 'travel') $('#status-text').textContent = `${frame.inTransit ? 'EN ROUTE' : 'NOW AT'} / ${destination.name.toUpperCase()}`;
   const key = `${station}/${frame.chapter}`;
   if (key !== lastChapter) {
-    if (lastChapter) clothTransition();
     closePanel();
     const culture = ['place', 'detail'].includes(frame.chapter);
     reveal('#product-reveal', frame.chapter === 'piece');
@@ -281,7 +271,6 @@ async function chooseStart(index) {
 paintMap();
 function openMap(event) {
   if (starting || mapChoosing) return;
-  clothTransition();
   if (reading) closeStory();
   closePanel();
   lenis?.stop();
@@ -295,7 +284,6 @@ function openMap(event) {
   $('#map-title').focus({ preventScroll: true });
 }
 function closeMap() {
-  if (!$('#map-screen').hidden) clothTransition();
   mapSelection++;
   mapChoosing = false;
   gsap?.killTweensOf(mapView);
@@ -318,7 +306,6 @@ async function begin(index) {
   updateStation(index);
   $('#travel-landscape').style.opacity = 1;
   $('#intro-overlay').hidden = true;
-  clothTransition();
   if (gsap && !reducedMotion) await new Promise(resolve => gsap.to('#map-screen', { opacity: 0, duration: .35, overwrite: true, onComplete: resolve }));
   closeMap();
   $('#intro-overlay').hidden = true;
@@ -388,7 +375,6 @@ function showStory() {
     return;
   }
   const s = stations.find(item => item.slug === slug);
-  if (!reading) clothTransition();
   if (!reading) savedJourneyScroll = scrollY;
   reading = true;
   lenis?.stop();
@@ -413,7 +399,6 @@ function showStory() {
   $('#piece-name').focus({ preventScroll: true });
 }
 function leaveStory() {
-  clothTransition();
   lenis?.stop();
   reading = false;
   $('#piece-page').hidden = true;
