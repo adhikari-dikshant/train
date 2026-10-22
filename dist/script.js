@@ -1,4 +1,4 @@
-import { clamp, smoothstep, routeFrom, journeyFrame } from './journey-state.mjs';
+import { clamp, smoothstep, routeFrom, journeyFrame, arrivalProgress } from './journey-state.mjs';
 
 const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];
@@ -11,6 +11,8 @@ const windowBox = $('#window-interior');
 const travel = { speed: 0, departure: 0, progress: 0, mix: 0, pointerX: 0, pointerY: 0 };
 let started = false;
 let starting = false;
+let inTransit = false;
+let transitPromise;
 let station = 0;
 let route = routeFrom(0);
 let frame = journeyFrame(0, route);
@@ -75,9 +77,9 @@ function scrollToPosition(top, immediate = false) {
     lenis.scrollTo(top, { immediate, force: immediate, lerp: 0, duration: 1.65, easing: t => t < .5 ? 4 * t ** 3 : 1 - (-2 * t + 2) ** 3 / 2 });
   } else window.scrollTo({ top, behavior: immediate || reducedMotion ? 'instant' : 'smooth' });
 }
-function scrollToProgress(p) {
+function scrollToProgress(p, immediate = false) {
   closePanel();
-  scrollToPosition(journey.offsetTop + range() * clamp(p));
+  scrollToPosition(journey.offsetTop + range() * clamp(p), immediate);
 }
 function setImage(id, path, alt) { $(id).src = path; $(id).alt = alt; }
 function updateStation(index) {
@@ -105,9 +107,77 @@ function reveal(selector, visible) {
   node.style.pointerEvents = visible ? 'auto' : 'none';
   animate(node, { opacity: visible ? 1 : 0, y: visible ? 0 : 18, duration: .4 });
 }
+function travelToStation(index, firstTrip = false) {
+  if (inTransit) return transitPromise;
+  if (!route.includes(index)) return;
+  inTransit = true;
+  closePanel();
+  lenis?.stop();
+  const origin = stations[station].name;
+  const destination = stations[index].name;
+  gsap?.killTweensOf('#culture-copy');
+  ['#culture-copy', '#product-reveal', '#detail-fragment'].forEach(selector => reveal(selector, false));
+  document.body.classList.add('in-transit', 'is-travelling');
+  $('#route-progress').inert = true;
+  $('#next-chapter').disabled = true;
+  $('#map-toggle').disabled = true;
+  $('#travel-caption').setAttribute('aria-hidden', 'false');
+  $('#travel-kicker').textContent = firstTrip ? `FIRST STOP / ${destination.toUpperCase()}` : `${origin.toUpperCase()} → ${destination.toUpperCase()}`;
+  $('#travel-name').textContent = firstTrip ? 'And we’re off.' : `Leaving ${origin} behind.`;
+  $('#travel-description').textContent = 'Open fields. Little towns. A little time between places.';
+  $('#status-text').textContent = `EN ROUTE / ${destination.toUpperCase()}`;
+  transitPromise = new Promise(resolve => {
+    const arrive = () => {
+      frame = journeyFrame(arrivalProgress(index, route), route);
+      travel.mix = index;
+      updateStation(index);
+      $('#travel-name').textContent = `Now arriving, ${destination}.`;
+      $('#travel-description').textContent = 'The train is slowing. A new story is just outside.';
+      $('#status-text').textContent = `NOW ARRIVING / ${destination.toUpperCase()}`;
+      animate('#travel-landscape', { opacity: 0, duration: .8, onComplete: () => {
+        travel.speed = 0;
+        document.body.classList.remove('in-transit', 'is-travelling');
+        lenis?.start();
+        scrollToProgress(arrivalProgress(index, route), true);
+        inTransit = false;
+        lastChapter = '';
+        $('#route-progress').inert = false;
+        $('#next-chapter').disabled = false;
+        $('#map-toggle').disabled = false;
+        onProgress(progressFromScroll());
+        $('#next-chapter').focus({ preventScroll: true });
+        resolve();
+      } });
+    };
+    if (gsap && !reducedMotion) {
+      gsap.timeline()
+        .to('#carriage', { '--zoom': 0, '--piece-shade': 0, duration: .8, ease: 'power2.inOut' }, 0)
+        .to('#travel-landscape', { opacity: 1, duration: .5 }, 0)
+        .to(travel, { speed: 1, duration: 1.1, ease: 'power2.in' }, .2)
+        .call(() => { $('#travel-name').textContent = 'Watching India go by.'; }, [], 1.1)
+        .call(() => {
+          $('#travel-name').textContent = `Coming into ${destination}.`;
+          $('#status-text').textContent = `APPROACHING / ${destination.toUpperCase()}`;
+        }, [], 3.4)
+        .to(travel, { speed: 0, duration: 1, ease: 'power2.out' }, 3.4)
+        .call(arrive, [], 4.4);
+    } else {
+      $('#carriage').style.setProperty('--zoom', 0);
+      $('#carriage').style.setProperty('--piece-shade', 0);
+      $('#travel-landscape').style.opacity = 1;
+      travel.speed = reducedMotion ? 0 : 1;
+      setTimeout(arrive, reducedMotion ? 650 : 4400);
+    }
+  });
+  return transitPromise;
+}
 function onProgress(p) {
-  if (!started || starting || reading) return;
-  frame = journeyFrame(p, route);
+  if (!started || starting || reading || inTransit) return;
+  const nextFrame = journeyFrame(p, route);
+  const requestedStation = nextFrame.station === station ? nextFrame.destination : nextFrame.station;
+  // Route buttons and fast scrolling must both pass through the travel interlude.
+  if (requestedStation !== station) { travelToStation(requestedStation); return; }
+  frame = nextFrame;
   travel.progress = p;
   travel.mix = frame.mix;
   travel.speed = frame.chapter === 'travel' ? (frame.local < .12 ? Math.sin(frame.local / .12 * Math.PI) : 1 - frame.zoom) : 0;
@@ -120,9 +190,11 @@ function onProgress(p) {
   $('.scene-jaipur').style.opacity = 1 - travel.mix;
   $('.scene-ahmedabad').style.opacity = travel.mix;
   if (station !== frame.station) updateStation(frame.station);
-  const destination = frame.local >= .88 && !frame.final ? stations[route[frame.leg + 1]] : stations[station];
-  $('#travel-name').textContent = `${destination.name}, ahead.`;
-  if (frame.chapter === 'travel') $('#status-text').textContent = `EN ROUTE / ${destination.name.toUpperCase()}`;
+  const destination = stations[frame.destination];
+  $('#travel-kicker').textContent = 'YOUR WINDOW SEAT';
+  $('#travel-name').textContent = `Now at ${destination.name}.`;
+  $('#travel-description').textContent = 'Stay a while. Scroll to step into the story.';
+  if (frame.chapter === 'travel') $('#status-text').textContent = `NOW AT / ${destination.name.toUpperCase()}`;
   const key = `${station}/${frame.chapter}`;
   if (key !== lastChapter) {
     closePanel();
@@ -143,7 +215,7 @@ function onProgress(p) {
     if (culture && [`${station}/place`, `${station}/detail`].includes(lastChapter) && !reducedMotion) {
       animate('#culture-copy', { opacity: 0, y: -12, duration: .18, onComplete: updateCopy });
     } else updateCopy();
-    $('#status-text').textContent = frame.chapter === 'travel' ? `EN ROUTE / ${destination.name.toUpperCase()}` : `STOP 0${frame.leg + 1} / ${s.state.toUpperCase()}`;
+    $('#status-text').textContent = frame.chapter === 'travel' ? `NOW AT / ${destination.name.toUpperCase()}` : `STOP 0${frame.leg + 1} / ${s.state.toUpperCase()}`;
     lastChapter = key;
   }
   $('#next-chapter').setAttribute('aria-label', frame.complete ? 'Explore the itinerary' : 'Next chapter');
@@ -159,12 +231,13 @@ function renderRoute() {
   });
 }
 function goToStation(index) {
-  if (!started || starting) return;
+  if (!started || starting || inTransit) return;
   closeMap();
-  scrollToProgress((route.indexOf(index) + .3) / route.length);
+  if (index === station) scrollToProgress((route.indexOf(index) + .3) / route.length);
+  else travelToStation(index);
 }
 function openMap(event) {
-  if (starting) return;
+  if (starting || inTransit) return;
   if (reading) closeStory();
   closePanel();
   lenis?.stop();
@@ -179,7 +252,7 @@ function openMap(event) {
 function closeMap() {
   $('#map-screen').hidden = true;
   document.body.classList.remove('map-open');
-  if (started && !starting) lenis?.start();
+  if (started && !starting && !inTransit) lenis?.start();
   journey.inert = !started;
   $('#intro-overlay').inert = started;
   mapTrigger?.focus({ preventScroll: true });
@@ -193,6 +266,7 @@ async function begin(index) {
   travel.mix = index;
   renderRoute();
   updateStation(index);
+  $('#travel-landscape').style.opacity = 1;
   $('#intro-overlay').hidden = true;
   if (gsap && !reducedMotion) await new Promise(resolve => gsap.to('#map-screen', { opacity: 0, duration: .35, overwrite: true, onComplete: resolve }));
   closeMap();
@@ -217,8 +291,7 @@ async function begin(index) {
   }
   started = true;
   starting = false;
-  lenis?.start();
-  onProgress(progressFromScroll());
+  await travelToStation(index, true);
   $('#next-chapter').focus({ preventScroll: true });
 }
 $('#start-journey').addEventListener('click', openMap);
@@ -231,16 +304,17 @@ $('#home-button').addEventListener('click', () => {
   else { closeMap(); $('#start-journey').focus(); }
 });
 $('#next-chapter').addEventListener('click', () => {
+  if (inTransit) return;
   if (frame.complete) return openMap();
   const next = [.30, .52, .72, .94, 1].find(point => point > frame.local + .01);
   scrollToProgress((frame.leg + next) / route.length);
 });
-$('#next-stop').addEventListener('click', () => frame.final ? openMap() : scrollToProgress((frame.leg + .96) / route.length));
+$('#next-stop').addEventListener('click', () => frame.final ? openMap() : travelToStation(route[frame.leg + 1]));
 
 function closePanel() {
   if (!$('#detail-panel').open) return;
   $('#detail-panel').close();
-  if (started && !starting && !reading && $('#map-screen').hidden) lenis?.start();
+  if (started && !starting && !inTransit && !reading && $('#map-screen').hidden) lenis?.start();
   panelTrigger?.focus({ preventScroll: true });
 }
 function openPanel(event, garment = false) {

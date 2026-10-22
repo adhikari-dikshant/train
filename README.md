@@ -11,7 +11,8 @@ Run `node --test tests/journey-state.test.mjs` for the route/scroll checks. Run 
 ## Experience
 
 - Start your journey opens an India map. Select Jaipur or Ahmedabad as the starting point. The two-stop route then follows that order, visiting the other destination second. The bottom navigation jumps to either stop without changing that route.
-- The shutter opens onto the selected destination. Scroll to expand the window into the entire screen. The compartment disappears completely during the two cultural chapters and garment reveal; it returns while travelling between stops.
+- The shutter opens onto moving countryside before the first arrival. Between destinations, a five-second travel interlude restores the compartment, runs a layered countryside animation, slows the train, and reveals the next city. Station buttons and fast scrolling use this same interlude. Arrival leaves visitors at the window; scrolling then expands the destination into the entire screen.
+- The compartment disappears completely during the two cultural chapters and garment reveal. Intercity motion uses original SVG hills, villages, fields and railway poles, animated at different speeds. It works independently of WebGL and needs no video download or autoplay permission. Reduced motion substitutes a brief static journey notice.
 - The first chapter introduces the place. The second combines the collage and a supplied design sheet. The last introduces the garment and its own story page.
 - Detail notes open as nonmodal side panels without a blurred or dimmed backdrop. On phones they become compact panels above the bottom route navigation.
 - Every garment has a deep-linkable page (`#piece/jaipur`, `#piece/ahmedabad`), with supplied artwork and design notes. Returning preserves the journey position. There are no purchase buttons, prices, size selection or checkout.
@@ -39,3 +40,5 @@ Lenis is vendored from its official npm release; `vendor/lenis-LICENSE.txt` reta
 - `assets/`, `vendor/`: used artwork and locally bundled libraries.
 - `tests/`, `scripts/build.mjs`: route checks and static output generation.
 - `dist/`: generated publishing files.
+
+The original `assets/travel-horizon.svg`, `travel-fields.svg` and `travel-foreground.svg` form the travel animation. The interlude temporarily pauses navigation and scrolling, then releases the scroll lock before restoring the destination position.

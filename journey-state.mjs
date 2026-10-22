@@ -7,6 +7,11 @@ export function routeFrom(start) {
   if (![0, 1].includes(start)) throw new RangeError('Unknown starting station');
   return start === 0 ? [0, 1] : [1, 0];
 }
+export function arrivalProgress(station, route) {
+  const leg = route.indexOf(station);
+  if (leg < 0) throw new RangeError('Unknown destination');
+  return (leg + .12) / route.length;
+}
 export function journeyFrame(progress, route) {
   const p = clamp(progress);
   const leg = Math.min(route.length - 1, Math.floor(p * route.length));
@@ -16,5 +21,6 @@ export function journeyFrame(progress, route) {
   const chapter = local < .25 ? 'travel' : local < .47 ? 'place' : local < .64 ? 'detail' : local < .88 || final ? 'piece' : 'travel';
   const mix = leg === 0 ? route[leg] : route[leg - 1] + (route[leg] - route[leg - 1]) * smoothstep(0, .12, local);
   const pieceShade = smoothstep(.61, .68, local) * (final ? 1 : 1 - smoothstep(.86, .9, local));
-  return { leg, local, station: route[leg], zoom, chapter, mix, pieceShade, final, complete: p >= .999 };
+  const destination = !final && local >= .88 ? route[leg + 1] : route[leg];
+  return { leg, local, station: route[leg], destination, zoom, chapter, mix, pieceShade, final, complete: p >= .999 };
 }

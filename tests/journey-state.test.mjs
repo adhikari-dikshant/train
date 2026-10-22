@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { routeFrom, journeyFrame } from '../journey-state.mjs';
+import { routeFrom, journeyFrame, arrivalProgress } from '../journey-state.mjs';
 
 test('either origin follows the fixed route exactly once', () => {
   assert.deepEqual(routeFrom(0), [0, 1]);
@@ -26,6 +26,23 @@ test('either origin follows the fixed route exactly once', () => {
     assert.equal(journeyFrame(1, route).station, route[1]);
     assert.equal(journeyFrame(1, route).chapter, 'piece');
     assert.equal(journeyFrame(1, route).zoom, 1);
+  }
+});
+
+test('departure and skipped scroll positions request travel before a new city', () => {
+  for (const route of [routeFrom(0), routeFrom(1)]) {
+    assert.equal(journeyFrame(.43, route).destination, route[0]);
+    assert.equal(journeyFrame(.441, route).destination, route[1]);
+    assert.equal(journeyFrame(.5, route).destination, route[1]);
+    assert.equal(journeyFrame(.9, route).destination, route[1]);
+    for (const destination of route) {
+      const arrived = journeyFrame(arrivalProgress(destination, route), route);
+      assert.equal(arrived.station, destination);
+      assert.equal(arrived.destination, destination);
+      assert.equal(arrived.chapter, 'travel');
+      assert.ok(arrived.zoom < .00001);
+    }
+    assert.throws(() => arrivalProgress(2, route), RangeError);
   }
 });
 
