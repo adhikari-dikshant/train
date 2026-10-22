@@ -24,6 +24,10 @@ export function journeyFrame(progress, route) {
   const destination = !final && local >= .88 ? route[leg + 1] : route[leg];
   const inTransit = local < .12 || (!final && local >= .88);
   const transitProgress = local >= .88 && !final ? (local - .88) / .24 : leg === 0 ? clamp(local / .12) : clamp((local + .12) / .24);
-  const landscapeOpacity = inTransit ? (leg === 0 && local < .12 ? 1 : smoothstep(0, .12, transitProgress)) * (1 - smoothstep(.72, 1, transitProgress)) : 0;
-  return { leg, local, station: route[leg], destination, zoom, chapter, mix, pieceShade, inTransit, transitProgress, landscapeOpacity, final, complete: p >= .999 };
+  const cruiseEnd = .6;
+  // Integrate steady cruising, then linear braking, so distance has no speed jump.
+  const sceneryProgress = transitProgress <= cruiseEnd ? 2 * transitProgress / (1 + cruiseEnd) : 1 - (1 - transitProgress) ** 2 / (1 - cruiseEnd ** 2);
+  const travelSpeed = Math.min(1, Math.max(0, (1 - transitProgress) / (1 - cruiseEnd)));
+  const landscapeOpacity = inTransit ? (leg === 0 && local < .12 ? 1 : smoothstep(0, .12, transitProgress)) * (1 - smoothstep(.84, 1, transitProgress)) : 0;
+  return { leg, local, station: route[leg], destination, zoom, chapter, mix, pieceShade, inTransit, transitProgress, sceneryProgress, travelSpeed, landscapeOpacity, final, complete: p >= .999 };
 }

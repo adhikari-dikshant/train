@@ -82,6 +82,29 @@ test('scroll beyond either end stays within the journey', () => {
   }
 });
 
+test('scenery cruises fast, brakes smoothly and reveals the station near standstill', () => {
+  for (const route of [routeFrom(0), routeFrom(1)]) {
+    for (const at of [t => t * .06, t => .44 + t * .12]) {
+      const get = t => journeyFrame(at(t), route);
+      const distance = (from, to) => get(to).sceneryProgress - get(from).sceneryProgress;
+      assert.ok(Math.abs(distance(.1, .2) - distance(.4, .5)) < 1e-10);
+      assert.ok(distance(.7, .8) < distance(.4, .5));
+      assert.ok(distance(.85, .95) < distance(.7, .8));
+      const epsilon = 1e-5;
+      const before = distance(.6 - epsilon, .6) / epsilon;
+      const after = distance(.6, .6 + epsilon) / epsilon;
+      assert.ok(Math.abs(before - after) < .0001);
+      assert.ok(Math.abs(get(0).sceneryProgress) < 1e-10);
+      assert.equal(get(1).sceneryProgress, 1);
+      assert.ok(get(.8).landscapeOpacity > .9999);
+      assert.ok(get(.9).landscapeOpacity > 0 && get(.9).landscapeOpacity < 1);
+      assert.ok(get(.9).travelSpeed < .3);
+      assert.equal(get(1).travelSpeed, 0);
+      assert.equal(get(1).landscapeOpacity, 0);
+    }
+  }
+});
+
 test('zoom, scenery and garment shade stay continuous across every chapter boundary', () => {
   for (const route of [routeFrom(0), routeFrom(1)]) {
     for (const progress of [.06, .095, .235, .305, .32, .34, .43, .44, .45, .49, .5, .56, .595, .735, .805, .82, .84]) {

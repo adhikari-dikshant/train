@@ -1,4 +1,4 @@
-import { clamp, smoothstep, routeFrom, journeyFrame, arrivalProgress } from './journey-state.mjs';
+import { clamp, routeFrom, journeyFrame, arrivalProgress } from './journey-state.mjs';
 import { constrainMapView, zoomMapView } from './map-view.mjs';
 
 const $ = selector => document.querySelector(selector);
@@ -120,7 +120,7 @@ function onProgress(p) {
   travel.progress = p;
   travel.mix = frame.mix;
   $('#travel-landscape').style.opacity = frame.landscapeOpacity;
-  const sceneryProgress = reducedMotion ? 0 : smoothstep(0, 1, frame.transitProgress);
+  const sceneryProgress = reducedMotion ? 0 : frame.sceneryProgress;
   $('.travel-horizon').style.transform = `translate3d(${-sceneryProgress * 120}px,0,0)`;
   $('.travel-fields').style.transform = `translate3d(${-sceneryProgress * 600}px,0,0)`;
   $('.travel-foreground').style.transform = `translate3d(${-sceneryProgress * 1300}px,0,0)`;
@@ -133,9 +133,10 @@ function onProgress(p) {
   $('.scene-ahmedabad').style.opacity = travel.mix;
   if (station !== frame.station) updateStation(frame.station);
   const destination = stations[frame.destination];
-  $('#travel-kicker').textContent = frame.inTransit ? 'SCROLL TO TRAVEL' : 'NOW ARRIVING';
-  $('#travel-name').textContent = frame.inTransit ? (frame.transitProgress > .72 ? `${destination.name}, just ahead.` : `On the way to ${destination.name}.`) : `Now at ${destination.name}.`;
-  $('#travel-description').textContent = frame.inTransit ? 'A little scroll. A little countryside. Your next story, just ahead.' : 'We’ve arrived. Scroll to step into the story.';
+  const approaching = frame.inTransit && frame.transitProgress >= .6;
+  $('#travel-kicker').textContent = frame.inTransit ? (approaching ? 'APPROACHING THE STATION' : 'SCROLL TO TRAVEL') : 'NOW ARRIVING';
+  $('#travel-name').textContent = frame.inTransit ? (approaching ? `Slowing into ${destination.name}.` : `On the way to ${destination.name}.`) : `Now at ${destination.name}.`;
+  $('#travel-description').textContent = frame.inTransit ? (approaching ? 'The train is slowing. Your next story is coming into view.' : 'A little scroll. A little countryside. Your next story, just ahead.') : 'We’ve arrived. Scroll to step into the story.';
   if (frame.chapter === 'travel') $('#status-text').textContent = `${frame.inTransit ? 'EN ROUTE' : 'NOW AT'} / ${destination.name.toUpperCase()}`;
   const key = `${station}/${frame.chapter}`;
   if (key !== lastChapter) {
@@ -480,7 +481,7 @@ if (lenis && gsap) {
 }
 let previousMotionScroll = scrollY;
 function updateTravelSpeed() {
-  travel.speed = !reducedMotion && started && frame.inTransit && !reading ? Math.min(1, Math.abs(scrollY - previousMotionScroll) / 12) : 0;
+  travel.speed = !reducedMotion && started && frame.inTransit && !reading ? Math.min(1, Math.abs(scrollY - previousMotionScroll) / 12) * frame.travelSpeed : 0;
   previousMotionScroll = scrollY;
 }
 if (gsap) gsap.ticker.add(updateTravelSpeed);
