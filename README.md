@@ -10,6 +10,7 @@ Run `node --test tests/journey-state.test.mjs` for the route/scroll checks. Run 
 
 ## Experience
 
+- The opening railway ticket uses indigo twill, ecru lettering, tobacco stitching and coloured denim swatches. `assets/denim-weave.svg` is an original lightweight texture shared by the ticket and swatches.
 - Start your journey opens an India map. Select Jaipur or Ahmedabad as the starting point. The two-stop route then follows that order, visiting the other destination second. The bottom navigation jumps to either stop without changing that route.
 - The shutter opens onto moving countryside before the first arrival. Between destinations, a five-second travel interlude restores the compartment, runs a layered countryside animation, slows the train, and reveals the next city. Station buttons and fast scrolling use this same interlude. Arrival leaves visitors at the window; scrolling then expands the destination into the entire screen.
 - The compartment disappears completely during the two cultural chapters and garment reveal. Intercity motion uses original SVG hills, villages, fields and railway poles, animated at different speeds. It works independently of WebGL and needs no video download or autoplay permission. Reduced motion substitutes a brief static journey notice.

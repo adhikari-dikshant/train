@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160">
+  <defs>
+    <pattern id="twill" width="8" height="8" patternUnits="userSpaceOnUse">
+      <path d="M-4 4 4-4M0 8 8 0M4 12 12 4" stroke="#c7d3d9" stroke-opacity=".17" stroke-width="1.5"/>
+      <path d="M-3 4 5-4M1 8 9 0M5 12 13 4" stroke="#050e1c" stroke-opacity=".25" stroke-width="1"/>
+      <path d="M0 2h8M0 6h8" stroke="#e8dfcf" stroke-opacity=".06" stroke-width=".7"/>
+    </pattern>
+    <filter id="fibres" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency=".7 .3" numOctaves="3" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+  </defs>
+  <path fill="url(#twill)" d="M0 0h160v160H0z"/>
+  <path filter="url(#fibres)" opacity=".12" d="M0 0h160v160H0z"/>
+</svg>
