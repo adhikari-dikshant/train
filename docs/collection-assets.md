@@ -13,6 +13,6 @@ Folder: https://drive.google.com/drive/folders/1v5K9PzL5VdDyDQ4Qk2wsD4727prhn4n2
 
 `hasstra-logo.png` is the exact logo image attached by the user. Working garment titles are editorial labels for this prototype.
 
-`india-map.svg` is a simplified SVG rendering of the state polygons from https://github.com/AbhinavSwami28/india-official-geojson/blob/main/india-states-simplified.geojson. The source is MIT licensed; its license is retained in `map-license.txt`. The route marks are a diagram of the two demonstration destinations, not railway track geometry.
+`india-paper-map.svg` is a simplified SVG rendering of the state polygons from https://github.com/AbhinavSwami28/india-official-geojson/blob/main/india-states-simplified.geojson. The source is MIT licensed; its license is retained in `map-license.txt`. The route marks are a diagram of the two demonstration destinations, not railway track geometry.
 
 `rajasthan-collage.jpg` is retained from the existing site. `gujarat-collage.jpg` is a compressed copy of the existing generated Gujarat artwork. The generated artwork prompt was recorded in the previous README and remains in Git history. Both collages are illustrative cultural compositions.
