@@ -1,50 +1,37 @@
-# SUTRA — Wear the journey
+# HASSTRA — A journey, woven
 
-A working clothing-brand concept set inside an Indian train compartment. Built with locally bundled Three.js 0.180.0 and GSAP 3.13.0, plain HTML, CSS, and JavaScript. No installation or build step is required.
+An interactive clothing collection journal built with plain HTML, CSS, locally bundled Three.js 0.180.0 and GSAP 3.13.0. No package installation is required.
 
-The current art direction follows the user's warm painted travel references: one central brass-framed window, tobacco-brown walls, olive upholstery, travel belongings, and a large olive opening ticket. `journey-design.css` controls this composition. `assets/heritage-compartment.jpg` is original generated compartment artwork; the ticket, interface, shutter, product cards and cultural hotspots are live HTML/CSS. A Three.js scene animates the collage outside the window, with CSS image fallbacks. GSAP closes and lifts the shutter, reveals the first collection, and animates the scroll-driven transitions. The illustrated countryside before departure is `assets/countryside.svg`.
+## Preview and publish files
 
-## Preview
+Run `python3 -m http.server 4173 --bind 127.0.0.1`, then open http://127.0.0.1:4173/. JavaScript modules require an HTTP server.
 
-Run `python3 -m http.server 4173 --bind 127.0.0.1` from this directory and open http://127.0.0.1:4173. Use a server instead of opening the HTML as a file, because the Three.js scene uses JavaScript modules and local textures.
+Run `node --test tests/journey-state.test.mjs` for the route/scroll checks. Run `node scripts/build.mjs` to validate local asset references and regenerate `dist/`. The existing private Site identity is retained in `.openai/hosting.json`.
 
-## The experience
+## Experience
 
-- Start your journey closes the preview shutter, opens it, and brings independently animated collage panels into view as the train arrives in Jaipur.
-- Scroll through the first stop, the moving scenery, and the arrival in Ahmedabad. The compartment stays fixed during the journey. The two station buttons and The itinerary dialog also navigate between stops.
-- Each station reveals a garment concept. Look at the piece opens its details and size selector. Save this piece adds it to a browser-local bag; remove it from the bag at any time. This is a wishlist demo, with no payment or checkout.
-- The two plus markers in the window open short design notes about the local visual references.
-- Sound is off by default. The sound button enables a quiet, locally synthesized railway rhythm. It pauses when the browser tab is hidden.
-- Phone layouts, keyboard controls, native accessible dialogs, reduced motion, and an image-based fallback for unavailable WebGL are included.
-- The story section and footer are hidden initially. They become available after the final stop, through the “A little about these clothes” button or by continuing to the end of the journey. Scrolling before starting no longer reveals the story directly below the train.
+- Start your journey opens an India map. Select Jaipur or Ahmedabad as the starting point. The two-stop route then follows that order, visiting the other destination second. The bottom navigation jumps to either stop without changing that route.
+- The shutter opens onto the selected destination. Scroll to expand the window into the entire screen. The compartment disappears completely during the two cultural chapters and garment reveal; it returns while travelling between stops.
+- The first chapter introduces the place. The second combines the collage and a supplied design sheet. The last introduces the garment and its own story page.
+- Detail notes open as nonmodal side panels without a blurred or dimmed backdrop. On phones they become compact panels above the bottom route navigation.
+- Every garment has a deep-linkable page (`#piece/jaipur`, `#piece/ahmedabad`), with supplied artwork and design notes. Returning preserves the journey position. There are no purchase buttons, prices, size selection or checkout.
+- The next-chapter control also advances the scroll narrative by click/keyboard. Reduced motion removes timed animations, ambience is opt-in, and image fallbacks work without WebGL.
+- The existing `sutra-saved` browser data is left untouched. The old shopping-style interface has been removed from this story-only version.
 
-## Replace with your brand
+## Assets and scope
 
-SUTRA, both garment designs, and the displayed prices are illustrative placeholders. Replace the product data in `script.js`, the garment illustrations in `assets/`, and the branding in `index.html`. The garment designs are not represented as existing products or artisan-made goods. The cultural imagery is a collage, rather than documentary footage. The opening ticket covers the central window; a painted countryside moves gently behind it before departure.
+This version implements the existing Jaipur / Rajasthan and Ahmedabad / Gujarat demonstration route. The complete collection, final garment names, final route and designer videos can be added when supplied; there is no placeholder video player. Working garment titles describe the supplied sheets and are not final commercial product names.
 
-## Artwork
+The brand logo is the supplied HASSTRA PNG. Garment images are compressed copies of the user's Drive artwork, not newly generated garment designs. See `docs/collection-assets.md` for the original file IDs and map attribution. The older illustrative shirt/jacket assets and the two superseded style layers have been removed.
 
-- `assets/heritage-compartment.jpg`: original painted compartment artwork created with the built-in image-generation tool. The complete final prompt and reference role are documented in `docs/compartment-artwork.md`.
-- `assets/countryside.svg`: original code-native illustrated fields, hills and trees for the opening window.
+The painted compartment and the existing regional collage imagery are retained. They are illustrations, not documentary footage or a 3D compartment model. The Three.js scene renders six separate collage panels per destination for lateral travel, small foreground kites and subtle pointer parallax. `docs/compartment-artwork.md` records the compartment art provenance.
 
-- `assets/rajasthan-collage.jpg`: the Rajasthan reference collage recovered from the existing repository history.
-- `assets/gujarat-collage.png`: original artwork generated using the built-in image-generation tool. Final prompt: “Use case: illustration-story. Asset type: wide panoramic artwork for the window of an Indian train on an editorial fashion website. Primary request: an exquisite layered mixed-media paper-cut travel collage of Ahmedabad and Gujarat, inspired by vintage Indian railway travel posters, hand-tinted architectural photography and screen printed textile patterns. Landscape composition around 3:2. At center and left a monumental intricately carved Adalaj stepwell and Ahmedabad old city carved wooden pol houses. On the right a woman in a traditional flowing rust red and indigo chaniya choli performing garba, tasteful and realistic. Overlapping foreground cutouts of bandhani fabric, mirrorwork embroidery, a small blue-green peacock, marigolds, and orange white green paper kites flying. Soft textured pale warm mint / cream sky with warm sun, terracotta sand and sage greenery at the bottom. Layered cutout edges with subtle paper shadows; rich warm brick red, coral, muted ochre, indigo and teal. Composition dense and art directed but with graceful breathing room in the upper middle. No letters, no text, no border, no train, no UI, no watermarks. Sophisticated handmade luxury fashion editorial, beautifully detailed.”
-- `assets/jaipur-shirt.svg` and `assets/ahmedabad-jacket.svg`: original vector garment concept illustrations created for this prototype.
+Google Fonts enhances typography, with local serif/sans-serif fallbacks. The animation libraries and all artwork are served with the site. No runtime Drive connection, API keys or server data are required.
 
-Google Fonts enhances the typography; local serif and sans-serif fallbacks are provided. Animation libraries and artwork are hosted with the site, rather than fetched from third-party script servers at runtime.
+## Source
 
-## Publishing
-
-`dist/` contains a mirror of the static website. The hosting manifest retains this repository’s existing private Site identity. Source and deployed files should be updated together.
-
-## Project files
-
-- `index.html`, `script.js`: the current page and interactions.
-- `style.css`, `compartment.css`, `journey-design.css`: shared styles, full-screen layout, and the active painted design. All three are used.
-- `assets/`: only the images and illustrations referenced by the current site.
-- `vendor/`: GSAP, ScrollTrigger, and the two Three.js modules required by the window scene.
-- `docs/`: artwork provenance and the final generation prompt.
-- `dist/`: the matching static publishing files.
-- `.openai/hosting.json`: existing Site identity and publishing configuration.
-
-Obsolete 3D room implementations, the unused optimized GLB, model-only helpers, and generated preview files have been removed. Git history retains the previously tracked versions.
+- `index.html`, `style.css`, `script.js`: interface and visual narrative.
+- `journey-state.mjs`: fixed route and scroll chapter calculation.
+- `assets/`, `vendor/`: used artwork and locally bundled libraries.
+- `tests/`, `scripts/build.mjs`: route checks and static output generation.
+- `dist/`: generated publishing files.
