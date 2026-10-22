@@ -73,7 +73,7 @@ function clothTransition() {
   const fold = $('#cloth-fold');
   gsap.fromTo(fold,
     { x: -fold.offsetWidth - innerHeight * .3, skewX: -7, scaleX: .85 },
-    { x: innerWidth + innerHeight * .3, skewX: 6, scaleX: 1.05, duration: .68, ease: 'power2.inOut' });
+    { x: innerWidth + innerHeight * .3, skewX: 6, scaleX: 1.05, duration: 1.2, ease: 'power2.inOut' });
 }
 function range() { return Math.max(1, journey.offsetHeight - $('#carriage').offsetHeight); }
 function progressFromScroll() { return clamp((scrollY - journey.offsetTop) / range()); }
