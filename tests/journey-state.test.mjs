@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { routeFrom, journeyFrame, arrivalProgress } from '../journey-state.mjs';
+import { routeFrom, journeyFrame, arrivalProgress, departureProgress } from '../journey-state.mjs';
 
 test('either origin follows the fixed route exactly once', () => {
   assert.deepEqual(routeFrom(0), [0, 1]);
@@ -36,6 +36,11 @@ test('the fixed route identifies the next stop during departure and arrival', ()
     assert.equal(journeyFrame(.5, route).destination, route[1]);
     assert.equal(journeyFrame(.9, route).destination, route[1]);
     for (const destination of route) {
+      const departing = journeyFrame(departureProgress(destination, route), route);
+      assert.equal(departing.destination, destination);
+      assert.equal(departing.inTransit, true);
+      assert.ok(Math.abs(departing.sceneryProgress) < 1e-10);
+      assert.equal(departing.travelSpeed, 1);
       const arrived = journeyFrame(arrivalProgress(destination, route), route);
       assert.equal(arrived.station, destination);
       assert.equal(arrived.destination, destination);
@@ -43,6 +48,7 @@ test('the fixed route identifies the next stop during departure and arrival', ()
       assert.ok(arrived.zoom < .00001);
     }
     assert.throws(() => arrivalProgress(2, route), RangeError);
+    assert.throws(() => departureProgress(2, route), RangeError);
   }
 });
 
@@ -87,18 +93,20 @@ test('scenery cruises fast, brakes smoothly and reveals the station near standst
     for (const at of [t => t * .06, t => .44 + t * .12]) {
       const get = t => journeyFrame(at(t), route);
       const distance = (from, to) => get(to).sceneryProgress - get(from).sceneryProgress;
-      assert.ok(Math.abs(distance(.1, .2) - distance(.4, .5)) < 1e-10);
-      assert.ok(distance(.7, .8) < distance(.4, .5));
-      assert.ok(distance(.85, .95) < distance(.7, .8));
+      assert.ok(Math.abs(distance(0, .1) - distance(.2, .3)) < 1e-10);
+      assert.ok(distance(.5, .6) < distance(.2, .3));
+      assert.ok(distance(.7, .8) < distance(.5, .6));
+      assert.equal(distance(.85, 1), 0);
       const epsilon = 1e-5;
-      const before = distance(.6 - epsilon, .6) / epsilon;
-      const after = distance(.6, .6 + epsilon) / epsilon;
+      const before = distance(.35 - epsilon, .35) / epsilon;
+      const after = distance(.35, .35 + epsilon) / epsilon;
       assert.ok(Math.abs(before - after) < .0001);
       assert.ok(Math.abs(get(0).sceneryProgress) < 1e-10);
       assert.equal(get(1).sceneryProgress, 1);
-      assert.ok(get(.8).landscapeOpacity > .9999);
+      assert.ok(get(.8).landscapeOpacity > .9999 && get(.8).travelSpeed > 0);
+      assert.ok(Math.abs(get(.82).mix - get(.82).destination) < 1e-10);
       assert.ok(get(.9).landscapeOpacity > 0 && get(.9).landscapeOpacity < 1);
-      assert.ok(get(.9).travelSpeed < .3);
+      assert.equal(get(.9).travelSpeed, 0);
       assert.equal(get(1).travelSpeed, 0);
       assert.equal(get(1).landscapeOpacity, 0);
     }

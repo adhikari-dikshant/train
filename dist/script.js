@@ -1,4 +1,4 @@
-import { clamp, routeFrom, journeyFrame, arrivalProgress } from './journey-state.mjs';
+import { clamp, routeFrom, journeyFrame, arrivalProgress, departureProgress } from './journey-state.mjs';
 import { constrainMapView, zoomMapView } from './map-view.mjs';
 
 const $ = selector => document.querySelector(selector);
@@ -109,7 +109,7 @@ function reveal(selector, visible) {
 function travelToStation(index) {
   if (!route.includes(index)) return;
   closePanel();
-  scrollToProgress(route.indexOf(index) / route.length, true);
+  scrollToProgress(departureProgress(index, route), true);
   onProgress(progressFromScroll());
   $('#next-chapter').focus({ preventScroll: true });
 }
@@ -119,11 +119,17 @@ function onProgress(p) {
   frame = nextFrame;
   travel.progress = p;
   travel.mix = frame.mix;
-  $('#travel-landscape').style.opacity = frame.landscapeOpacity;
+  // Wipe instead of crossfading two busy images: scenery enters from the right on departure, the station follows it in on arrival.
+  const sweep = frame.landscapeOpacity, arriving = frame.transitProgress > .5;
+  const edge = arriving ? sweep * 110 - 10 : (1 - sweep) * 110 - 10;
+  const mask = arriving ? `linear-gradient(90deg,#000 ${edge}%,transparent ${edge + 10}%)` : `linear-gradient(90deg,transparent ${edge}%,#000 ${edge + 10}%)`;
+  const landscape = $('#travel-landscape');
+  landscape.style.opacity = sweep > 0 ? 1 : 0;
+  landscape.style.maskImage = landscape.style.webkitMaskImage = mask;
   const sceneryProgress = reducedMotion ? 0 : frame.sceneryProgress;
-  $('.travel-horizon').style.transform = `translate3d(${-sceneryProgress * 120}px,0,0)`;
-  $('.travel-fields').style.transform = `translate3d(${-sceneryProgress * 600}px,0,0)`;
-  $('.travel-foreground').style.transform = `translate3d(${-sceneryProgress * 1300}px,0,0)`;
+  $('.travel-horizon').style.transform = `translate3d(${-sceneryProgress * 180}px,0,0)`;
+  $('.travel-fields').style.transform = `translate3d(${-sceneryProgress * 1000}px,0,0)`;
+  $('.travel-foreground').style.transform = `translate3d(${-sceneryProgress * 2600}px,0,0)`;
   $('#carriage').style.setProperty('--zoom', frame.zoom.toFixed(4));
   $('#carriage').style.setProperty('--piece-shade', frame.pieceShade.toFixed(4));
   $('#carriage').dataset.chapter = frame.chapter;
@@ -133,7 +139,7 @@ function onProgress(p) {
   $('.scene-ahmedabad').style.opacity = travel.mix;
   if (station !== frame.station) updateStation(frame.station);
   const destination = stations[frame.destination];
-  const approaching = frame.inTransit && frame.transitProgress >= .6;
+  const approaching = frame.inTransit && frame.transitProgress >= .35;
   $('#travel-kicker').textContent = frame.inTransit ? (approaching ? 'APPROACHING THE STATION' : 'SCROLL TO TRAVEL') : 'NOW ARRIVING';
   $('#travel-name').textContent = frame.inTransit ? (approaching ? `Slowing into ${destination.name}.` : `On the way to ${destination.name}.`) : `Now at ${destination.name}.`;
   $('#travel-description').textContent = frame.inTransit ? (approaching ? 'The train is slowing. Your next story is coming into view.' : 'A little scroll. A little countryside. Your next story, just ahead.') : 'We’ve arrived. Scroll to step into the story.';
