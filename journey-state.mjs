@@ -17,6 +17,10 @@ export function departureProgress(station, route) {
   if (leg < 0) throw new RangeError('Unknown destination');
   return Math.max(0, leg - .12) / route.length;
 }
+export function collageEntrance(local, piece) {
+  const progress = clamp((local - (.1 + piece * .025)) / .15);
+  return 1 - (1 - progress) ** 3;
+}
 export function journeyFrame(progress, route) {
   const p = clamp(progress);
   const leg = Math.min(route.length - 1, Math.floor(p * route.length));

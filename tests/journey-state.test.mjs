@@ -1,6 +1,21 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { routeFrom, journeyFrame, arrivalProgress, departureProgress } from '../journey-state.mjs';
+import { routeFrom, journeyFrame, arrivalProgress, departureProgress, collageEntrance } from '../journey-state.mjs';
+
+test('collage subjects enter in staggered scroll order and stay assembled for departure', () => {
+  for (const route of [routeFrom(0), routeFrom(1)]) {
+    for (let leg = 0; leg < route.length; leg++) {
+      const at = (local, piece) => collageEntrance(journeyFrame((leg + local) / route.length, route).local, piece);
+      for (let piece = 0; piece < 4; piece++) {
+        assert.equal(at(.09, piece), 0);
+        assert.equal(at(.33, piece), 1);
+        assert.equal(at(.94, piece), 1);
+        assert.ok(at(.22, piece) > at(.2, piece));
+        if (piece > 0) assert.ok(at(.2, piece) < at(.2, piece - 1));
+      }
+    }
+  }
+});
 
 test('either origin follows the fixed route exactly once', () => {
   assert.deepEqual(routeFrom(0), [0, 1]);

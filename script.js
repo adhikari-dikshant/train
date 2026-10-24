@@ -1,4 +1,4 @@
-import { clamp, routeFrom, journeyFrame, arrivalProgress, departureProgress } from './journey-state.mjs';
+import { clamp, smoothstep, routeFrom, journeyFrame, arrivalProgress, departureProgress, collageEntrance } from './journey-state.mjs';
 import { constrainMapView, zoomMapView } from './map-view.mjs';
 
 const $ = selector => document.querySelector(selector);
@@ -9,7 +9,7 @@ const lenis = !reducedMotion && window.Lenis ? new window.Lenis({ lerp: .085, au
 lenis?.stop();
 const journey = $('#journey');
 const windowBox = $('#window-interior');
-const travel = { speed: 0, progress: 0, mix: 0, pointerX: 0, pointerY: 0 };
+const travel = { speed: 0, mix: 0, pointerX: 0, pointerY: 0 };
 let started = false;
 let starting = false;
 let station = 0;
@@ -117,7 +117,6 @@ function onProgress(p) {
   if (!started || starting || reading) return;
   const nextFrame = journeyFrame(p, route);
   frame = nextFrame;
-  travel.progress = p;
   travel.mix = frame.mix;
   // Wipe instead of crossfading two busy images: scenery enters from the right on departure, the station follows it in on arrival.
   const sweep = frame.landscapeOpacity, arriving = frame.transitProgress > .5;
@@ -503,7 +502,7 @@ window.addEventListener('resize', () => onProgress(progressFromScroll()), { pass
 journey.inert = true;
 showStory();
 
-// Six independent collage panels keep the existing lateral travel effect.
+// Transparent subjects assemble with scroll; the complete images remain the WebGL fallback.
 async function initScene() {
   let renderer;
   try {
@@ -516,49 +515,37 @@ async function initScene() {
     const camera = new THREE.OrthographicCamera(-2, 2, 1, -1, .1, 30);
     camera.position.z = 10;
     const loader = new THREE.TextureLoader();
-    const textures = await Promise.all(['assets/rajasthan-collage.jpg', 'assets/gujarat-collage.jpg'].map(path => loader.loadAsync(path)));
-    textures.forEach(texture => { texture.colorSpace = THREE.SRGBColorSpace; texture.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy()); });
-    const groups = [];
-    const backdrops = textures.map((texture, i) => {
-      const mesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: texture, transparent: true, depthWrite: false, color: '#f5eddd' }));
-      mesh.position.z = -1;
-      mesh.renderOrder = -5 + i;
-      mesh.userData.ratio = texture.image.width / texture.image.height;
-      scene.add(mesh);
-      return mesh;
-    });
+    const subjects = [
+      [
+        { file: 'assets/rajasthan-palace.webp', x: -.1, y: .03, height: 2.05, fromX: -1, fromY: .35, tilt: -.12 },
+        { file: 'assets/rajasthan-musician.webp', x: -.45, y: -.35, height: 1.5, fromX: -.8, fromY: -1, tilt: .18 },
+        { file: 'assets/rajasthan-camel.webp', x: .55, y: -.3, height: 1.65, fromX: 1, fromY: .3, tilt: -.15 },
+        { file: 'assets/rajasthan-peacock.webp', x: -.55, y: -.74, height: .92, fromX: -.5, fromY: -1, tilt: .12 }
+      ],
+      [
+        { file: 'assets/gujarat-stepwell.webp', x: -.35, y: -.08, height: 2.08, fromX: -1, fromY: .25, tilt: -.1 },
+        { file: 'assets/gujarat-dancer.webp', x: .52, y: -.13, height: 2, fromX: 1, fromY: -.25, tilt: .22 },
+        { file: 'assets/gujarat-peacock.webp', x: -.58, y: -.73, height: 1.03, fromX: -.5, fromY: -1, tilt: -.15 },
+        { file: 'assets/gujarat-kites.webp', x: .72, y: .69, height: .65, fromX: .4, fromY: 1, tilt: .3 }
+      ]
+    ];
     let aspect = 2.5;
-    textures.forEach((texture, groupIndex) => {
+    const groups = await Promise.all(subjects.map(async pieces => {
       const group = new THREE.Group();
-      group.userData.panels = [];
-      for (let i = 0; i < 6; i++) {
-        const geometry = new THREE.PlaneGeometry(1, 1);
-        const uv = geometry.attributes.uv;
-        for (let v = 0; v < uv.count; v++) uv.setX(v, (i + uv.getX(v)) / 6);
-        const material = new THREE.MeshBasicMaterial({ map: texture, transparent: true, depthWrite: false, color: '#f5eddd' });
-        const mesh = new THREE.Mesh(geometry, material);
-        mesh.userData.index = i;
-        mesh.userData.ratio = texture.image.width / texture.image.height;
-        mesh.renderOrder = groupIndex * 6 + i;
-        group.add(mesh);
-        group.userData.panels.push(mesh);
-      }
+      const meshes = await Promise.all(pieces.map(async (piece, i) => {
+        const texture = await loader.loadAsync(piece.file);
+        texture.colorSpace = THREE.SRGBColorSpace;
+        texture.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
+        const material = new THREE.MeshBasicMaterial({ map: texture, transparent: true, depthWrite: false });
+        const mesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), material);
+        mesh.userData = { ...piece, ratio: texture.image.width / texture.image.height };
+        mesh.renderOrder = piece.file.includes('kites') ? .5 : i;
+        return mesh;
+      }));
+      group.add(...meshes);
       scene.add(group);
-      groups.push(group);
-    });
-    // Small paper kites are independent foreground objects, not baked into the collage.
-    const ornaments = new THREE.Group();
-    for (let i = 0; i < 7; i++) {
-      const shape = new THREE.Shape();
-      shape.moveTo(0, .09); shape.lineTo(.055, 0); shape.lineTo(0, -.075); shape.lineTo(-.055, 0); shape.closePath();
-      const material = new THREE.MeshBasicMaterial({ color: ['#b95839', '#e1b44e', '#f2e4b6', '#698979'][i % 4], transparent: true, opacity: .65, side: THREE.DoubleSide, depthWrite: false });
-      const kite = new THREE.Mesh(new THREE.ShapeGeometry(shape), material);
-      kite.position.set((i / 7 - .5) * 5, .65 + Math.sin(i) * .15, 2);
-      kite.rotation.z = i * .55;
-      kite.userData.origin = kite.position.clone();
-      ornaments.add(kite);
-    }
-    scene.add(ornaments);
+      return group;
+    }));
 
     let bufferWidth = 0, bufferHeight = 0;
     function resize() {
@@ -573,16 +560,6 @@ async function initScene() {
         renderer.setSize(bufferWidth, bufferHeight, false);
       }
       camera.left = -aspect; camera.right = aspect; camera.updateProjectionMatrix();
-      backdrops.forEach(mesh => {
-        const width = Math.max(aspect * 2, mesh.userData.ratio * 2) * 1.09;
-        mesh.scale.set(width, width / mesh.userData.ratio, 1);
-      });
-      groups.forEach(group => group.userData.panels.forEach(mesh => {
-        const fullWidth = Math.max(aspect * 2, mesh.userData.ratio * 2) * 1.06;
-        const fullHeight = fullWidth / mesh.userData.ratio;
-        mesh.scale.set(fullWidth / 6 + .003, fullHeight, 1);
-        mesh.userData.baseX = (mesh.userData.index + .5 - 3) * fullWidth / 6;
-      }));
     }
     const observer = new ResizeObserver(resize);
     observer.observe(windowBox);
@@ -601,44 +578,37 @@ async function initScene() {
       travel.pointerY = ((event.clientY - rect.top) / rect.height - .5) * .035;
     });
     windowBox.addEventListener('pointerleave', () => { travel.pointerX = 0; travel.pointerY = 0; });
-    function render(time) {
+    function render() {
       if (reading || isHidden || scrollY > journey.offsetTop + journey.offsetHeight) return;
-      const t = time * .001;
       const shift = travel.mix;
-      backdrops.forEach((mesh, i) => { mesh.material.opacity = i === 0 ? 1 - shift : shift; });
       groups.forEach((group, groupIndex) => {
-        const phase = groupIndex === 0 ? -shift : 1 - shift;
-        group.visible = groupIndex === 0 ? shift < 1 : shift > 0;
-        group.userData.panels.forEach((mesh, i) => {
-          const stagger = 1 + (groupIndex === 0 ? i : 5 - i) * .065;
-          const movement = reducedMotion ? 0 : phase * (aspect * 2 + 1.5) * stagger;
-          mesh.position.x = mesh.userData.baseX + movement;
-          mesh.position.y = reducedMotion ? 0 : Math.sin(travel.progress * 800 + i * .3) * travel.speed * .007 + Math.sin(Math.abs(phase) * Math.PI) * ((i % 3) - 1) * .18;
-          mesh.position.z = -i * .005;
-          mesh.rotation.z = reducedMotion ? 0 : Math.sin(Math.abs(phase) * Math.PI) * ((i % 2) - .5) * .1;
-          mesh.material.opacity = reducedMotion ? (groupIndex === 0 ? 1 - shift : shift) : 1;
+        const opacity = groupIndex === 0 ? 1 - shift : shift;
+        group.visible = opacity > 0;
+        group.children.forEach((mesh, i) => {
+          const piece = mesh.userData;
+          const assembled = reducedMotion ? 1 : collageEntrance(frame.local, i);
+          const remaining = 1 - assembled;
+          const height = piece.height * (aspect < 1 ? .8 : 1) * (1 - remaining * .22);
+          mesh.scale.set(height * piece.ratio, height, 1);
+          mesh.position.set(piece.x * aspect + remaining * piece.fromX * (aspect * 2 + 2), piece.y + remaining * piece.fromY * 3, i * .01);
+          mesh.rotation.z = remaining * piece.tilt;
+          mesh.material.opacity = opacity * (reducedMotion ? 1 : smoothstep(0, .18, assembled));
         });
         group.position.x += (travel.pointerX - group.position.x) * .035;
         group.position.y += (-travel.pointerY - group.position.y) * .035;
       });
-      ornaments.visible = !reducedMotion && started && shift > .6;
-      ornaments.children.forEach((kite, i) => {
-        kite.position.y = kite.userData.origin.y + Math.sin(t * .7 + i) * .03;
-        kite.position.x = kite.userData.origin.x + Math.sin(t * .5 + i * 1.5) * .06;
-        kite.rotation.y = Math.sin(t * .8 + i) * .25;
-      });
       renderer.render(scene, camera);
     }
-    if (gsap) gsap.ticker.add(time => render(time * 1000));
+    if (gsap) gsap.ticker.add(render);
     else {
-      const tick = time => { updateTravelSpeed(); render(time); requestAnimationFrame(tick); };
+      const tick = () => { updateTravelSpeed(); render(); requestAnimationFrame(tick); };
       requestAnimationFrame(tick);
     }
   } catch (error) {
     renderer?.dispose();
     windowBox.classList.remove('webgl-ready');
     $('#landscape').classList.remove('ready');
-    console.info('Using the accessible image-based scenery fallback.', error.message);
+    console.info('Using the accessible image-based scenery fallback.', error.message || error.target?.src || String(error));
   }
 }
 initScene();
