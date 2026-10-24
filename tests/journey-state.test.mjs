@@ -63,7 +63,7 @@ test('first departure and intercity travel advance only with scroll position', (
     assert.equal(journeyFrame(.06, route).landscapeOpacity, 0);
     assert.equal(journeyFrame(.1, route).chapter, 'place');
     assert.equal(journeyFrame(.1, route).zoom, 1);
-    for (const [progress, expected] of [[.44, 0], [.47, .25], [.5, .5], [.53, .75], [.56, 1]]) {
+    for (const [progress, expected] of [[.44, 0], [.47, 0], [.5, 1 / 3], [.53, 2 / 3], [.56, 1]]) {
       const current = journeyFrame(progress, route);
       assert.ok(Math.abs(current.transitProgress - expected) < 1e-10);
       assert.deepEqual(current, journeyFrame(progress, route));
@@ -90,7 +90,7 @@ test('scroll beyond either end stays within the journey', () => {
 
 test('scenery cruises fast, brakes smoothly and reveals the station near standstill', () => {
   for (const route of [routeFrom(0), routeFrom(1)]) {
-    for (const at of [t => t * .06, t => .44 + t * .12]) {
+    for (const at of [t => t * .06, t => .47 + t * .09]) {
       const get = t => journeyFrame(at(t), route);
       const distance = (from, to) => get(to).sceneryProgress - get(from).sceneryProgress;
       assert.ok(Math.abs(distance(0, .1) - distance(.2, .3)) < 1e-10);
@@ -109,6 +109,27 @@ test('scenery cruises fast, brakes smoothly and reveals the station near standst
       assert.equal(get(.9).travelSpeed, 0);
       assert.equal(get(1).travelSpeed, 0);
       assert.equal(get(1).landscapeOpacity, 0);
+    }
+  }
+});
+
+test('scenery wipes only inside the restored compartment and hides the station swap', () => {
+  for (const route of [routeFrom(0), routeFrom(1)]) {
+    for (let pixel = 2200; pixel <= 3000; pixel++) {
+      const frame = journeyFrame(pixel / 5000, route);
+      if (frame.landscapeOpacity > 0) assert.equal(frame.zoom, 0, `scenery covers an expanding window at ${pixel}`);
+      if (frame.mix > 0 && frame.mix < 1) assert.equal(frame.landscapeOpacity, 1, `station swap exposed at ${pixel}`);
+      if (pixel < 2350) {
+        assert.equal(frame.sceneryProgress, 0);
+        assert.equal(frame.landscapeOpacity, 0);
+      }
+    }
+    for (const boundary of [.47, .488, .5, .53, .5438, .5465, .56]) {
+      const before = journeyFrame(boundary - 1e-7, route);
+      const after = journeyFrame(boundary + 1e-7, route);
+      for (const property of ['zoom', 'sceneryProgress', 'landscapeOpacity', 'mix']) {
+        assert.ok(Math.abs(before[property] - after[property]) < .0001, `${property} jumps at ${boundary}`);
+      }
     }
   }
 });
