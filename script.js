@@ -515,18 +515,30 @@ async function initScene() {
     const camera = new THREE.OrthographicCamera(-2, 2, 1, -1, .1, 30);
     camera.position.z = 10;
     const loader = new THREE.TextureLoader();
+    const backdrops = await Promise.all(['assets/rajasthan-landscape.webp', 'assets/gujarat-landscape.webp'].map(async file => {
+      const texture = await loader.loadAsync(file);
+      texture.colorSpace = THREE.SRGBColorSpace;
+      const mesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: texture, transparent: true, depthWrite: false }));
+      mesh.userData.ratio = texture.image.width / texture.image.height;
+      mesh.position.z = -1;
+      mesh.renderOrder = -1;
+      scene.add(mesh);
+      return mesh;
+    }));
     const subjects = [
       [
-        { file: 'assets/rajasthan-palace.webp', x: -.1, y: .03, height: 2.05, fromX: -1, fromY: .35, tilt: -.12 },
-        { file: 'assets/rajasthan-musician.webp', x: -.45, y: -.35, height: 1.5, fromX: -.8, fromY: -1, tilt: .18 },
-        { file: 'assets/rajasthan-camel.webp', x: .55, y: -.3, height: 1.65, fromX: 1, fromY: .3, tilt: -.15 },
-        { file: 'assets/rajasthan-peacock.webp', x: -.55, y: -.74, height: .92, fromX: -.5, fromY: -1, tilt: .12 }
+        { file: 'assets/rajasthan-palace.webp', x: -.12, y: .04, height: 1.65, fromX: -1, fromY: .35, tilt: -.12 },
+        { file: 'assets/rajasthan-musician.webp', x: -.48, y: -.44, height: 1.25, fromX: -.8, fromY: -1, tilt: .18 },
+        { file: 'assets/rajasthan-camel.webp', x: .57, y: -.39, height: 1.3, fromX: 1, fromY: .3, tilt: -.15 },
+        { file: 'assets/rajasthan-peacock.webp', x: -.57, y: -.72, height: .8, fromX: -.5, fromY: -1, tilt: .12 },
+        { file: 'assets/rajasthan-foreground.webp', x: 0, y: -.72, height: 1.25, fromX: .3, fromY: -1, tilt: -.08 }
       ],
       [
-        { file: 'assets/gujarat-stepwell.webp', x: -.35, y: -.08, height: 2.08, fromX: -1, fromY: .25, tilt: -.1 },
-        { file: 'assets/gujarat-dancer.webp', x: .52, y: -.13, height: 2, fromX: 1, fromY: -.25, tilt: .22 },
-        { file: 'assets/gujarat-peacock.webp', x: -.58, y: -.73, height: 1.03, fromX: -.5, fromY: -1, tilt: -.15 },
-        { file: 'assets/gujarat-kites.webp', x: .72, y: .69, height: .65, fromX: .4, fromY: 1, tilt: .3 }
+        { file: 'assets/gujarat-stepwell.webp', x: -.4, y: -.14, height: 1.75, fromX: -1, fromY: .25, tilt: -.1 },
+        { file: 'assets/gujarat-dancer.webp', x: .55, y: -.25, height: 1.8, fromX: 1, fromY: -.25, tilt: .22 },
+        { file: 'assets/gujarat-peacock.webp', x: -.58, y: -.74, height: .83, fromX: -.5, fromY: -1, tilt: -.15 },
+        { file: 'assets/gujarat-kites.webp', x: .72, y: .69, height: .65, fromX: .4, fromY: 1, tilt: .3 },
+        { file: 'assets/gujarat-foreground.webp', x: 0, y: -.72, height: 1.25, fromX: -.3, fromY: -1, tilt: .08 }
       ]
     ];
     let aspect = 2.5;
@@ -560,6 +572,10 @@ async function initScene() {
         renderer.setSize(bufferWidth, bufferHeight, false);
       }
       camera.left = -aspect; camera.right = aspect; camera.updateProjectionMatrix();
+      backdrops.forEach(mesh => {
+        const width = Math.max(aspect * 2, mesh.userData.ratio * 2) * 1.02;
+        mesh.scale.set(width, width / mesh.userData.ratio, 1);
+      });
     }
     const observer = new ResizeObserver(resize);
     observer.observe(windowBox);
@@ -581,12 +597,13 @@ async function initScene() {
     function render() {
       if (reading || isHidden || scrollY > journey.offsetTop + journey.offsetHeight) return;
       const shift = travel.mix;
+      backdrops.forEach((mesh, i) => { mesh.material.opacity = i === 0 ? 1 - shift : shift; });
       groups.forEach((group, groupIndex) => {
         const opacity = groupIndex === 0 ? 1 - shift : shift;
         group.visible = opacity > 0;
         group.children.forEach((mesh, i) => {
           const piece = mesh.userData;
-          const assembled = reducedMotion ? 1 : collageEntrance(frame.local, i);
+          const assembled = reducedMotion ? 1 : collageEntrance(frame.local, Math.min(i, 3));
           const remaining = 1 - assembled;
           const height = piece.height * (aspect < 1 ? .8 : 1) * (1 - remaining * .22);
           mesh.scale.set(height * piece.ratio, height, 1);
