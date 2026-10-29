@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 500" preserveAspectRatio="none">
-<defs><linearGradient id="hills" x2="0" y2="1"><stop stop-color="#8f9a86"/><stop offset="1" stop-color="#a8a98b"/></linearGradient></defs>
-<path fill="#b7b49b" d="M0 270Q65 228 120 257T245 234T400 250T580 224T730 256T870 235T1020 249T1190 226T1400 270V500H0Z"/>
-<path fill="url(#hills)" d="M0 307Q90 274 160 293T310 269T470 302T670 265T830 291T1000 270T1160 299T1320 278L1400 307V500H0Z"/>
-<g fill="#8a927b"><path d="M91 323v-24h44v24h18v-33h29v33h51v-17h39v17h98v13H61v-13Z"/><path d="M730 321v-21h38v21h15v-29h52v29h38v-19h37v19h78v14H705v-14Z"/></g>
-<g fill="#667b69"><path d="M444 325v-25q-25 0-22-17-10-15 9-21 4-20 23-11 23-2 22 17 15 13-4 27-8 7-19 5v25Z"/><path d="M1183 330v-28q-24 3-24-16-9-14 11-21 5-21 22-11 23-3 25 16 15 16-6 26-8 6-18 6v28Z"/></g>
-<g fill="none" stroke="#6f776c" stroke-width="2"><path d="m560 147 9-4 9 4m15 8 7-3 7 3m461-24 9-4 9 4"/></g>
-<path fill="#9b9f78" d="M0 338Q350 312 700 340T1400 338V500H0Z"/>
-</svg>

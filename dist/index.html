@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Libre+Caslon+Display&display=swap" rel="stylesheet">
+  <link rel="preload" as="image" href="assets/travel-panorama.webp">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="vendor/lenis.css">
   <script src="vendor/gsap.min.js" defer></script>
@@ -33,7 +34,7 @@
             <div class="fallback-scene scene-jaipur"></div><div class="fallback-scene scene-ahmedabad"></div>
             <canvas id="landscape" aria-label="A layered collage of regional architecture, textiles and culture"></canvas>
             <div id="travel-landscape" class="travel-landscape" aria-hidden="true">
-              <div class="travel-sun"></div><div class="travel-layer travel-horizon"></div><div class="travel-layer travel-fields"></div><div class="travel-layer travel-foreground"></div><div class="travel-reflection"></div>
+              <img class="travel-panorama" src="assets/travel-panorama.webp" alt="" width="2172" height="724" decoding="async"><div class="travel-reflection"></div>
               <span class="window-travel-note">HASSTRA EXPRESS / EN ROUTE</span>
             </div>
             <div id="shutter" class="shutter" aria-hidden="true"><span>HASSTRA EXPRESS<small>TAKE THE WINDOW SEAT.</small></span><i></i></div>

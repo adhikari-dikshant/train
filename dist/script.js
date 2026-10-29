@@ -143,9 +143,7 @@ function onProgress(p) {
   landscape.style.opacity = sweep > 0 ? 1 : 0;
   landscape.style.maskImage = landscape.style.webkitMaskImage = mask;
   const sceneryProgress = reducedMotion ? 0 : frame.sceneryProgress;
-  $('.travel-horizon').style.transform = `translate3d(${-sceneryProgress * 180}px,0,0)`;
-  $('.travel-fields').style.transform = `translate3d(${-sceneryProgress * 1000}px,0,0)`;
-  $('.travel-foreground').style.transform = `translate3d(${-sceneryProgress * 2600}px,0,0)`;
+  $('.travel-panorama').style.transform = `translate3d(${-sceneryProgress * 1400}px,0,0)`;
   $('#carriage').style.setProperty('--zoom', frame.zoom.toFixed(4));
   $('#carriage').style.setProperty('--piece-shade', frame.pieceShade.toFixed(4));
   $('#carriage').dataset.chapter = frame.chapter;
