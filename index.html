@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#0d2334">
+  <meta name="theme-color" content="#111e2b">
   <meta name="description" content="A journey through India, told in cloth. Take the window seat and discover HASSTRA’s regional design stories.">
   <title>HASSTRA — A journey, woven.</title>
   <link rel="icon" href="assets/hasstra-logo.png" type="image/png">
@@ -22,7 +22,7 @@
   <header class="site-header">
     <button class="brand" id="home-button" aria-label="HASSTRA home"><img src="assets/hasstra-logo.png" alt="HASSTRA"></button>
     <span class="brand-note">A JOURNEY,<br>WOVEN.</span>
-    <nav aria-label="Main navigation"><button id="map-toggle">The itinerary <span>↗</span></button><span class="seat-label">COACH H / WINDOW SEAT 01</span></nav>
+    <nav aria-label="Main navigation"><a href="#collection">The collection</a><button id="how-toggle">Our journey</button><button id="map-toggle">The itinerary <span>↗</span></button></nav>
   </header>
   <main>
     <section id="journey" class="journey" aria-label="HASSTRA cultural train journey">
@@ -48,7 +48,7 @@
         </section>
         <figure id="detail-fragment" class="detail-fragment" hidden><img id="fragment-image" alt=""><figcaption>FROM THE DESIGNER’S NOTEBOOK ↗</figcaption></figure>
         <section id="product-reveal" class="product-reveal" aria-label="The garment story" inert>
-          <figure class="garment-sheet"><img id="product-image" alt=""><figcaption id="product-caption"></figcaption><button class="garment-marker" id="garment-note" aria-label="Explore garment details">＋</button></figure>
+          <figure class="garment-sheet"><div class="garment-stage"><img id="product-image" alt=""><div id="product-hotspots" class="garment-hotspots" aria-label="Explore garment details"></div></div><figcaption id="product-caption"></figcaption></figure>
           <div class="product-copy"><span id="product-eyebrow" class="eyebrow"></span><h2 id="product-title"></h2><p id="product-description"></p><a id="view-piece" class="primary-button" href="#piece/jaipur">Explore the piece’s story <span>↗</span></a><button id="next-stop" class="text-button">Continue the journey <span>→</span></button></div>
         </section>
         <div class="journey-bottom" id="journey-bottom" hidden>
@@ -61,16 +61,15 @@
     </section>
     <section id="intro-overlay" class="intro-overlay" aria-labelledby="intro-title">
       <div class="intro-ticket">
-        <div class="ticket-serial"><span>HASSTRA EXPRESS</span><span>ADMIT ONE / WINDOW SEAT</span></div>
-        <span class="intro-kicker">THE</span>
-        <h1 id="intro-title">INDIAN<br><span>JOURNEY</span></h1>
-        <span class="ticket-begins">BEGINS</span>
-        <p>Many shades of denim. A little India in every thread.</p>
+        <div class="ticket-serial"><span>HASSTRA</span><span>COLLECTION JOURNAL / 01</span></div>
+        <span class="intro-kicker">INDIA, THROUGH A DIFFERENT THREAD</span>
+        <h1 id="intro-title">A journey,<br><span>woven.</span></h1>
+        <p>Some places stay with us.<br>We carry them forward in cloth.</p>
         <div class="intro-route"><span>01 — JAIPUR</span><span aria-hidden="true">⟶</span><span>02 — AHMEDABAD</span></div>
-        <span class="ticket-label" aria-hidden="true">HASSTRA</span>
       </div>
       <button id="start-journey" class="primary-button">Start your journey <span>→</span></button>
-      <div class="intro-note"><div class="denim-swatches" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><p>Many shades. One journey.</p></div>
+      <a class="intro-browse" href="#collection">Or explore the collection <span>↗</span></a>
+      <div class="intro-note"><p>REGIONAL STORIES. A LIMITED COLLECTION.</p></div>
     </section>
     <section id="map-screen" class="map-screen" aria-labelledby="map-title" data-lenis-prevent hidden>
       <button id="close-map" class="close-button" aria-label="Close itinerary">×</button>
@@ -79,14 +78,25 @@
       <div class="map-sheet"><div class="map-sheet-heading"><span>HASSTRA RAIL JOURNAL</span><span>INDIA / 01</span></div><div class="map-art"><span class="map-compass" aria-hidden="true">N<br>↑</span><div id="map-viewport" class="map-viewport" role="group" tabindex="0" aria-label="Interactive map of India" aria-describedby="map-help"><div id="map-content" class="map-content"><img draggable="false" src="assets/india-paper-map.svg" alt="Map of India with Rajasthan and Gujarat highlighted"><svg class="map-route" viewBox="0 0 570 650" aria-hidden="true"><path d="M158.8 199.4 Q115 221 100.3 269.6"/></svg><button class="map-pin jaipur-pin" data-start="0" aria-label="Start in Jaipur"><i></i><span>JAIPUR</span></button><button class="map-pin ahmedabad-pin" data-start="1" aria-label="Start in Ahmedabad"><i></i><span>AHMEDABAD</span></button><span class="map-ocean" aria-hidden="true">ARABIAN<br>SEA</span></div></div><div class="map-controls" role="group" aria-label="Map zoom controls"><button id="map-zoom-out" aria-label="Zoom out">−</button><output id="map-zoom-level" aria-label="Map zoom" aria-live="off">100%</output><button id="map-zoom-in" aria-label="Zoom in">+</button><button id="map-reset" aria-label="Reset map zoom">↺</button></div></div><p id="map-help" class="map-help">Scroll or use + / − to zoom. Drag when enlarged.</p><p class="map-sheet-caption">Two places. A thread between them.</p></div>
       </div>
     </section>
+    <section id="collection-page" class="collection-page" aria-labelledby="collection-title" hidden>
+      <button id="collection-back" class="text-button">← Back to the window</button>
+      <div class="collection-intro"><span class="eyebrow">HASSTRA / THE COLLECTION</span><h1 id="collection-title" tabindex="-1">Places remembered.<br>Pieces to keep.</h1><p>Two regional stories, translated into silhouette, colour and detail. Explore each piece at your own pace.</p></div>
+      <div id="collection-grid" class="collection-grid"></div>
+      <div class="collection-end"><p>Prefer the window seat?</p><button id="collection-journey" class="text-button">Take the journey <span>→</span></button></div>
+      <footer>HASSTRA <span>A JOURNEY, WOVEN.</span></footer>
+    </section>
     <section id="piece-page" class="piece-page" aria-labelledby="piece-name" hidden>
-      <button id="back-journey" class="text-button">← Back to the journey</button>
-      <div class="piece-hero"><figure><img id="story-image" alt=""><figcaption>HASSTRA / COLLECTION DESIGN STUDY</figcaption></figure><div><span class="eyebrow" id="story-region"></span><h1 id="piece-name" tabindex="-1"></h1><p id="story-intro" class="story-intro"></p><span class="hand-note">A place, carried forward.</span></div></div>
-      <div class="piece-notes"><div><span class="eyebrow">01 / THE PLACE</span><h2 id="story-place-title"></h2><p id="story-place"></p><span class="eyebrow">02 / THE DETAILS</span><h2 id="story-detail-title"></h2><p id="story-detail"></p><p class="film-note">The designer’s film will join this story when it’s ready.</p></div><figure><img id="story-notes-image" loading="lazy" alt=""><figcaption id="story-notes-caption"></figcaption></figure></div>
+      <div class="piece-navigation"><a href="#collection" class="text-button">← The collection</a><button id="back-journey" class="text-button">Back to the window ↗</button></div>
+      <div class="piece-hero"><div class="piece-intro"><span class="eyebrow" id="story-region"></span><h1 id="piece-name" tabindex="-1"></h1><p id="story-intro" class="story-intro"></p><p class="piece-instruction">Select a detail on the piece to look closer.</p><button class="text-button" id="story-detail-link">Discover the details <span>↓</span></button></div><figure class="story-garment"><div class="garment-stage"><img id="story-image" alt=""><div id="story-hotspots" class="garment-hotspots" aria-label="Explore garment details"></div></div><figcaption>FROM THE HASSTRA DESIGN NOTEBOOK</figcaption></figure></div>
+      <section class="story-section piece-place"><figure><img id="story-landscape" loading="lazy" alt=""></figure><div><span class="eyebrow">01 / THE PLACE</span><h2 id="story-place-title"></h2><p id="story-place"></p></div></section>
+      <section id="piece-details" class="story-section piece-details"><span class="eyebrow">02 / THE DETAILS</span><h2>Follow the thread.</h2><p class="section-intro">The small marks that give the piece its character.</p><div id="story-detail-list" class="detail-grid"></div></section>
+      <section class="story-section piece-notes"><div><span class="eyebrow">03 / THE DESIGN NOTEBOOK</span><h2 id="story-detail-title"></h2><p id="story-detail"></p><p class="study-note">Original design studies from the HASSTRA collection.</p></div><figure><img id="story-notes-image" loading="lazy" alt=""><figcaption id="story-notes-caption"></figcaption></figure></section>
+      <section class="story-section interest-section" aria-labelledby="interest-title"><span class="eyebrow">AN INVITATION / THE COLLECTION</span><h2 id="interest-title">A closer connection.</h2><p>Register your interest in this piece and hear from HASSTRA when the collection opens.</p><form id="interest-form"><label for="interest-email">Email address</label><div class="interest-fields"><input id="interest-email" name="email" type="email" autocomplete="email" placeholder="Your email address" required disabled><button class="primary-button" type="submit" disabled>Register your interest <span>→</span></button></div><p id="interest-status" role="status" aria-live="polite">Interest registration opens soon.</p></form></section>
       <button id="story-continue" class="primary-button">Back to the window <span>→</span></button><footer>HASSTRA <span>EVERY THREAD CARRIES A PLACE.</span></footer>
     </section>
   </main>
-  <dialog id="detail-panel" class="detail-panel" aria-labelledby="panel-title" data-lenis-prevent><button id="close-panel" class="close-button" aria-label="Close detail">×</button><span id="panel-kicker" class="eyebrow"></span><h2 id="panel-title"></h2><p id="panel-description"></p><img id="panel-image" alt=""><a id="panel-story" class="text-button" href="#piece/jaipur">Explore the piece’s story ↗</a></dialog>
+  <dialog id="journey-guide" class="journey-guide" aria-labelledby="guide-title" data-lenis-prevent><button id="guide-close" class="close-button" aria-label="Close introduction">×</button><span class="eyebrow">A NOTE BEFORE WE LEAVE</span><h2 id="guide-title">Why the window seat?</h2><p>Every piece begins somewhere. The train connects the places, colours and details that shape this collection.</p><ol><li><span>01</span><div><strong>Choose your first place.</strong><p>Jaipur or Ahmedabad. A different beginning, the same collection.</p></div></li><li><span>02</span><div><strong>Scroll to travel.</strong><p>The view moves at your pace. Pause, look closer, or move on.</p></div></li><li><span>03</span><div><strong>Meet the piece.</strong><p>Explore its details, then follow the story behind the design.</p></div></li></ol><button id="guide-start" class="primary-button">Take the window seat <span>→</span></button><a id="guide-collection" href="#collection" class="text-button">Browse the collection instead ↗</a><button id="guide-skip" class="guide-skip">Skip introduction</button></dialog>
+  <dialog id="detail-panel" class="detail-panel" aria-labelledby="panel-title" data-lenis-prevent><button id="close-panel" class="close-button" aria-label="Close detail">×</button><span id="panel-kicker" class="eyebrow"></span><h2 id="panel-title"></h2><p id="panel-description"></p><div id="panel-media"><img id="panel-image" alt=""></div><a id="panel-story" class="text-button" href="#piece/jaipur">Explore the piece’s story ↗</a></dialog>
   <noscript><div class="noscript-message">This journey uses JavaScript for the map and scroll animation. Please enable it to explore the collection.</div></noscript>
 </body>
 </html>

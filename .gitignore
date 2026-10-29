@@ -4,3 +4,4 @@ output/
 .playwright-cli/
 *.tgz
 /indian_train__interior__exterior.glb
+.vscode/

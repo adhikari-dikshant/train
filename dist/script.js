@@ -1,5 +1,6 @@
 import { clamp, smoothstep, routeFrom, journeyFrame, arrivalProgress, departureProgress, collageEntrance } from './journey-state.mjs';
 import { constrainMapView, zoomMapView } from './map-view.mjs';
+import { pageFromHash, containedPoint } from './piece-view.mjs';
 
 const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];
@@ -18,6 +19,9 @@ let frame = journeyFrame(0, route);
 let lastChapter = '';
 let savedJourneyScroll = 0;
 let reading = false;
+let activePieceIndex = 0;
+let introductionSeen = false;
+let storyObserver;
 let panelTrigger;
 let mapTrigger;
 let context;
@@ -41,7 +45,13 @@ const stations = [
     detailTitle: 'The small marks matter.',
     detail: 'The supplied design sheets pair a cream shirt and trousers with indigo, red and cream motifs. Shoulder panels, decorated pockets and the long back panel carry the pattern; running-stitch notes trace the edges.',
     noteTitle: 'From the designer’s notebook.',
-    note: 'Look at the floral shoulder panel, the framed pocket motif and the contrasting pocket flap. These are HASSTRA’s supplied design references, shown alongside the front and back study.'
+    note: 'Look at the floral shoulder panel, the framed pocket motif and the contrasting pocket flap. These are HASSTRA’s supplied design references, shown alongside the front and back study.',
+    scenery: 'assets/rajasthan-landscape.webp',
+    details: [
+      { title: 'The shoulder panel.', x: .18, y: .212, text: 'A narrow floral panel follows the shoulder. Indigo, cream and red bring a small concentration of pattern to the otherwise quiet silhouette.' },
+      { title: 'A pocket with a frame.', x: .222, y: .43, text: 'The lower pocket combines an arched motif with a contrasting geometric flap. Both details are drawn in the original front study.' },
+      { title: 'A line down the back.', x: .646, y: .335, text: 'A long patterned panel anchors the back. Small motifs gather across the yoke, with running-stitch marks continuing down the centre.' }
+    ]
   },
   {
     slug: 'ahmedabad', name: 'Ahmedabad', state: 'Gujarat', local: 'અમદાવાદ',
@@ -57,7 +67,13 @@ const stations = [
     detailTitle: 'A line worth following.',
     detail: 'The supplied revised “Warrior” study shows a dark jacket with floral panels across the front and sleeves. Patterned borders frame the neckline, cuffs and hem; three contrasting fastenings cross the front.',
     noteTitle: 'Follow the floral panels.',
-    note: 'The floral lines draw the eye down the front, while the patterned cuffs and hem give the design a frame. This is the revised “Warrior” artwork supplied in the Gujarat folder.'
+    note: 'The floral lines draw the eye down the front, while the patterned cuffs and hem give the design a frame. This is the revised “Warrior” artwork supplied in the Gujarat folder.',
+    scenery: 'assets/gujarat-landscape.webp',
+    details: [
+      { title: 'Florals in motion.', x: .335, y: .355, text: 'Climbing florals travel across the front and sleeves. Against the dark ground, their red and green details become the first thing the eye follows.' },
+      { title: 'Three points of connection.', x: .505, y: .465, text: 'Three contrasting fastenings cross the patterned opening. They introduce a measured rhythm down the centre of the revised design study.' },
+      { title: 'The finishing border.', x: .695, y: .69, text: 'Repeated bands frame the cuffs and hem. Their close pattern gives a defined edge to the loose, dark silhouette.' }
+    ]
   }
 ];
 
@@ -90,6 +106,7 @@ function updateStation(index) {
   $('#product-description').textContent = s.description;
   $('#product-caption').textContent = s.caption;
   setImage('#product-image', s.image, s.caption);
+  renderHotspots($('#product-hotspots'), s, index);
   setImage('#fragment-image', s.fragment, `${s.state} garment design reference`);
   $('#view-piece').href = `#piece/${s.slug}`;
   $('#next-stop').innerHTML = frame.final ? 'Explore the itinerary <span>↗</span>' : `On to ${stations[route[frame.leg + 1]].name} <span>→</span>`;
@@ -336,7 +353,26 @@ async function begin(index) {
   onProgress(0);
   $('#next-chapter').focus({ preventScroll: true });
 }
-$('#start-journey').addEventListener('click', openMap);
+function openGuide() {
+  if (starting) return;
+  if (!$('#map-screen').hidden) closeMap();
+  closePanel();
+  lenis?.stop();
+  $('#journey-guide').showModal();
+}
+function closeGuide() {
+  introductionSeen = true;
+  $('#journey-guide').close();
+  if (started || reading) lenis?.start();
+}
+function guideToJourney() { closeGuide(); openMap(); }
+$('#start-journey').addEventListener('click', event => introductionSeen ? openMap(event) : openGuide());
+$('#how-toggle').addEventListener('click', openGuide);
+$('#guide-close').addEventListener('click', closeGuide);
+$('#journey-guide').addEventListener('cancel', () => { introductionSeen = true; if (started || reading) lenis?.start(); });
+$('#guide-start').addEventListener('click', guideToJourney);
+$('#guide-skip').addEventListener('click', guideToJourney);
+$('#guide-collection').addEventListener('click', closeGuide);
 $('#map-toggle').addEventListener('click', openMap);
 $('#close-map').addEventListener('click', closeMap);
 $$('[data-start]').forEach(button => button.addEventListener('click', () => chooseStart(Number(button.dataset.start))));
@@ -356,39 +392,95 @@ $('#next-stop').addEventListener('click', () => frame.final ? openMap() : travel
 function closePanel() {
   if (!$('#detail-panel').open) return;
   $('#detail-panel').close();
-  if (started && !starting && !reading && $('#map-screen').hidden) lenis?.start();
+  if ((started || reading) && !starting && $('#map-screen').hidden && !$('#journey-guide').open) lenis?.start();
   panelTrigger?.focus({ preventScroll: true });
 }
-function openPanel(event, garment = false) {
-  const s = stations[station];
+function openPanel(event, garment = false, detail, pieceIndex = station) {
+  const s = stations[pieceIndex];
   panelTrigger = event.currentTarget;
   lenis?.stop();
   $('#panel-kicker').textContent = `${s.state.toUpperCase()} / A CLOSER LOOK`;
-  $('#panel-title').textContent = garment ? s.noteTitle : frame.chapter === 'place' ? s.placeTitle : s.detailTitle;
-  $('#panel-description').textContent = garment ? s.note : frame.chapter === 'place' ? s.place : s.detail;
-  setImage('#panel-image', garment ? s.fragment : s.notes, `${s.state} design notebook`);
+  $('#panel-title').textContent = detail ? detail.title : garment ? s.noteTitle : frame.chapter === 'place' ? s.placeTitle : s.detailTitle;
+  $('#panel-description').textContent = detail ? detail.text : garment ? s.note : frame.chapter === 'place' ? s.place : s.detail;
+  $('#panel-media').classList.toggle('is-closeup', !!detail);
+  $('#panel-image').style.setProperty('--detail-x', detail?.x ?? .5);
+  $('#panel-image').style.setProperty('--detail-y', detail?.y ?? .5);
+  setImage('#panel-image', detail ? s.image : garment ? s.fragment : s.notes, detail ? `${s.state}: ${detail.title}` : `${s.state} design notebook`);
   $('#panel-story').href = `#piece/${s.slug}`;
+  $('#panel-story').hidden = reading;
   $('#detail-panel').show();
 }
 $('#culture-note').addEventListener('click', event => openPanel(event));
-$('#garment-note').addEventListener('click', event => openPanel(event, true));
 $('#close-panel').addEventListener('click', closePanel);
 
+function renderHotspots(container, piece, pieceIndex) {
+  container.replaceChildren(...piece.details.map((detail, i) => {
+    const button = document.createElement('button');
+    button.className = 'garment-marker';
+    button.textContent = '+';
+    button.setAttribute('aria-label', `Explore ${detail.title.toLowerCase()}`);
+    button.dataset.detail = i;
+    button.addEventListener('click', event => openPanel(event, true, detail, pieceIndex));
+    return button;
+  }));
+  positionHotspots(container);
+}
+function positionHotspots(container) {
+  const image = container.previousElementSibling;
+  const box = image.getBoundingClientRect();
+  const piece = stations[container.id === 'story-hotspots' ? activePieceIndex : station];
+  [...container.children].forEach((button, i) => {
+    const detail = piece.details[i];
+    const position = containedPoint(image.naturalWidth, image.naturalHeight, box.width, box.height, detail.x, detail.y);
+    if (!position) return;
+    button.style.left = `${position.left}px`;
+    button.style.top = `${position.top}px`;
+  });
+}
+const hotspotObserver = new ResizeObserver(() => $$('.garment-hotspots').forEach(positionHotspots));
+$$('.garment-stage').forEach(stage => {
+  hotspotObserver.observe(stage);
+  stage.querySelector('img').addEventListener('load', () => positionHotspots(stage.querySelector('.garment-hotspots')));
+});
+$('#collection-grid').replaceChildren(...stations.map((piece, i) => {
+  const article = document.createElement('article');
+  article.className = 'collection-piece';
+  const link = document.createElement('a');
+  link.href = `#piece/${piece.slug}`;
+  link.innerHTML = `<figure><img src="${piece.image}" alt="${piece.caption}" loading="lazy"><span>Explore the piece ↗</span></figure><div class="collection-piece-heading"><span class="eyebrow">0${i + 1} / ${piece.state.toUpperCase()}</span><h2>${piece.title}</h2><p>${piece.description}</p></div>`;
+  article.append(link);
+  return article;
+}));
+$('#collection-back').addEventListener('click', closeStory);
+$('#collection-journey').addEventListener('click', () => { closeStory(); introductionSeen ? openMap() : openGuide(); });
+$('#story-detail-link').addEventListener('click', event => { event.preventDefault(); scrollToPosition($('#piece-details').offsetTop - 115); });
+$('#interest-form').addEventListener('submit', event => event.preventDefault());
+
 function showStory() {
-  const slug = location.hash.match(/^#piece\/(jaipur|ahmedabad)$/)?.[1];
-  if (!slug) {
+  const page = pageFromHash(location.hash);
+  if (page.type === 'journey') {
     if (reading) leaveStory();
     return;
   }
-  const s = stations.find(item => item.slug === slug);
   if (!reading) savedJourneyScroll = scrollY;
+  closePanel();
+  if (!$('#map-screen').hidden) closeMap();
   reading = true;
   lenis?.stop();
-  closePanel();
-  $('#map-screen').hidden = true;
   document.body.classList.remove('map-open', 'boarding');
   document.body.classList.add('reading');
-  $('#piece-page').hidden = false;
+  $('#piece-page').hidden = page.type !== 'piece';
+  $('#collection-page').hidden = page.type !== 'collection';
+  storyObserver?.disconnect();
+  if (page.type === 'collection') {
+    document.title = 'The collection — HASSTRA';
+    scrollToPosition(0, true);
+    lenis?.start();
+    $('#collection-title').focus({ preventScroll: true });
+    return;
+  }
+  activePieceIndex = stations.findIndex(item => item.slug === page.slug);
+  const s = stations[activePieceIndex];
   $('#piece-name').textContent = s.title;
   $('#story-region').textContent = `${s.state.toUpperCase()} / THE STORY OF THE PIECE`;
   $('#story-intro').textContent = s.description;
@@ -398,6 +490,21 @@ function showStory() {
   $('#story-detail').textContent = s.detail;
   $('#story-notes-caption').textContent = s.slug === 'jaipur' ? 'ORIGINAL ANNOTATED BACK DESIGN / HASSTRA' : s.caption;
   setImage('#story-image', s.image, s.caption);
+  setImage('#story-landscape', s.scenery, `${s.state} cultural landscape illustration`);
+  renderHotspots($('#story-hotspots'), s, activePieceIndex);
+  $('#story-detail-list').replaceChildren(...s.details.map((detail, i) => {
+    const article = document.createElement('article');
+    article.innerHTML = `<div class="detail-image"><img src="${s.image}" alt="${detail.title}" loading="lazy" style="--detail-x:${detail.x};--detail-y:${detail.y}"></div><span class="eyebrow">0${i + 1} / THE DETAIL</span><h3>${detail.title}</h3><p>${detail.text}</p>`;
+    return article;
+  }));
+  $$('.story-section').forEach(section => section.classList.remove('in-view'));
+  if (!reducedMotion && 'IntersectionObserver' in window) {
+    document.body.classList.add('story-motion');
+    storyObserver = new IntersectionObserver(entries => entries.forEach(entry => {
+      if (entry.isIntersecting) { entry.target.classList.add('in-view'); storyObserver.unobserve(entry.target); }
+    }), { threshold: .1 });
+    $$('.story-section').forEach(section => storyObserver.observe(section));
+  }
   setImage('#story-notes-image', s.notes, `${s.state} original garment design sheet`);
   document.title = `${s.title} — HASSTRA`;
   scrollToPosition(0, true);
@@ -405,11 +512,16 @@ function showStory() {
   $('#piece-name').focus({ preventScroll: true });
 }
 function leaveStory() {
+  closePanel();
   lenis?.stop();
   reading = false;
   $('#piece-page').hidden = true;
+  $('#collection-page').hidden = true;
+  storyObserver?.disconnect();
   document.body.classList.remove('reading');
   document.body.classList.toggle('boarding', !started);
+  journey.inert = !started;
+  $('#intro-overlay').inert = started;
   document.title = 'HASSTRA — A journey, woven.';
   window.ScrollTrigger?.refresh();
   scrollToPosition(savedJourneyScroll, true);
