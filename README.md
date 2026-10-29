@@ -6,14 +6,14 @@ An interactive clothing collection journal built with plain HTML, CSS, locally b
 
 Run `python3 -m http.server 4173 --bind 127.0.0.1`, then open http://127.0.0.1:4173/. JavaScript modules require an HTTP server.
 
-Run `node --test tests/*.test.mjs` for route, scroll, map-zoom, page-route and hotspot-coordinate checks. Run `node scripts/build.mjs` to validate local asset references and regenerate `dist/`. The existing private Site identity is retained in `.openai/hosting.json`.
+Run `node --test tests/*.test.mjs` for route, scroll, map-zoom, page-route, hotspot-coordinate and contextual guidance checks. Run `node scripts/build.mjs` to validate local asset references and regenerate `dist/`. The existing private Site identity is retained in `.openai/hosting.json`.
 
 ## Experience
 
 - The opening is a restrained indigo journal in the painted compartment, with cream editorial typography and a muted bronze accent. The itinerary and garment panels share this navy/cream/chocolate palette; story and collection pages use warm paper backgrounds. The existing Caslon and DM Sans remain working fonts pending the client’s final type choice.
 - The itinerary continues the compartment setting with an indigo panel and a warm paper map. The map keeps its original geography and pin coordinates; `assets/paper-grain.svg` adds an original paper texture.
 - The map zooms from 100% to 300% using the buttons, mouse wheel or keyboard (+, −, 0/Home, arrow keys). Drag to pan while enlarged. Pins keep readable labels; selecting a destination gently focuses the map before departure. Closing cancels that focus, and reopening resets the view. Reduced motion makes zoom immediate.
-- Start your journey first opens a short, skippable explanation of the train and scroll interaction, including direct collection browsing. The header’s Our journey button reopens it. Continuing opens an India map. Select Jaipur or Ahmedabad as the starting point. The two-stop route then follows that order, visiting the other destination second. The bottom navigation jumps to either stop without changing that route.
+- Small nonmodal hints appear beside the action they explain: Start your journey on the launch, city choices on the map, the compartment window before scrolling, and the first garment detail. Curved arrows point to the real elements. Each hint can be dismissed, Skip hints turns guidance off, and the header Guide control replays it. Hints do not pause scrolling or intercept the underlying controls. Start your journey opens the India map directly. Select Jaipur or Ahmedabad as the starting point. The two-stop route then follows that order, visiting the other destination second. The bottom navigation jumps to either stop without changing that route.
 - The shutter opens onto still countryside, ready for the visitor to scroll. Before the first stop, travel occupies 300 pixels of scrolling; the intercity sequence spans 600 pixels, including the return to the compartment. Scrolling moves the landscape, reveals the station and expands its collage. Pausing holds the scenery in place; there is no timed travel playback or scroll lock. Destination navigation starts at the selected leg’s travel section; the next-chapter button can advance that section in small steps.
 - Intercity departure first restores the compartment, then moves the countryside through its window. The next station changes only while the scenery fully covers it. Scenery cruises briskly, then brakes progressively to a standstill before revealing the station; the collage expands only after that reveal finishes. All phases follow scroll in either direction, within the same short travel distance.
 - The compartment disappears completely during the two cultural chapters and garment reveal. Intercity motion pans one generated photographic countryside panorama through the window. The long image contains fields, trees, village houses and hazy hills; it works independently of WebGL and needs no video download or autoplay permission. Reduced motion holds the panorama still while scroll still controls arrival and the collage reveal. See `docs/travel-panorama.md` for provenance and the full prompt.
@@ -42,7 +42,7 @@ Lenis is vendored from its official npm release; `vendor/lenis-LICENSE.txt` reta
 ## Source
 
 - `index.html`, `style.css`, `script.js`: interface and visual narrative.
-- `journey-state.mjs`, `map-view.mjs`, `piece-view.mjs`: fixed route, scroll chapters, bounded map zoom/pan, hash routes and contained-image hotspot coordinates.
+- `journey-state.mjs`, `map-view.mjs`, `piece-view.mjs`, `journey-guidance.mjs`: fixed route, scroll chapters, bounded map zoom/pan, hash routes and contained-image hotspot coordinates.
 - `assets/`, `vendor/`: used artwork and locally bundled libraries.
 - `tests/`, `scripts/build.mjs`: route checks and static output generation.
 - `dist/`: generated publishing files.

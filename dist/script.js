@@ -1,6 +1,7 @@
 import { clamp, smoothstep, routeFrom, journeyFrame, arrivalProgress, departureProgress, collageEntrance } from './journey-state.mjs';
 import { constrainMapView, zoomMapView } from './map-view.mjs';
 import { pageFromHash, containedPoint } from './piece-view.mjs';
+import { guidanceStep, placeGuidance } from './journey-guidance.mjs';
 
 const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];
@@ -20,7 +21,9 @@ let lastChapter = '';
 let savedJourneyScroll = 0;
 let reading = false;
 let activePieceIndex = 0;
-let introductionSeen = false;
+let hintsEnabled = true;
+let hintStep = null;
+const dismissedHints = new Set();
 let storyObserver;
 let panelTrigger;
 let mapTrigger;
@@ -121,7 +124,7 @@ function reveal(selector, visible) {
   node.inert = !visible;
   node.setAttribute('aria-hidden', String(!visible));
   node.style.pointerEvents = visible ? 'auto' : 'none';
-  animate(node, { opacity: visible ? 1 : 0, y: visible ? 0 : 18, duration: .4 });
+  animate(node, { opacity: visible ? 1 : 0, y: visible ? 0 : 18, duration: .4, onComplete: positionGuidance });
 }
 function travelToStation(index) {
   if (!route.includes(index)) return;
@@ -183,6 +186,7 @@ function onProgress(p) {
   }
   $('#next-chapter').childNodes[0].nodeValue = frame.inTransit ? 'SCROLL TO TRAVEL ' : 'SCROLL TO EXPLORE ';
   $('#next-chapter').setAttribute('aria-label', frame.complete ? 'Explore the itinerary' : frame.inTransit ? 'Continue travelling' : 'Next chapter');
+  updateGuidance();
 }
 function renderRoute() {
   $('#route-progress').replaceChildren();
@@ -282,6 +286,8 @@ async function chooseStart(index) {
   if (mapChoosing || starting) return;
   mapChoosing = true;
   const selection = ++mapSelection;
+  dismissedHints.add('place');
+  updateGuidance();
   const pin = $(`.map-pin[data-start="${index}"]`);
   mapViewport.scrollIntoView({ block: 'nearest', behavior: reducedMotion ? 'instant' : 'smooth' });
   await focusMapPin(pin, 2.35, .85);
@@ -298,11 +304,12 @@ function openMap(event) {
   mapTrigger = event?.currentTarget || $('#map-toggle');
   $('#map-screen').hidden = false;
   moveMap({ scale: 1, x: 0, y: 0 }, 0);
-  if (gsap && !reducedMotion) gsap.fromTo('#map-screen', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: .5, overwrite: true, ease: 'power2.out' });
+  if (gsap && !reducedMotion) gsap.fromTo('#map-screen', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: .5, overwrite: true, ease: 'power2.out', onComplete: positionGuidance });
   document.body.classList.add('map-open');
   journey.inert = true;
   $('#intro-overlay').inert = true;
   $('#map-title').focus({ preventScroll: true });
+  updateGuidance();
 }
 function closeMap() {
   mapSelection++;
@@ -315,11 +322,13 @@ function closeMap() {
   journey.inert = !started;
   $('#intro-overlay').inert = started;
   mapTrigger?.focus({ preventScroll: true });
+  updateGuidance();
 }
 async function begin(index) {
   if (started) return goToStation(index);
   if (starting) return;
   starting = true;
+  updateGuidance();
   route = routeFrom(index);
   frame = journeyFrame(0, route);
   travel.mix = index;
@@ -351,26 +360,67 @@ async function begin(index) {
   onProgress(0);
   $('#next-chapter').focus({ preventScroll: true });
 }
-function openGuide() {
-  if (starting) return;
-  if (!$('#map-screen').hidden) closeMap();
-  closePanel();
-  lenis?.stop();
-  $('#journey-guide').showModal();
+const hintContent = {
+  start: { title: 'Begin here.', copy: 'Choose a place. Take the window seat.', target: '#start-journey' },
+  place: { title: 'Choose your first place.', copy: 'Pick a city here, or a pin on the map. We’ll follow the route from there.', target: '.map-options' },
+  window: { title: 'Why the window seat?', copy: 'Every piece begins somewhere. Scroll to follow the places that shape our cloth.', target: '#window-assembly' },
+  piece: { title: 'Meet the piece.', copy: 'Tap a + to uncover a detail, then explore the piece’s story.', target: '#product-hotspots button' }
+};
+function updateGuidance() {
+  if (hintStep === 'window' && frame.transitProgress >= .15) dismissedHints.add('window');
+  const next = hintsEnabled ? guidanceStep({ started, starting: starting || mapChoosing, reading, mapOpen: !$('#map-screen').hidden, panelOpen: $('#detail-panel').open, frame }) : null;
+  const step = dismissedHints.has(next) ? null : next;
+  const changed = hintStep !== step;
+  hintStep = step;
+  if (!changed) return;
+  $('#journey-hint').hidden = !step;
+  document.body.classList.toggle('has-window-hint', step === 'window');
+  $('#how-toggle').setAttribute('aria-pressed', String(hintsEnabled));
+  if (!step) return;
+  if (changed) {
+    $('#journey-hint').dataset.step = step;
+    $('#hint-title').textContent = hintContent[step].title;
+    $('#hint-copy').textContent = hintContent[step].copy;
+  }
+  positionGuidance();
+  if (changed && gsap && !reducedMotion) {
+    gsap.fromTo('.hint-card', { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: .35, overwrite: true });
+    const path = $('#hint-arrow-path'), length = path.getTotalLength();
+    gsap.fromTo(path, { strokeDasharray: length, strokeDashoffset: length }, { strokeDashoffset: 0, duration: .7, ease: 'power2.out', overwrite: true, onComplete: () => gsap.set(path, { clearProps: 'strokeDasharray,strokeDashoffset' }) });
+  }
 }
-function closeGuide() {
-  introductionSeen = true;
-  $('#journey-guide').close();
-  if (started || reading) lenis?.start();
+function positionGuidance() {
+  if (!hintStep) return;
+  const target = $(hintContent[hintStep].target).getBoundingClientRect();
+  const card = $('.hint-card');
+  card.style.width = hintStep === 'piece' && innerWidth <= 760 ? `${Math.max(66, Math.min(140, target.left - 26))}px` : '';
+  const position = placeGuidance(target, { width: card.offsetWidth, height: card.offsetHeight }, { width: document.documentElement.clientWidth, height: innerHeight }, hintStep);
+  card.style.left = `${position.x}px`;
+  card.style.top = `${position.y}px`;
+  const { sx, sy, tx, ty } = position, dx = tx - sx, dy = ty - sy;
+  $('#hint-arrow-path').setAttribute('d', `M${sx},${sy} C${sx + dx * .3 - dy * .3},${sy + dy * .3 + dx * .3} ${sx + dx * .7 - dy * .3},${sy + dy * .7 + dx * .3} ${tx},${ty}`);
 }
-function guideToJourney() { closeGuide(); openMap(); }
-$('#start-journey').addEventListener('click', event => introductionSeen ? openMap(event) : openGuide());
-$('#how-toggle').addEventListener('click', openGuide);
-$('#guide-close').addEventListener('click', closeGuide);
-$('#journey-guide').addEventListener('cancel', () => { introductionSeen = true; if (started || reading) lenis?.start(); });
-$('#guide-start').addEventListener('click', guideToJourney);
-$('#guide-skip').addEventListener('click', guideToJourney);
-$('#guide-collection').addEventListener('click', closeGuide);
+function dismissGuidance(all = false) {
+  if (!hintStep) return;
+  const step = hintStep;
+  if (all) hintsEnabled = false;
+  else dismissedHints.add(step);
+  updateGuidance();
+  $(step === 'window' ? '#next-chapter' : step === 'place' ? '[data-start]' : hintContent[step].target).focus({ preventScroll: true });
+}
+$('#hint-dismiss').addEventListener('click', () => dismissGuidance());
+$('#hint-skip').addEventListener('click', () => dismissGuidance(true));
+$('#how-toggle').addEventListener('click', () => {
+  const replay = reading || !hintStep;
+  if (reading) closeStory();
+  hintsEnabled = replay;
+  if (replay) dismissedHints.clear();
+  updateGuidance();
+});
+$('#start-journey').addEventListener('click', event => { dismissedHints.add('start'); openMap(event); });
+window.addEventListener('resize', positionGuidance, { passive: true });
+$('#map-screen').addEventListener('scroll', positionGuidance, { passive: true });
+document.fonts?.ready.then(positionGuidance);
 $('#map-toggle').addEventListener('click', openMap);
 $('#close-map').addEventListener('click', closeMap);
 $$('[data-start]').forEach(button => button.addEventListener('click', () => chooseStart(Number(button.dataset.start))));
@@ -390,8 +440,9 @@ $('#next-stop').addEventListener('click', () => frame.final ? openMap() : travel
 function closePanel() {
   if (!$('#detail-panel').open) return;
   $('#detail-panel').close();
-  if ((started || reading) && !starting && $('#map-screen').hidden && !$('#journey-guide').open) lenis?.start();
+  if ((started || reading) && !starting && $('#map-screen').hidden) lenis?.start();
   panelTrigger?.focus({ preventScroll: true });
+  updateGuidance();
 }
 function openPanel(event, garment = false, detail, pieceIndex = station) {
   const s = stations[pieceIndex];
@@ -407,6 +458,8 @@ function openPanel(event, garment = false, detail, pieceIndex = station) {
   $('#panel-story').href = `#piece/${s.slug}`;
   $('#panel-story').hidden = reading;
   $('#detail-panel').show();
+  dismissedHints.add('piece');
+  updateGuidance();
 }
 $('#culture-note').addEventListener('click', event => openPanel(event));
 $('#close-panel').addEventListener('click', closePanel);
@@ -434,6 +487,7 @@ function positionHotspots(container) {
     button.style.left = `${position.left}px`;
     button.style.top = `${position.top}px`;
   });
+  if (hintStep === 'piece') positionGuidance();
 }
 const hotspotObserver = new ResizeObserver(() => $$('.garment-hotspots').forEach(positionHotspots));
 $$('.garment-stage').forEach(stage => {
@@ -450,7 +504,7 @@ $('#collection-grid').replaceChildren(...stations.map((piece, i) => {
   return article;
 }));
 $('#collection-back').addEventListener('click', closeStory);
-$('#collection-journey').addEventListener('click', () => { closeStory(); introductionSeen ? openMap() : openGuide(); });
+$('#collection-journey').addEventListener('click', () => { closeStory(); openMap(); });
 $('#story-detail-link').addEventListener('click', event => { event.preventDefault(); scrollToPosition($('#piece-details').offsetTop - 115); });
 $('#interest-form').addEventListener('submit', event => event.preventDefault());
 
@@ -467,6 +521,7 @@ function showStory() {
   lenis?.stop();
   document.body.classList.remove('map-open', 'boarding');
   document.body.classList.add('reading');
+  updateGuidance();
   $('#piece-page').hidden = page.type !== 'piece';
   $('#collection-page').hidden = page.type !== 'collection';
   storyObserver?.disconnect();
@@ -525,6 +580,7 @@ function leaveStory() {
   scrollToPosition(savedJourneyScroll, true);
   if (started) lenis?.start();
   onProgress(progressFromScroll());
+  updateGuidance();
   (started ? $(frame.chapter === 'piece' ? '#view-piece' : '#next-chapter') : $('#start-journey')).focus({ preventScroll: true });
 }
 function closeStory() {
@@ -537,10 +593,11 @@ window.addEventListener('hashchange', showStory);
 document.addEventListener('keydown', event => {
   if (event.key === 'Escape') {
     if ($('#detail-panel').open) closePanel();
+    else if (hintStep) dismissGuidance();
     else if (!$('#map-screen').hidden) closeMap();
   }
   if (event.key === 'Tab' && !$('#map-screen').hidden) {
-    const controls = $$('#map-screen button');
+    const controls = $$('#map-screen button, #journey-hint button').filter(button => button.getClientRects().length);
     const first = controls[0], last = controls.at(-1);
     if (event.shiftKey && (document.activeElement === first || document.activeElement === $('#map-title'))) { event.preventDefault(); last.focus(); }
     else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
@@ -611,6 +668,7 @@ if (gsap && window.ScrollTrigger) {
 window.addEventListener('resize', () => onProgress(progressFromScroll()), { passive: true });
 journey.inert = true;
 showStory();
+updateGuidance();
 
 // Transparent subjects assemble with scroll; the complete images remain the WebGL fallback.
 async function initScene() {
