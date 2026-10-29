@@ -11,7 +11,7 @@ Folder: https://drive.google.com/drive/folders/1v5K9PzL5VdDyDQ4Qk2wsD4727prhn4n2
 | rajasthan-motifs.jpg | Rajasthan / Shirt front motifs | 1GU4XYqrc6Ku-44IuYaVtt-SYHO5_OBZk |
 | gujarat-look.jpg | Gujarat / Revised (warrior) | 1M-Iz92lJwZ3P2SEQ7byLevEpyM43ZRU_ |
 
-`hasstra-logo.png` is the exact logo image attached by the user. Working garment titles are editorial labels for this prototype.
+`hasstra-logo-artisans.png` is the transparent raster cutout of the updated gold-and-denim HASSTRA / ARTISANS ALWAYS artwork attached by the user on 29 October 2026. See `docs/hasstra-logo.md` for the background-removal prompt and provenance. Working garment titles are editorial labels for this prototype.
 
 `india-paper-map.svg` is a simplified SVG rendering of the state polygons from https://github.com/AbhinavSwami28/india-official-geojson/blob/main/india-states-simplified.geojson. The source is MIT licensed; its license is retained in `map-license.txt`. The route marks are a diagram of the two demonstration destinations, not railway track geometry.
 

@@ -31,7 +31,7 @@ Run `node --test tests/*.test.mjs` for route, scroll, map-zoom, page-route and h
 
 This version implements the existing Jaipur / Rajasthan and Ahmedabad / Gujarat demonstration route. The complete collection, final garment names, final route and designer videos can be added when supplied; there is no placeholder video player. Working garment titles describe the supplied sheets and are not final commercial product names.
 
-The brand logo is the supplied HASSTRA PNG. Garment images are compressed copies of the user's Drive artwork, not newly generated garment designs. See `docs/collection-assets.md` for the original file IDs and map attribution. The older illustrative shirt/jacket assets and the two superseded style layers have been removed.
+The brand logo is the supplied gold-and-denim HASSTRA / ARTISANS ALWAYS artwork, processed into a transparent PNG. The header and favicon share the updated asset; no blend mode changes its colours. Garment images are compressed copies of the user's Drive artwork, not newly generated garment designs. See `docs/collection-assets.md` for the original file IDs and map attribution. The older illustrative shirt/jacket assets and the two superseded style layers have been removed.
 
 The painted compartment is retained. Ten generated transparent cutouts and two panoramic backgrounds form the two Three.js collages, with subtle pointer parallax. The original complete regional images remain the static fallback if WebGL or cutout loading fails. They are illustrations, not documentary footage or a 3D compartment model. `docs/compartment-artwork.md` records the compartment art provenance; `docs/collage-cutouts.md` and `docs/scenic-collages.md` list the generated assets and prompts.
 
