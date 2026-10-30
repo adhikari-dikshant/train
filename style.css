@@ -1147,6 +1147,9 @@ p {
 .detail-heading h2 {font-size:clamp(55px,6vw,90px);line-height:1.03}
 .detail-heading h2 em {color:#a89983}
 .piece-details .detail-heading p {font-size:12px;color:#969790}
+@media(min-width:1024px) {
+ #story-detail-list {display:grid;row-gap:clamp(80px,8vw,160px);padding-bottom:clamp(80px,8vw,160px)}
+}
 .detail-feature {display:grid;grid-template-columns:62% 38%;min-height:80svh;align-items:center}
 .detail-feature:nth-child(even) {grid-template-columns:38% 62%}
 .detail-feature:nth-child(even) .detail-image {order:2}
