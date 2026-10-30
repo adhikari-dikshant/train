@@ -1166,8 +1166,8 @@ p {
 .piece-specs>header .eyebrow {color:#a69883;font-size:8px}
 .piece-specs>header h2 {font-family:'DM Sans',Arial,sans-serif;text-transform:uppercase;font-size:24px;font-weight:400;letter-spacing:.15em;margin:24px 0 15px}
 .piece-specs>header p {color:#9d9e98;font-size:11px}
-.spec-layout {display:grid;grid-template-columns:70% 30%;align-items:center;margin-top:15px}
-.spec-diagram {position:relative;width:min(100%,clamp(360px,55svh,650px));aspect-ratio:1;justify-self:center;min-width:0}
+.spec-layout {display:grid;grid-template-columns:minmax(0,64fr) minmax(0,36fr);gap:3%;align-items:center;max-width:1800px;margin:30px auto 0}
+.spec-diagram {position:relative;width:min(100%,900px);aspect-ratio:1;justify-self:center;min-width:0}
 .spec-diagram>svg {position:absolute;inset:0;width:100%;height:100%;color:#b1a590;opacity:.5;pointer-events:none}
 .spec-diagram>img {position:absolute;left:15%;top:8%;width:70%;height:78%;object-fit:contain;transform:scale(1.1);mask-image:radial-gradient(ellipse,black 50%,transparent 75%)}
 .spec-caption {position:absolute;bottom:-5px;left:0;right:0;text-align:center;font-size:7px;letter-spacing:.2em;color:#727b7b}
@@ -1177,7 +1177,7 @@ p {
 #spec-controls button[data-spec="2"] span {transform:translateY(-18px)}
 #spec-controls button[aria-pressed=true] {color:#eee0c4}
 #spec-controls button[aria-pressed=true] i {background:#dbb77e;box-shadow:0 0 0 7px #b49a6833,0 0 20px #bca16c66}
-.spec-reading {padding:25px 8% 25px 5%;min-height:340px}
+.spec-reading {padding:25px 2% 25px 5%;min-height:340px}
 .spec-reading .eyebrow {font-size:8px;color:#9f927b}
 .spec-reading h3 {font:400 46px/1.1 'Libre Caslon Display',Georgia,serif;margin:25px 0}
 .spec-reading p {font-size:12px;color:#b1b3ad}
@@ -1203,7 +1203,7 @@ body.product-reading .brand-note {border-color:#47382e33}
 body.product-reading .site-header nav button {border-color:#47382e40}
 body.product-reading .site-header nav #how-toggle {display:none}
 @media(max-width:1000px) and (min-width:761px) {
- .spec-layout {grid-template-columns:65% 35%}.spec-reading {padding-right:0}
+ .spec-layout {grid-template-columns:minmax(0,60fr) minmax(0,40fr)}.spec-reading {padding-right:0}
 }
 @media(max-width:760px) {
  body.product-reading .brand {width:52px;height:46px}
@@ -1229,7 +1229,7 @@ body.product-reading .site-header nav #how-toggle {display:none}
  .detail-feature:nth-child(even) .detail-image {order:0}.detail-feature:nth-child(even) .detail-feature-copy {order:0;padding:35px 8% 65px}
  .detail-image {height:58svh;min-height:360px;margin:0}.detail-feature-copy {padding:35px 8% 65px}
  .detail-feature-copy h3 {font-size:39px;margin:20px 0}.detail-index {margin-top:28px}
- .piece-specs {padding:45px 5%}.piece-specs>header h2 {font-size:21px}.spec-layout {grid-template-columns:1fr}
+ .piece-specs {padding:45px 5%}.piece-specs>header h2 {font-size:21px}.spec-layout {grid-template-columns:1fr;gap:0}
  .spec-diagram {width:100%;margin:15px 0 0}
  #spec-controls button {min-width:64px;font-size:7px;gap:7px;letter-spacing:0}.spec-caption {font-size:6px;bottom:-12px}
  .spec-reading {padding:20px 5% 0;min-height:350px}.spec-reading h3 {font-size:40px;margin:20px 0}
