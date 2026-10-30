@@ -610,7 +610,7 @@ function showStory() {
   $('#story-local').textContent = s.local;
   setImage('#piece-render', s.render, `${s.title} Studio concept visualisation based on the HASSTRA design study.`);
   setImage('#spec-image', s.render, `${s.title} Garment design overview.`);
-  const points = [[16, 70], [16, 43], [32, 20], [69, 20], [85, 43], [85, 70]];
+  const points = [[15.36, 68], [15.36, 28], [50, 8], [84.64, 28], [84.64, 68], [50, 88]];
   $('#spec-controls').replaceChildren(...specificationsFor(s).map((spec, i) => {
     const button = document.createElement('button');
     button.type = 'button'; button.dataset.spec = i;
