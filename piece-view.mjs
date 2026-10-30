@@ -1,3 +1,5 @@
+import { smoothstep } from './journey-state.mjs';
+
 export function pageFromHash(hash) {
   if (hash === '#collection') return { type: 'collection' };
   const slug = hash.match(/^#piece\/(jaipur|ahmedabad)$/)?.[1];
@@ -23,4 +25,16 @@ export function specificationsFor(piece) {
     { title: 'Material', text: 'The visual explores texture and surface. The final fibre composition, fabric weight and lining have not yet been specified.', values: [['Composition', 'To be confirmed'], ['Fabric weight', 'To be confirmed']] },
     { title: 'Fit & care', text: 'The artwork establishes the silhouette. Measurements, available sizes and garment care will follow the final production sample.', values: [['Sizing', 'To be confirmed'], ['Care instructions', 'To be confirmed']] }
   ];
+}
+
+export function productHeroFrame(progress) {
+  const expand = smoothstep(0, .38, progress);
+  const cut = smoothstep(.48, .78, progress);
+  return {
+    expand, cut,
+    intro: 1 - smoothstep(.08, .3, progress),
+    piece: smoothstep(.63, .95, progress),
+    caption: 1 - smoothstep(.45, .58, progress),
+    pan: 45 + 16 * smoothstep(0, .78, progress)
+  };
 }

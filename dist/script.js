@@ -1,6 +1,6 @@
 import { clamp, smoothstep, routeFrom, journeyFrame, arrivalProgress, departureProgress, collageEntrance } from './journey-state.mjs';
 import { constrainMapView, zoomMapView } from './map-view.mjs';
-import { pageFromHash, containedPoint, specificationsFor } from './piece-view.mjs';
+import { pageFromHash, containedPoint, specificationsFor, productHeroFrame } from './piece-view.mjs';
 import { guidanceStep, placeGuidance } from './journey-guidance.mjs';
 
 const $ = selector => document.querySelector(selector);
@@ -507,7 +507,43 @@ $('#collection-grid').replaceChildren(...stations.map((piece, i) => {
 }));
 $('#collection-back').addEventListener('click', closeStory);
 $('#collection-journey').addEventListener('click', () => { closeStory(); openMap(); });
-$('#story-detail-link').addEventListener('click', () => scrollToPosition($('#piece-place').getBoundingClientRect().top + scrollY - $('.site-header').offsetHeight - 12));
+const productHero = $('#piece-hero');
+let lastHeroFrame = "";
+function heroProgress() {
+  return clamp((scrollY - productHero.offsetTop - $('#piece-page').offsetTop + $('.site-header').offsetHeight) / Math.max(1, productHero.offsetHeight - $('.piece-hero-stage').offsetHeight));
+}
+function scrollHeroTo(progress) {
+  scrollToPosition(productHero.offsetTop + $('#piece-page').offsetTop - $('.site-header').offsetHeight + progress * (productHero.offsetHeight - $('.piece-hero-stage').offsetHeight));
+}
+function updateProductHero() {
+  if (!document.body.classList.contains('product-reading') || reducedMotion) return;
+  const progress = heroProgress();
+  const key = `${progress}:${innerWidth}:${innerHeight}`;
+  if (key === lastHeroFrame) return;
+  lastHeroFrame = key;
+  const f = productHeroFrame(progress);
+  const values = {
+    '--film-left': `${62 * (1 - f.expand)}%`, '--film-top': `${55 * (1 - f.expand)}%`,
+    '--film-width': `${38 + 62 * f.expand}%`, '--film-height': `${45 + 55 * f.expand}%`,
+    '--intro-opacity': f.intro, '--piece-opacity': smoothstep(0, .25, f.piece), '--piece-rise': `${110 * (1 - f.piece)}%`,
+    '--cut-left-top': `${50 - 105 * f.cut}%`, '--cut-right-top': `${50 - 60 * f.cut}%`,
+    '--cut-left-bottom': `${50 + 105 * f.cut}%`, '--cut-right-bottom': `${50 + 60 * f.cut}%`,
+    '--film-caption': f.caption, '--film-pan': `${f.pan}%`
+  };
+  Object.entries(values).forEach(([property, value]) => productHero.style.setProperty(property, value));
+  productHero.classList.toggle('is-immersed', f.expand > .9 && f.cut < .8);
+  productHero.classList.toggle('is-revealed', progress > .94);
+  $('#hero-scroll-label').textContent = progress < .4 ? 'SCROLL TO UNFOLD' : progress < .94 ? 'REVEAL THE PIECE' : 'EXPLORE THE STORY';
+}
+$('#hero-skip').addEventListener('click', () => scrollHeroTo(1));
+$('#hero-advance').addEventListener('click', () => {
+  const progress = heroProgress();
+  const next = [.4, .78, 1].find(point => point > progress + .02);
+  if (next !== undefined) scrollHeroTo(next);
+  else scrollToPosition($('#piece-place').getBoundingClientRect().top + scrollY - $('.site-header').offsetHeight - 12);
+});
+window.addEventListener('scroll', updateProductHero, { passive: true });
+window.addEventListener('resize', updateProductHero, { passive: true });
 $$('.piece-chapters a').forEach(link => link.addEventListener('click', event => {
   event.preventDefault();
   scrollToPosition($(link.getAttribute('href')).getBoundingClientRect().top + scrollY - $('.site-header').offsetHeight - 12);
@@ -559,6 +595,8 @@ function showStory() {
   activePieceIndex = stations.findIndex(item => item.slug === page.slug);
   const s = stations[activePieceIndex];
   $('#piece-name').textContent = s.title;
+  $('#hero-piece-name').textContent = s.title;
+  productHero.style.setProperty('--film-image', `url("${s.render}")`);
   $('#story-region').textContent = `${s.state.toUpperCase()} / THE STORY OF THE PIECE`;
   $('#story-intro').textContent = s.description;
   $('#story-place-title').textContent = s.placeTitle;
@@ -604,6 +642,7 @@ function showStory() {
   scrollToPosition(0, true);
   lenis?.start();
   $('#piece-name').focus({ preventScroll: true });
+  updateProductHero();
 }
 function leaveStory() {
   closePanel();

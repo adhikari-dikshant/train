@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { pageFromHash, containedPoint, specificationsFor } from '../piece-view.mjs';
+import { pageFromHash, containedPoint, specificationsFor, productHeroFrame } from '../piece-view.mjs';
 
 test('journey and collection share deep-linkable piece pages', () => {
   assert.deepEqual(pageFromHash('#collection'), { type: 'collection' });
@@ -25,5 +25,22 @@ test('both product specifications retain unknown manufacturing facts as pending'
     assert.equal(specs[2].text, 'Motif note');
     assert.equal(specs[3].text, 'Finish note');
     for (const spec of specs.slice(4)) for (const [, value] of spec.values) assert.equal(value, 'To be confirmed');
+  }
+});
+
+test('product opening expands fully before splitting and the garment rises after the cut begins', () => {
+  const start = productHeroFrame(0), full = productHeroFrame(.4), cut = productHeroFrame(.65), end = productHeroFrame(1);
+  assert.equal(start.expand, 0); assert.equal(start.intro, 1); assert.equal(start.piece, 0);
+  assert.equal(full.expand, 1); assert.equal(full.cut, 0); assert.equal(full.piece, 0);
+  assert.ok(cut.cut > 0 && cut.cut < 1); assert.ok(cut.piece > 0 && cut.piece < 1);
+  assert.equal(end.cut, 1); assert.equal(end.piece, 1); assert.equal(end.intro, 0);
+  assert.deepEqual(productHeroFrame(-1), start);
+  assert.deepEqual(productHeroFrame(2), end);
+  const sequence = [.1, .3, .55, .75, 1];
+  const forwards = sequence.map(productHeroFrame);
+  assert.deepEqual(sequence.toReversed().map(productHeroFrame).toReversed(), forwards);
+  for (const point of [.08, .3, .38, .48, .63, .78, .95]) {
+    const a = productHeroFrame(point - 1e-6), b = productHeroFrame(point + 1e-6);
+    for (const key of Object.keys(a)) assert.ok(Math.abs(a[key] - b[key]) < .001, `${key} jumps at ${point}`);
   }
 });
