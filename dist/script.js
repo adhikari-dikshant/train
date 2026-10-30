@@ -1,6 +1,6 @@
 import { clamp, smoothstep, routeFrom, journeyFrame, arrivalProgress, departureProgress, collageEntrance } from './journey-state.mjs';
 import { constrainMapView, zoomMapView } from './map-view.mjs';
-import { pageFromHash, containedPoint } from './piece-view.mjs';
+import { pageFromHash, containedPoint, specificationsFor } from './piece-view.mjs';
 import { guidanceStep, placeGuidance } from './journey-guidance.mjs';
 
 const $ = selector => document.querySelector(selector);
@@ -36,6 +36,7 @@ let isHidden = document.hidden;
 const stations = [
   {
     slug: 'jaipur', name: 'Jaipur', state: 'Rajasthan', local: 'जयपुर',
+    render: 'assets/rajasthan-studio.webp', palette: 'Ecru / Indigo / Madder', colours: ['#d9c5a4', '#263b4d', '#8b3c30'],
     image: 'assets/rajasthan-look.jpg', notes: 'assets/rajasthan-notes.jpg', fragment: 'assets/rajasthan-motifs.jpg',
     title: 'The Rajasthan set.', caption: 'RAJASTHAN / FRONT & BACK DESIGN STUDY',
     description: 'A cream silhouette. Indigo and red details. A place remembered in the smallest marks.',
@@ -51,13 +52,14 @@ const stations = [
     note: 'Look at the floral shoulder panel, the framed pocket motif and the contrasting pocket flap. These are HASSTRA’s supplied design references, shown alongside the front and back study.',
     scenery: 'assets/rajasthan-landscape.webp',
     details: [
-      { title: 'The shoulder panel.', x: .18, y: .212, text: 'A narrow floral panel follows the shoulder. Indigo, cream and red bring a small concentration of pattern to the otherwise quiet silhouette.' },
-      { title: 'A pocket with a frame.', x: .222, y: .43, text: 'The lower pocket combines an arched motif with a contrasting geometric flap. Both details are drawn in the original front study.' },
-      { title: 'A line down the back.', x: .646, y: .335, text: 'A long patterned panel anchors the back. Small motifs gather across the yoke, with running-stitch marks continuing down the centre.' }
+      { title: 'The shoulder panel.', crop: [.31, .24], x: .18, y: .212, text: 'A narrow floral panel follows the shoulder. Indigo, cream and red bring a small concentration of pattern to the otherwise quiet silhouette.' },
+      { title: 'A pocket with a frame.', crop: [.35, .63], x: .222, y: .43, text: 'The lower pocket combines an arched motif with a contrasting geometric flap. Both details are drawn in the original front study.' },
+      { title: 'A line down the back.', crop: [.646, .335], original: true, x: .646, y: .335, text: 'A long patterned panel anchors the back. Small motifs gather across the yoke, with running-stitch marks continuing down the centre.' }
     ]
   },
   {
     slug: 'ahmedabad', name: 'Ahmedabad', state: 'Gujarat', local: 'અમદાવાદ',
+    render: 'assets/gujarat-studio.webp', palette: 'Ink / Botanical / Rust', colours: ['#202937', '#697452', '#9d4936'],
     image: 'assets/gujarat-look.jpg', notes: 'assets/gujarat-look.jpg', fragment: 'assets/gujarat-look.jpg',
     title: 'The Gujarat jacket.', caption: 'GUJARAT / REVISED “WARRIOR” DESIGN STUDY',
     description: 'Dark cloth, climbing florals and a patterned edge. A jacket with its own quiet rhythm.',
@@ -73,9 +75,9 @@ const stations = [
     note: 'The floral lines draw the eye down the front, while the patterned cuffs and hem give the design a frame. This is the revised “Warrior” artwork supplied in the Gujarat folder.',
     scenery: 'assets/gujarat-landscape.webp',
     details: [
-      { title: 'Florals in motion.', x: .335, y: .355, text: 'Climbing florals travel across the front and sleeves. Against the dark ground, their red and green details become the first thing the eye follows.' },
-      { title: 'Three points of connection.', x: .505, y: .465, text: 'Three contrasting fastenings cross the patterned opening. They introduce a measured rhythm down the centre of the revised design study.' },
-      { title: 'The finishing border.', x: .695, y: .69, text: 'Repeated bands frame the cuffs and hem. Their close pattern gives a defined edge to the loose, dark silhouette.' }
+      { title: 'Florals in motion.', crop: [.35, .35], x: .335, y: .355, text: 'Climbing florals travel across the front and sleeves. Against the dark ground, their red and green details become the first thing the eye follows.' },
+      { title: 'Three points of connection.', crop: [.50, .48], x: .505, y: .465, text: 'Three contrasting fastenings cross the patterned opening. They introduce a measured rhythm down the centre of the revised design study.' },
+      { title: 'The finishing border.', crop: [.58, .79], x: .695, y: .69, text: 'Repeated bands frame the cuffs and hem. Their close pattern gives a defined edge to the loose, dark silhouette.' }
     ]
   }
 ];
@@ -505,7 +507,28 @@ $('#collection-grid').replaceChildren(...stations.map((piece, i) => {
 }));
 $('#collection-back').addEventListener('click', closeStory);
 $('#collection-journey').addEventListener('click', () => { closeStory(); openMap(); });
-$('#story-detail-link').addEventListener('click', event => { event.preventDefault(); scrollToPosition($('#piece-details').offsetTop - 115); });
+$('#story-detail-link').addEventListener('click', () => scrollToPosition($('#piece-place').getBoundingClientRect().top + scrollY - $('.site-header').offsetHeight - 12));
+$$('.piece-chapters a').forEach(link => link.addEventListener('click', event => {
+  event.preventDefault();
+  scrollToPosition($(link.getAttribute('href')).getBoundingClientRect().top + scrollY - $('.site-header').offsetHeight - 12);
+}));
+$('#spec-controls').addEventListener('click', event => {
+  const button = event.target.closest('button[data-spec]');
+  if (button) selectSpecification(Number(button.dataset.spec));
+});
+function selectSpecification(index) {
+  const spec = specificationsFor(stations[activePieceIndex])[index];
+  $$('#spec-controls button').forEach((button, i) => button.setAttribute('aria-pressed', String(i === index)));
+  $('#spec-number').textContent = `0${index + 1} / DESIGN SPECIFICATION`;
+  $('#spec-label').textContent = spec.title;
+  $('#spec-description').textContent = spec.text;
+  if (!reducedMotion) $('#spec-reading').animate([{ opacity: .4, transform: 'translateY(5px)' }, { opacity: 1, transform: 'none' }], { duration: 260, easing: 'ease-out' });
+  $('#spec-values').replaceChildren(...spec.values.flatMap(([label, value]) => {
+    const term = document.createElement('dt'), description = document.createElement('dd');
+    term.textContent = label; description.textContent = value;
+    return [term, description];
+  }));
+}
 $('#interest-form').addEventListener('submit', event => event.preventDefault());
 
 function showStory() {
@@ -521,6 +544,7 @@ function showStory() {
   lenis?.stop();
   document.body.classList.remove('map-open', 'boarding');
   document.body.classList.add('reading');
+  document.body.classList.toggle('product-reading', page.type === 'piece');
   updateGuidance();
   $('#piece-page').hidden = page.type !== 'piece';
   $('#collection-page').hidden = page.type !== 'collection';
@@ -541,13 +565,30 @@ function showStory() {
   $('#story-place').textContent = s.place;
   $('#story-detail-title').textContent = s.detailTitle;
   $('#story-detail').textContent = s.detail;
-  $('#story-notes-caption').textContent = s.slug === 'jaipur' ? 'ORIGINAL ANNOTATED BACK DESIGN / HASSTRA' : s.caption;
+  $('#story-notes-caption').textContent = s.caption;
+  $('#piece-page').dataset.piece = s.slug;
+  $('#story-palette').textContent = s.palette;
+  $$('.piece-colours i').forEach((swatch, i) => swatch.style.background = s.colours[i]);
+  $('#story-local').textContent = s.local;
+  setImage('#piece-render', s.render, `${s.title} Studio concept visualisation based on the HASSTRA design study.`);
+  setImage('#spec-image', s.render, `${s.title} Garment design overview.`);
+  const points = [[16, 70], [16, 43], [32, 20], [69, 20], [85, 43], [85, 70]];
+  $('#spec-controls').replaceChildren(...specificationsFor(s).map((spec, i) => {
+    const button = document.createElement('button');
+    button.type = 'button'; button.dataset.spec = i;
+    button.style.left = `${points[i][0]}%`; button.style.top = `${points[i][1]}%`;
+    button.setAttribute('aria-controls', 'spec-reading');
+    button.innerHTML = `<i aria-hidden="true"></i><span>${spec.title}</span>`;
+    return button;
+  }));
+  selectSpecification(0);
   setImage('#story-image', s.image, s.caption);
   setImage('#story-landscape', s.scenery, `${s.state} cultural landscape illustration`);
   renderHotspots($('#story-hotspots'), s, activePieceIndex);
   $('#story-detail-list').replaceChildren(...s.details.map((detail, i) => {
     const article = document.createElement('article');
-    article.innerHTML = `<div class="detail-image"><img src="${s.image}" alt="${detail.title}" loading="lazy" style="--detail-x:${detail.x};--detail-y:${detail.y}"></div><span class="eyebrow">0${i + 1} / THE DETAIL</span><h3>${detail.title}</h3><p>${detail.text}</p>`;
+    article.className = 'detail-feature story-section';
+    article.innerHTML = `<figure class="detail-image"><img src="${detail.original ? s.image : s.render}" alt="${detail.title} ${detail.original ? 'Original design study.' : 'Studio concept detail.'}" loading="lazy" style="--detail-x:${detail.crop[0]};--detail-y:${detail.crop[1]}"></figure><div class="detail-feature-copy"><span class="eyebrow">0${i + 1} / ${detail.original ? 'FROM THE DESIGN NOTEBOOK' : 'A STUDY IN DETAIL'}</span><h3>${detail.title}</h3><p>${detail.text}</p><span class="detail-index">${String(i + 1).padStart(2, '0')} — 03</span></div>`;
     return article;
   }));
   $$('.story-section').forEach(section => section.classList.remove('in-view'));
@@ -558,7 +599,7 @@ function showStory() {
     }), { threshold: .1 });
     $$('.story-section').forEach(section => storyObserver.observe(section));
   }
-  setImage('#story-notes-image', s.notes, `${s.state} original garment design sheet`);
+
   document.title = `${s.title} — HASSTRA`;
   scrollToPosition(0, true);
   lenis?.start();
@@ -571,7 +612,7 @@ function leaveStory() {
   $('#piece-page').hidden = true;
   $('#collection-page').hidden = true;
   storyObserver?.disconnect();
-  document.body.classList.remove('reading');
+  document.body.classList.remove('reading', 'product-reading');
   document.body.classList.toggle('boarding', !started);
   journey.inert = !started;
   $('#intro-overlay').inert = started;
