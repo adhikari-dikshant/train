@@ -1243,9 +1243,12 @@ body.product-reading .site-header nav #how-toggle {display:none}
     max-width: 750px
 }
 
-.interest-section>p {
+.interest-copy>p {
     max-width: 430px
 }
+
+.interest-copy h2 em {font-style:normal}
+.interest-signature,.interest-form-heading {display:none}
 
 .interest-section form {
     margin-top: 30px
@@ -1287,6 +1290,75 @@ body.product-reading .site-header nav #how-toggle {display:none}
     font-size: 10px;
     margin-top: 13px;
     color: #766656
+}
+
+@media (min-width:1024px) {
+    .piece-page .interest-section {
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        align-items:center;
+        gap:clamp(70px,8vw,150px);
+        width:84%;
+        max-width:1440px;
+        padding:clamp(90px,8vw,145px) 0;
+        margin:35px auto 25px
+    }
+    .interest-copy h2 {
+        max-width:570px;
+        font-size:clamp(66px,5.8vw,96px);
+        line-height:1.02;
+        margin:30px 0
+    }
+    .interest-copy h2 em {font-style:italic;color:#8a6b48}
+    .interest-copy>p {font-size:15px;line-height:1.9;max-width:365px}
+    .interest-signature {
+        display:flex;
+        align-items:center;
+        gap:18px;
+        margin-top:45px;
+        font:italic 19px 'Libre Caslon Display',Georgia,serif;
+        color:#8a6b48
+    }
+    .interest-signature::before {content:"";width:44px;height:1px;background:#b99a73}
+    .interest-section form {
+        margin:0;
+        padding:clamp(32px,3.2vw,56px);
+        background:#faf8f2;
+        border:1px solid #b99a733b;
+        border-top:2px solid #b99a73
+    }
+    .interest-form-heading {display:block;margin-bottom:36px}
+    .interest-form-heading .eyebrow {font-size:9px;color:#8a6b48;letter-spacing:.17em}
+    .interest-form-heading h3 {
+        font:400 clamp(30px,2.7vw,44px)/1.15 'Libre Caslon Display',Georgia,serif;
+        letter-spacing:-.015em;
+        margin:18px 0 0
+    }
+    .interest-section label {font-size:10px;letter-spacing:.08em}
+    .interest-fields {display:block;border:0}
+    .interest-fields input {
+        width:100%;
+        padding:16px 0;
+        border-bottom:1px solid #47382e40;
+        font-size:14px
+    }
+    .interest-fields .primary-button {
+        width:100%;
+        justify-content:space-between;
+        margin-top:24px;
+        padding:20px 24px;
+        opacity:.58
+    }
+    .interest-section #interest-status {
+        display:flex;
+        align-items:center;
+        gap:8px;
+        margin:18px 0 0;
+        font-size:11px
+    }
+    .interest-section #interest-status::before {
+        content:"";width:5px;height:5px;border-radius:50%;background:#b99a73
+    }
 }
 
 .piece-page>.primary-button {
