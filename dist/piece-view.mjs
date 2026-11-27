@@ -22,7 +22,7 @@ export function specificationsFor(piece) {
     { title: 'Palette', text: rajasthan ? 'A quiet ecru ground, interrupted by small concentrations of indigo and madder red.' : 'An ink-dark ground carries botanical greens, warm reds and small cream accents.', values: [['Ground', rajasthan ? 'Ecru' : 'Ink navy'], ['Accents', rajasthan ? 'Indigo / red / cream' : 'Green / red / cream']] },
     { title: 'Motif', text: piece.details[0].text, values: [['Language', rajasthan ? 'Floral shoulder panels' : 'Climbing botanical panels'], ['Placement', rajasthan ? 'Shoulders & back yoke' : 'Front & upper sleeves']] },
     { title: 'Finishing', text: piece.details[1].text, values: [['Detail', rajasthan ? 'Framed lower pockets' : 'Three front fastenings'], ['Edge', rajasthan ? 'Running-stitch marks' : 'Patterned cuffs & hem']] },
-    { title: 'Material', text: 'The visual explores texture and surface. The final fibre composition, fabric weight and lining have not yet been specified.', values: [['Composition', 'To be confirmed'], ['Fabric weight', 'To be confirmed']] },
+    { title: 'Material', text: 'Denim is the collection’s starting point. Final fibre composition, fabric weight and lining will be confirmed with the production sample.', values: [['Composition', 'To be confirmed'], ['Fabric weight', 'To be confirmed']] },
     { title: 'Fit & care', text: 'The artwork establishes the silhouette. Measurements, available sizes and garment care will follow the final production sample.', values: [['Sizing', 'To be confirmed'], ['Care instructions', 'To be confirmed']] }
   ];
 }

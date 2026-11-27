@@ -39,7 +39,7 @@ const stations = [
     render: 'assets/rajasthan-studio.webp', palette: 'Ecru / Indigo / Madder', colours: ['#d9c5a4', '#263b4d', '#8b3c30'],
     image: 'assets/rajasthan-look.jpg', notes: 'assets/rajasthan-notes.jpg', fragment: 'assets/rajasthan-motifs.jpg',
     title: 'The Rajasthan set.', caption: 'RAJASTHAN / FRONT & BACK DESIGN STUDY',
-    description: 'A cream silhouette. Indigo and red details. A place remembered in the smallest marks.',
+    description: 'A cream denim silhouette with indigo and red details. A place remembered in the smallest marks.',
     chapters: [
       ['A city in\nrose.', 'Pink plaster, faded red, tiny floral repeats. Take in the colours before we follow them into cloth.'],
       ['Look a\nlittle closer.', 'A shoulder panel. A pocket. A line of small motifs down the back. The designer’s notes bring the details into focus.']
@@ -62,7 +62,7 @@ const stations = [
     render: 'assets/gujarat-studio.webp', palette: 'Ink / Botanical / Rust', colours: ['#202937', '#697452', '#9d4936'],
     image: 'assets/gujarat-look.jpg', notes: 'assets/gujarat-look.jpg', fragment: 'assets/gujarat-look.jpg',
     title: 'The Gujarat jacket.', caption: 'GUJARAT / REVISED “WARRIOR” DESIGN STUDY',
-    description: 'Dark cloth, climbing florals and a patterned edge. A jacket with its own quiet rhythm.',
+    description: 'Dark denim, climbing florals and a patterned edge. A jacket with its own quiet rhythm.',
     chapters: [
       ['Colour in\nmotion.', 'Carved stone, dotted cloth, deep blue. In the collage, pattern moves from architecture to textiles.'],
       ['Follow\nthe thread.', 'Florals climb the front and sleeves. Pattern gathers at the cuffs and hem. The sketch turns a first impression into a garment.']
@@ -365,7 +365,7 @@ async function begin(index) {
 const hintContent = {
   start: { title: 'Begin here.', copy: 'Choose a place. Take the window seat.', target: '#start-journey' },
   place: { title: 'Choose your first place.', copy: 'Pick a city here, or a pin on the map. We’ll follow the route from there.', target: '.map-options' },
-  window: { title: 'Why the window seat?', copy: 'Every piece begins somewhere. Scroll to follow the places that shape our cloth.', target: '#window-assembly' },
+  window: { title: 'Why the window seat?', copy: 'Every piece begins somewhere. Scroll to follow the places that shape our denim.', target: '#window-assembly' },
   piece: { title: 'Meet the piece.', copy: 'Tap a + to uncover a detail, then explore the piece’s story.', target: '#product-hotspots button' }
 };
 function updateGuidance() {
@@ -655,7 +655,7 @@ function leaveStory() {
   document.body.classList.toggle('boarding', !started);
   journey.inert = !started;
   $('#intro-overlay').inert = started;
-  document.title = 'HASSTRA — A journey, woven.';
+  document.title = 'HASSTRA — A denim journey woven.';
   window.ScrollTrigger?.refresh();
   scrollToPosition(savedJourneyScroll, true);
   if (started) lenis?.start();

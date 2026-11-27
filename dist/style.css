@@ -1,4 +1,12 @@
 :root {
+    /* Screen interpretations of the supplied brand colour board. */
+    --denim: #547f9f;
+    --indigo: #1c3051;
+    --oxblood: #790c2b;
+    --rani: #ad1457;
+    --forest: #174b34;
+    --gold: #b4872b;
+    --brand-stripe: linear-gradient(90deg,var(--denim) 0 16.666%,var(--indigo) 16.666% 33.333%,var(--oxblood) 33.333% 50%,var(--rani) 50% 66.666%,var(--forest) 66.666% 83.333%,var(--gold) 83.333% 100%);
     --ink: #111e2b;
     --deep: #0b131d;
     --cream: #eee8dc;
@@ -593,7 +601,7 @@ p {
     font-size: 8px
 }
 
-/* A quiet indigo journal within the original compartment. */
+/* A denim journal within the original compartment. */
 .boarding .site-header {
     background: linear-gradient(#101a24a6, transparent)
 }
@@ -616,16 +624,16 @@ p {
 
 .intro-ticket {
     position: absolute;
-    top: 18%;
-    left: 21%;
-    width: 58%;
-    height: 53%;
+    top: 17%;
+    left: 18%;
+    width: 64%;
+    height: 56%;
     padding: 48px 5% 30px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(120deg, #203245ed, #111e2bf5), url('assets/denim-weave.svg');
+    background: url('assets/denim-weave.svg'), linear-gradient(115deg, #355d7b, var(--indigo) 48%, #541b36);
     border: 1px solid #d3c0a64d;
     box-shadow: 0 25px 80px #060e1855
 }
@@ -659,16 +667,21 @@ p {
 
 .intro-ticket h1 {
     font-family: 'Libre Caslon Display', Georgia, serif;
-    font-size: clamp(64px, min(8.5vw, 13svh), 132px);
+    font-size: clamp(56px, min(6.2vw, 10svh), 104px);
     font-weight: 400;
     letter-spacing: -.025em;
-    line-height: .87;
+    line-height: .96;
     text-align: center
 }
 
 .intro-ticket h1 span {
-    display: inline-block;
-    color: #c9ad87;
+    display: block;
+    color: #fff5e4
+}
+
+.intro-ticket h1 em {
+    display: block;
+    color: #f1cf86;
     font-style: italic;
     padding-right: 6px
 }
@@ -2340,8 +2353,8 @@ html {
     }
 
     .intro-ticket h1 {
-        font-size: 14svh;
-        line-height: .84
+        font-size: min(6.2vw, 10svh);
+        line-height: .96
     }
 
     .intro-ticket p {
@@ -2439,8 +2452,8 @@ html {
     }
 
     .intro-ticket h1 {
-        font-size: clamp(64px, 18vw, 94px);
-        line-height: .9;
+        font-size: clamp(44px, 12vw, 64px);
+        line-height: .96;
         text-shadow: none;
         letter-spacing: -.025em
     }
@@ -2686,7 +2699,7 @@ html {
     }
 
     .intro-ticket h1 {
-        font-size: 14svh
+        font-size: min(12vw, 8svh)
     }
 
     .intro-ticket p {
@@ -2977,3 +2990,176 @@ html {
     }
 }
 @media(prefers-reduced-motion:reduce) { .piece-hero {height:auto} }
+
+/* The full brand palette lives in fabric surfaces; reading text stays high contrast. */
+.site-header::after {
+    content:'';position:absolute;bottom:0;left:0;right:0;height:3px;
+    background:var(--brand-stripe);pointer-events:none
+}
+.brand-note {font-size:10px;letter-spacing:.1em}
+.site-header nav {font-size:13px}
+.primary-button,.text-button {font-size:14px}
+.piece-navigation .text-button,#collection-back {font-size:13px}
+.intro-ticket::before {border:1px dashed #efce8a80;inset:12px 12px 25px}
+.intro-ticket::after {
+    content:'';position:absolute;bottom:0;left:0;right:0;height:14px;
+    background:url('assets/denim-weave.svg'),var(--brand-stripe);
+    border-top:1px dashed #f1cf8699
+}
+.ticket-serial {font-size:10px;color:#eee8dc;letter-spacing:.12em}
+.intro-kicker {font-size:11px;letter-spacing:.16em;margin:20px 0 16px;color:#fff5e4}
+.intro-ticket p {font-size:16px;line-height:1.65;color:#f0e9df;margin-top:20px}
+.intro-route {font-size:11px;opacity:1;letter-spacing:.1em;margin-top:20px}
+.intro-overlay>.primary-button {font-size:15px;background:#f4e9d2;border-bottom:3px solid var(--gold)}
+.intro-browse {font-size:14px;color:#fff5e4}
+.intro-note {font-size:10px;color:#fff5e4;letter-spacing:.12em}
+.map-copy {background:url('assets/denim-weave.svg'),linear-gradient(130deg,var(--forest),#123c30);color:#fff5e4}
+.map-copy h2 em {color:#f1cf86}
+.map-copy>p {font-size:16px;color:#f0e9df}
+.map-copy .eyebrow,.map-options small {font-size:11px;color:#eee8dc;letter-spacing:.1em}
+.map-copy .map-note {font-size:13px!important;color:#eee8dc!important}
+.map-options button>span:first-child {font-size:12px;color:#f1cf86}
+.map-help,.map-sheet-heading,.map-sheet-caption {color:#554a3c}
+.map-help {font-size:12px}
+.map-pin span {font-size:11px}
+.map-sheet-heading {font-size:10px}
+.map-sheet-caption {font-size:16px}
+.map-controls output {font-size:12px}
+.travel-caption p,.culture-copy p,.product-copy p {font-size:16px;line-height:1.75;color:#f5eee2}
+.culture-copy p {max-width:390px}
+.travel-caption .eyebrow,.culture-copy .eyebrow,.product-copy .eyebrow {font-size:11px;letter-spacing:.12em;color:#f1cf86}
+.culture-copy .text-button,.product-copy .text-button {font-size:14px}
+.product-copy .primary-button {font-size:14px}
+.chapter-shade {background:linear-gradient(90deg,#111b2af5 0%,#111b2ad9 33%,#111b2a30 75%),linear-gradient(0deg,#111b2ae8,transparent 25%,transparent 80%,#111b2aa0)}
+.chapter-shade::after {background:#241422}
+.journey-bottom>p,.chapter-next {font-size:11px}
+.route-progress button {font-size:13px;opacity:.85}
+.route-progress small {font-size:10px;color:#f1cf86}
+.window-travel-note {font-size:10px;color:#24352c;background:#faf1dddc;padding:5px 8px}
+.detail-panel p {font-size:15px;color:#414740}
+.detail-panel .eyebrow,.detail-panel .text-button {font-size:12px}
+.garment-sheet figcaption,.detail-fragment figcaption {font-size:10px;line-height:1.5;color:#383c36}
+.collection-intro {max-width:900px}
+.collection-intro h1 {color:var(--oxblood)}
+.collection-intro p,.collection-piece p {font-size:16px;line-height:1.8;color:#454c49}
+.collection-intro>.eyebrow,.collection-piece .eyebrow {font-size:11px;color:#754b35}
+.collection-piece figure {border-top:4px solid var(--oxblood)}
+.collection-piece:nth-child(even) figure {border-color:var(--forest)}
+.collection-piece figure>span {font-size:13px;color:var(--indigo);background:#f5eee1f5}
+.denim-palette {display:flex;flex-wrap:wrap;gap:20px 24px;margin-top:32px}
+.denim-palette>span {display:flex;align-items:center;gap:8px;font-size:12px;color:#454c49}
+.denim-palette i {
+    display:block;width:29px;height:34px;flex-shrink:0;
+    background:url('assets/denim-weave.svg'),var(--swatch);
+    border:1px dashed #ffffff80;outline:1px solid var(--swatch);
+    box-shadow:2px 2px 0 #111e2b12
+}
+.piece-intro>.eyebrow,.portrait-title .eyebrow {font-size:11px;color:#765b35}
+.story-intro {font-size:16px;color:#4c524c;line-height:1.8}
+.piece-colours span {font-size:12px;color:#62533e}
+.piece-edition,.piece-page .piece-portrait figcaption {font-size:10px;color:#5c625e}
+.hero-controls {color:#514530}
+.hero-controls button,#hero-advance {font-size:12px;letter-spacing:.08em}
+.film-caption {font-size:11px;color:#fff2d7;text-shadow:0 1px 5px #000}
+.piece-chapters {font-size:12px;letter-spacing:.02em;gap:5%}
+.story-section p {font-size:16px;line-height:1.8;color:#454c49}
+.piece-place .eyebrow,.piece-notes .eyebrow {font-size:11px;color:#765b35}
+.piece-place img {filter:saturate(.9)}
+.piece-details,.detail-image {background:#320f20}
+.detail-heading .eyebrow,.detail-feature-copy .eyebrow {font-size:11px;color:#ebcc98}
+.detail-heading h2 em {color:#e9b3ce}
+.piece-details .detail-heading p,.detail-feature-copy p {font-size:16px;color:#e7dedf}
+.detail-index {font-size:11px;color:#d6c1c7}
+.piece-specs {background:#102f25}
+.piece-specs>header .eyebrow,.spec-reading .eyebrow {font-size:11px;color:#ebcc98}
+.piece-specs>header p,.spec-reading p {font-size:16px;color:#dfebe2}
+.spec-reading dl {font-size:14px}
+.spec-reading dt {color:#bdcfc3}
+.spec-reading dd {color:#fff4df}
+.spec-reading .spec-status {font-size:12px;color:#bdcfc3}
+.spec-caption {font-size:10px;color:#bdcfc3;letter-spacing:.1em}
+#spec-controls button {font-size:12px;color:#e1e9df;letter-spacing:.03em}
+#spec-controls button[aria-pressed=true] {color:#ffe4aa}
+#spec-controls button[aria-pressed=true] i {background:#f1cf86}
+.study-note {font-size:14px!important;color:#454c49}
+.piece-page figcaption {font-size:10px;color:#41473f;line-height:1.6}
+.piece-notes {border-bottom:3px solid var(--rani)}
+.interest-copy h2 em {color:var(--oxblood)}
+.interest-section label,.interest-form-heading .eyebrow {font-size:12px}
+.interest-section #interest-status {font-size:12px;color:#61533f}
+.interest-section form {border-top-color:var(--rani)}
+footer span {font-size:11px;letter-spacing:.07em}
+.hint-card {background:#101e2bf2;text-shadow:none;box-shadow:0 8px 24px #0002}
+.hint-card p {font-size:13px;color:#fff3df;line-height:1.6}
+#hint-skip {font-size:12px;color:#ffe0a6}
+#hint-dismiss {color:#ffe0a6}
+#journey-hint[data-step=place] .hint-card {background:#f4ead6f5;text-shadow:none}
+#journey-hint[data-step=place] p {color:#263a31}
+
+@media(max-width:760px) {
+    .site-header nav {font-size:12px;gap:12px}
+    .intro-ticket {top:19%;height:53%;padding:38px 6% 30px}
+    .ticket-serial {font-size:9px;top:20px;letter-spacing:.05em}
+    .intro-kicker {font-size:9px;letter-spacing:.09em;margin:15px 0}
+    .intro-ticket p {font-size:14px;margin-top:16px}
+    .intro-route {font-size:10px;margin-top:16px;gap:15px}
+    .intro-overlay>.primary-button {font-size:14px}
+    .intro-browse {font-size:13px}
+    .intro-note {font-size:9px}
+    .map-copy>p {font-size:14px}
+    .map-copy .eyebrow,.map-options small {font-size:10px;letter-spacing:.07em}
+    .map-copy .map-note {font-size:12px!important}
+    .map-help {font-size:11px}
+    .map-sheet-heading {font-size:9px}
+    .map-sheet-caption {font-size:14px}
+    .culture-copy p,.product-copy p,.travel-caption p {font-size:14px;line-height:1.65}
+    .culture-copy .eyebrow,.product-copy .eyebrow,.travel-caption .eyebrow {font-size:10px}
+    .product-reveal {grid-template-rows:44% 1fr;gap:3%}
+    .product-copy .primary-button,.product-copy .text-button {font-size:13px}
+    .journey-bottom>p,.chapter-next {font-size:9px}
+    .route-progress button {font-size:12px}
+    .route-progress small {font-size:9px}
+    .window-travel-note {font-size:8px}
+    .collection-intro p,.collection-piece p,.story-section p,.detail-panel p {font-size:15px}
+    .denim-palette {display:grid;grid-template-columns:1fr 1fr;gap:20px 12px}
+    .denim-palette>span {font-size:12px}
+    .piece-intro>.eyebrow,.portrait-title .eyebrow {font-size:10px}
+    .story-intro {font-size:14px;top:43%;width:80%}
+    .piece-colours {top:62%;gap:6px}
+    .piece-colours span {font-size:11px}
+    .piece-edition,.piece-page .piece-portrait figcaption {font-size:9px;letter-spacing:.08em}
+    .piece-navigation .text-button,.hero-controls button,#hero-advance {font-size:11px}
+    .film-caption {font-size:10px}
+    .piece-chapters {display:grid;grid-template-columns:1fr 1fr;gap:6px 20px;font-size:12px}
+    .spec-reading p,.piece-specs>header p {font-size:15px}
+    #spec-controls button {font-size:10px;min-width:64px}
+    .spec-caption {font-size:9px}
+    .spec-reading dl {font-size:13px}
+    .spec-reading .spec-status {font-size:12px}
+    .hint-card p {font-size:13px}
+    footer {gap:20px}
+    footer span {font-size:9px;max-width:180px;text-align:right}
+}
+@media(max-width:380px) {
+    .site-header nav {font-size:11px;gap:10px}
+    .intro-kicker {font-size:8px}
+}
+@media(max-height:650px) {
+    .intro-ticket {top:18%;height:55%;padding-top:30px}
+    .ticket-serial {font-size:9px;top:14px}
+    .intro-kicker {font-size:9px;margin:10px 0}
+    .intro-ticket p {font-size:13px;margin-top:12px}
+    .intro-route {font-size:9px;margin-top:12px}
+    .intro-browse {font-size:12px}
+    .intro-overlay>.primary-button {top:77%;min-height:44px}
+    .intro-note {display:none}
+}
+@media(max-width:760px) and (max-height:650px) {
+    .intro-ticket h1 {font-size:min(12vw,7.4svh)}
+    .intro-kicker {font-size:8px}
+    .intro-ticket p {font-size:12px;margin-top:10px}
+    .intro-route {margin-top:10px}
+    .product-reveal {inset:14% 7% 7%;grid-template-rows:27% 1fr;gap:3%}
+    .product-copy h2 {font-size:30px}
+    .product-copy p {font-size:13px;line-height:1.55;margin-bottom:10px}
+}
